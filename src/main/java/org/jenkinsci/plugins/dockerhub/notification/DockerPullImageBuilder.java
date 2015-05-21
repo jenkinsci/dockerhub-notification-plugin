@@ -41,8 +41,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jenkinsci.plugins.docker.commons.DockerImageExtractor;
-import org.jenkinsci.plugins.docker.commons.DockerRegistryEndpoint;
-import org.jenkinsci.plugins.docker.commons.KeyMaterial;
+import org.jenkinsci.plugins.docker.commons.credentials.KeyMaterial;
+import org.jenkinsci.plugins.docker.commons.credentials.DockerRegistryEndpoint;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import javax.annotation.Nonnull;
