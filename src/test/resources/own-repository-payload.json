@@ -1,0 +1,29 @@
+{
+  "push_data": {
+    "pushed_at": 1429028158,
+    "images": [
+      "imagehash1",
+      "imagehash2",
+      "imagehash3"
+    ],
+    "pusher": "csanchez"
+  },
+  "callback_url": "https://registry.hub.docker.com/u/csanchez/jenkins-swarm-slave/hook/2g1gggacfij1c4a3jd00bf4fe3c3ec0da/",
+  "repository": {
+    "status": "Active",
+    "description": "",
+    "is_trusted": true,
+    "full_description": "# Jenkins swarm slave\n\n[`csanchez/jenkins-swarm-slave`](https://registry.hub.docker.com/u/csanchez/jenkins-swarm-slave/)\n\nA [Jenkins swarm](https://wiki.jenkins-ci.org/display/JENKINS/Swarm+Plugin) slave.\n\nFor a container with ssh enabled see\n[`csanchez/jenkins-slave`](https://registry.hub.docker.com/u/csanchez/jenkins-slave/)\n\nFor a container with many build tools installed see\n[`maestrodev/build-agent`](https://registry.hub.docker.com/u/maestrodev/build-agent/)\n\n## Running\n\nTo run a Docker container passing [any parameters](https://wiki.jenkins-ci.org/display/JENKINS/Swarm+Plugin#SwarmPlugin-AvailableOptions) to the slave\n\n    docker run csanchez/jenkins-swarm-slave -master http://jenkins:8080 -username jenkins -password jenkins -executors 1\n\nLinking to the Jenkins master container there is no need to use `--master`\n\n    docker run -d --name jenkins -p 8080:8080 csanchez/jenkins-swarm\n    docker run -d --link jenkins:jenkins csanchez/jenkins-swarm-slave -username jenkins -password jenkins -executors 1\n\n\n# Building\n\n    docker build -t csanchez/jenkins-swarm-slave .\n",
+    "repo_url": "https://registry.hub.docker.com/u/csanchez/jenkins-swarm-slave/",
+    "owner": "csanchez",
+    "is_official": false,
+    "is_private": false,
+    "name": "jenkins-swarm-slave",
+    "namespace": "csanchez",
+    "star_count": 2,
+    "comment_count": 0,
+    "date_created": 1410991410,
+    "dockerfile": "FROM java:8u40-b22-jdk\n\nMAINTAINER Carlos Sanchez <carlos@apache.org>\n\nENV JENKINS_SWARM_VERSION 1.22\nENV HOME /home/jenkins-slave\n\nRUN useradd -c \"Jenkins Slave user\" -d $HOME -m jenkins-slave\nRUN curl --create-dirs -sSLo /usr/share/jenkins/swarm-client-$JENKINS_SWARM_VERSION-jar-with-dependencies.jar http://maven.jenkins-ci.org/content/repositories/releases/org/jenkins-ci/plugins/swarm-client/$JENKINS_SWARM_VERSION/swarm-client-$JENKINS_SWARM_VERSION-jar-with-dependencies.jar \\\n  && chmod 755 /usr/share/jenkins\n\nCOPY jenkins-slave.sh /usr/local/bin/jenkins-slave.sh\n\nUSER jenkins-slave\n\nVOLUME /home/jenkins-slave\n\nENTRYPOINT [\"/usr/local/bin/jenkins-slave.sh\"]\n",
+    "repo_name": "csanchez/jenkins-swarm-slave"
+  }
+}

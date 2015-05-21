@@ -1,0 +1,28 @@
+{
+  "push_data": {
+    "pushed_at": 1429028577,
+    "images": [
+      "imagehash1",
+      "imagehash2",
+      "imagehash3"
+    ],
+    "pusher": "csanchez"
+  },
+  "callback_url": "https://registry.hub.docker.com/_/busybox/hook/2fge0b054e32b45iidb3ac4e2caefabja/",
+  "repository": {
+    "status": "Active",
+    "description": "Busybox base image.",
+    "is_trusted": false,
+    "full_description": "# Supported tags and respective `Dockerfile` links\n\n-\t[`buildroot-2013.08.1` (*Dockerfile*)](https://github.com/jpetazzo/docker-busybox/blob/220a689ce359914af3e08a698d1d74ec7aa0a444/Dockerfile)\n-\t[`buildroot-2014.02`, `latest` (*Dockerfile*)](https://github.com/jpetazzo/docker-busybox/blob/91641afe424df5e838bac254d43e09f051ab8c3e/Dockerfile)\n-\t[`ubuntu-12.04` (*Dockerfile*)](https://github.com/jpetazzo/docker-busybox/blob/4f6cb64c3b3255c58021dc75100da0088796a108/Dockerfile)\n-\t[`ubuntu-14.04` (*Dockerfile*)](https://github.com/jpetazzo/docker-busybox/blob/ca435164f45c40d761fad9ef9b5a76a6ba0d5f1a/Dockerfile)\n\nFor more information about this image and its history, please see the [relevant manifest file (`library/busybox`)](https://github.com/docker-library/official-images/blob/master/library/busybox) in the [`docker-library/official-images` GitHub repo](https://github.com/docker-library/official-images).\n\n# What is BusyBox? The Swiss Army Knife of Embedded Linux\n\nAt about 2.5 Mb in size, [BusyBox](http://www.busybox.net/) is a very good ingredient to craft space-efficient distributions.\n\nBusyBox combines tiny versions of many common UNIX utilities into a single small executable. It provides replacements for most of the utilities you usually find in GNU fileutils, shellutils, etc. The utilities in BusyBox generally have fewer options than their full-featured GNU cousins; however, the options that are included provide the expected functionality and behave very much like their GNU counterparts. BusyBox provides a fairly complete environment for any small or embedded system.\n\n> [wikipedia.org/wiki/BusyBox](https://en.wikipedia.org/wiki/BusyBox)\n\n![logo](https://raw.githubusercontent.com/docker-library/docs/master/busybox/logo.png)\n\n# How to use this image\n\n## Run BusyBox shell\n\n\tdocker run -it --rm busybox\n\nThis will drop you into an `sh` shell to allow you to do what you want inside a BusyBox system.\n\n## Create a `Dockerfile` for a binary\n\n\tFROM busybox\n\tCOPY ./my-static-binary /my-static-binary\n\tCMD [\"/my-static-binary\"]\n\nThis `Dockerfile` will allow you to create a minimal image for your statically compiled binary. You will have to compile the binary in some other place like another container.\n\n## More about this image\n\nThe tags of this image are built using two different methods. The `ubuntu` tags are using the `busybox-static` package from Ubuntu, adding a few support files so that it works in Docker. It's super fast to build (a minute or even less). The `buildroot` tags are going the long way: they use buildroot to craft a whole filesystem, with busybox but also all required libraries and other support files. It has a stronger guarantee of \"this will work\". It is also smaller because it's using uclibc, however it takes hours to build.\n\nHaving two totally different builders means that if one of the goes belly up, we can always fall-back on the other since this image is used in much of build testing of `docker` itself.\n\n# License\n\nView [license information](http://www.busybox.net/license.html) for the software contained in this image.\n\n# Supported Docker versions\n\nThis image is officially supported on Docker version 1.5.0.\n\nSupport for older versions (down to 1.0) is provided on a best-effort basis.\n\n# User Feedback\n\n## Documentation\n\nDocumentation for this image is stored in the [`busybox/` directory](https://github.com/docker-library/docs/tree/master/busybox) of the [`docker-library/docs` GitHub repo](https://github.com/docker-library/docs). Be sure to familiarize yourself with the [repository's `REAMDE.md` file](https://github.com/docker-library/docs/blob/master/README.md) before attempting a pull request.\n\n## Issues\n\nIf you have any problems with or questions about this image, please contact us through a [GitHub issue](https://github.com/jpetazzo/docker-busybox/issues).\n\nYou can also reach many of the official image maintainers via the `#docker-library` IRC channel on [Freenode](https://freenode.net).\n\n## Contributing\n\nYou are invited to contribute new features, fixes, or updates, large or small; we are always thrilled to receive pull requests, and do our best to process them as fast as we can.\n\nBefore you start to code, we recommend discussing your plans through a [GitHub issue](https://github.com/jpetazzo/docker-busybox/issues), especially for more ambitious contributions. This gives other contributors a chance to point you in the right direction, give you feedback on your design, and help you find out if someone else is working on the same thing.",
+    "repo_url": "https://registry.hub.docker.com/_/busybox/",
+    "owner": "library",
+    "is_official": false,
+    "is_private": false,
+    "name": "busybox",
+    "namespace": "library",
+    "star_count": 161,
+    "comment_count": 10,
+    "date_created": 1367355282,
+    "repo_name": "busybox"
+  }
+}
