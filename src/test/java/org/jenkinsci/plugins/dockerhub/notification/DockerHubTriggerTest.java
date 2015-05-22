@@ -25,7 +25,10 @@ package org.jenkinsci.plugins.dockerhub.notification;
 
 import org.jenkinsci.plugins.dockerhub.notification.opt.impl.TriggerForAllUsedInJob;
 import org.jenkinsci.plugins.dockerhub.notification.opt.impl.TriggerOnSpecifiedImageNames;
+
+import hudson.model.Item;
 import hudson.model.FreeStyleProject;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
@@ -54,7 +57,7 @@ public class DockerHubTriggerTest {
         DockerHubTrigger trigger = DockerHubTrigger.getTrigger(project);
         assertNotNull(trigger);
         assertThat(trigger.getAllRepoNames(), contains(expectedRepoNames));
-        project = j.configRoundtrip(project);
+        project = (FreeStyleProject) j.configRoundtrip((Item)project);
         trigger = DockerHubTrigger.getTrigger(project);
         assertNotNull(trigger);
         assertThat(trigger.getAllRepoNames(), contains(expectedRepoNames));
@@ -68,7 +71,7 @@ public class DockerHubTriggerTest {
         DockerHubTrigger trigger = DockerHubTrigger.getTrigger(project);
         assertNotNull(trigger);
         assertThat(trigger.getAllRepoNames(), empty());
-        project = j.configRoundtrip(project);
+        project = (FreeStyleProject) j.configRoundtrip((Item)project);
         trigger = DockerHubTrigger.getTrigger(project);
         assertNotNull(trigger);
         assertThat(trigger.getAllRepoNames(), empty());
