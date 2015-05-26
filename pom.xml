@@ -39,7 +39,7 @@
     <packaging>hpi</packaging>
 
     <name>CloudBees Docker Hub Notification</name>
-    <url>https://wiki.jenkins-ci.org/display/JENKINS/DockerHub+Notification</url>
+    <url>https://wiki.jenkins-ci.org/display/JENKINS/CloudBees+Docker+Hub+Notification</url>
 
     <properties>
         <jenkins.version>1.580.1</jenkins.version>
