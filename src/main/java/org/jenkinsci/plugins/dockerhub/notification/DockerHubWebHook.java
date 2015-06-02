@@ -80,7 +80,7 @@ public class DockerHubWebHook implements UnprotectedRootAction {
     }
 
     public String getUrlName() {
-        return "/" + URL_NAME;
+        return URL_NAME;
     }
 
     @RequirePOST

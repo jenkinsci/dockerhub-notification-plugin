@@ -156,7 +156,7 @@ public class CoordinatorTest {
 
         @Override
         public String getUrlName() {
-            return "/fake-dockerhub";
+            return "fake-dockerhub";
         }
 
         public void doRespond(StaplerRequest req, StaplerResponse response) throws IOException {
