@@ -90,6 +90,9 @@ public class TriggerListViewColumn extends ListViewColumn {
             return Messages.TriggerListViewColumn_DisplayName();
         }
 
-
+        @Override
+        public boolean shownByDefault() {
+            return false;
+        }
     }
 }
