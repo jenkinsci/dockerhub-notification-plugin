@@ -4,6 +4,10 @@ Only noting significant user-visible or major API changes, not internal code cle
 
 ## upcoming relese
 
+## 1.0.2 (June 05, 2015)
+
+* The list view column is no longer added by default.
+
 ## 1.0.1 (June 02, 2015)
 
 * The action was not working correctly in a secured Jenkins environment due to [JENKINS-28688](https://issues.jenkins-ci.org/browse/JENKINS-28688) - thanks to [Shay Erlichmen](https://github.com/erlichmen)
