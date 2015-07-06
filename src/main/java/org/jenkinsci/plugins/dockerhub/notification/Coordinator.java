@@ -95,10 +95,11 @@ public class Coordinator extends RunListener<Run<?, ?>> {
     }
 
     private void sendResponse(@Nonnull final WebHookPayload payload, @Nonnull final CallbackPayload callback) throws IOException, ExecutionException, InterruptedException {
-        if (!StringUtils.isBlank(payload.getCallbackUrl())) {
+        final String callbackUrl = payload.getCallbackUrl();
+        if (!StringUtils.isBlank(callbackUrl)) {
             logger.log(Level.FINE, "Sending callback to Docker Hub");
             logger.log(Level.FINER, "Callback: {0}", callback);
-            int response = Http.post(payload.getCallbackUrl(), callback.toJSON());
+            int response = Http.post(callbackUrl, callback.toJSON());
             logger.log(Level.FINE, "Docker Hub returned {0}", response);
         } else {
             logger.log(Level.WARNING, "No callback URL specified in {0}", payload);

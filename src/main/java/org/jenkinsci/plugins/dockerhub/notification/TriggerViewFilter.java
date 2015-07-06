@@ -67,7 +67,7 @@ public class TriggerViewFilter extends ViewJobFilter {
 
     @Override
     public List<TopLevelItem> filter(List<TopLevelItem> added, List<TopLevelItem> all, View filteringView) {
-        compilePatterns();
+        List<Pattern> patterns = getCompiled();
         List<TopLevelItem> workList = added.isEmpty() ? all : added;
         List<TopLevelItem> filtered = new LinkedList<TopLevelItem>();
 
@@ -75,7 +75,7 @@ public class TriggerViewFilter extends ViewJobFilter {
             if (item instanceof ParameterizedJobMixIn.ParameterizedJob) {
                 DockerHubTrigger trigger = DockerHubTrigger.getTrigger((ParameterizedJobMixIn.ParameterizedJob)item);
                 if (trigger != null) {
-                    if (compiled.isEmpty()) {
+                    if (patterns.isEmpty()) {
                         filtered.add(item);
                     } else {
                         for (String name : trigger.getAllRepoNames()) {
@@ -91,12 +91,18 @@ public class TriggerViewFilter extends ViewJobFilter {
     }
 
     private boolean matches(String name) {
-        for (Pattern pattern : compiled) {
+        List<Pattern> patterns = getCompiled();
+        for (Pattern pattern : patterns) {
             if (pattern.matcher(name).matches()) {
                 return true;
             }
         }
         return false;
+    }
+
+    synchronized List<Pattern> getCompiled() {
+        compilePatterns();
+        return compiled;
     }
 
     private synchronized void compilePatterns() {
@@ -115,7 +121,7 @@ public class TriggerViewFilter extends ViewJobFilter {
     }
 
     @Nonnull
-    public List<String> getPatterns() {
+    public synchronized List<String> getPatterns() {
         return patterns;
     }
 

@@ -97,7 +97,7 @@ public class WebHookPayload implements Serializable {
 
     @CheckForNull
     public String getCallbackUrl() {
-        return getData() != null ? getData().optString("callback_url") : null;
+        return data != null ? data.optString("callback_url") : null;
     }
 
     @CheckForNull

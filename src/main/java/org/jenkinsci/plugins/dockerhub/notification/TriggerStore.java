@@ -203,8 +203,7 @@ public final class TriggerStore extends Descriptor<TriggerStore>
         return null;
     }
 
-    public static class TriggerEntry extends FingerprintFacet implements Serializable {
-        private static final long serialVersionUID = -6488186484104360968L;
+    public static class TriggerEntry extends FingerprintFacet {
         @Nonnull
         private final WebHookPayload payload;
         @Nonnull
