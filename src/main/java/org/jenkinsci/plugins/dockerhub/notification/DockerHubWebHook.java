@@ -230,7 +230,16 @@ public class DockerHubWebHook implements UnprotectedRootAction {
 
             int quiet = Math.max(MIN_QUIET, asJob().getQuietPeriod());
 
-            Queue.Item i = Jenkins.getInstance().getQueue().schedule2(asJob(), quiet, queueActions).getItem();
+            final Jenkins jenkins = Jenkins.getInstance();
+            if (jenkins == null) {
+                logger.log(Level.WARNING, "Tried to schedule a build while Jenkins was gone.");
+                return false;
+            }
+            final Queue queue = jenkins.getQueue();
+            if (queue == null) {
+                throw new IllegalStateException("The queue is not initialized?!");
+            }
+            Queue.Item i = queue.schedule2(asJob(), quiet, queueActions).getItem();
             return i != null && i.getFuture() != null;
         }
 

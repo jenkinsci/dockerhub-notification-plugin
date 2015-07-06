@@ -39,6 +39,8 @@ import jenkins.model.Jenkins;
 import org.acegisecurity.context.SecurityContext;
 import org.acegisecurity.context.SecurityContextHolder;
 import org.apache.commons.lang.StringUtils;
+import org.kohsuke.accmod.Restricted;
+import org.kohsuke.accmod.restrictions.NoExternalUse;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -203,8 +205,7 @@ public final class TriggerStore extends Descriptor<TriggerStore>
         return null;
     }
 
-    public static class TriggerEntry extends FingerprintFacet implements Serializable {
-        private static final long serialVersionUID = -6488186484104360968L;
+    public static class TriggerEntry extends FingerprintFacet {
         @Nonnull
         private final WebHookPayload payload;
         @Nonnull
