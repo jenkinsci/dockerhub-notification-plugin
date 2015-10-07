@@ -21,10 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jenkinsci.plugins.dockerhub.notification;
+package org.jenkinsci.plugins.dockerhub.notification.webhook;
 
 
-import org.jenkinsci.plugins.dockerhub.notification.webhook.WebHookPayload;
+import org.jenkinsci.plugins.dockerhub.notification.DockerHubWebHook;
+import org.jenkinsci.plugins.dockerhub.notification.webhook.DockerHubWebHookPayload;
 import hudson.model.Cause;
 
 import javax.annotation.Nonnull;
@@ -32,12 +33,12 @@ import javax.annotation.Nonnull;
 /**
  * The build cause of {@link DockerHubWebHook}.
  */
-public class DockerHubWebHookCause extends Cause {
+public class DockerHubWebHookCause extends org.jenkinsci.plugins.dockerhub.notification.webhook.WebHookCause {
 
     @Nonnull
-    private final WebHookPayload payload;
+    private final DockerHubWebHookPayload payload;
 
-    public DockerHubWebHookCause(@Nonnull WebHookPayload payload) {
+    public DockerHubWebHookCause(@Nonnull DockerHubWebHookPayload payload) {
         this.payload = payload;
     }
 
@@ -46,7 +47,8 @@ public class DockerHubWebHookCause extends Cause {
         return String.format("Triggered by push of %s to DockerHub@%s", payload.getRepoName(), payload.getCallbackHost());
     }
 
-    public WebHookPayload getPayload() {
+    @Override
+    public DockerHubWebHookPayload getPayload() {
         return payload;
     }
 
