@@ -114,10 +114,6 @@ public class DockerHubPushNotification extends PushNotification {
         return Util.getDigestOf("dockerHubNotification:" + repoName + Long.toBinaryString(getReceived()));
     }
 
-    private long getReceived() {
-        return getWebHookPayload().getReceived();
-    }
-
     @Override
     public String getShortDescription() {
         return String.format("Triggered by push of %s to DockerHub@%s", getRepoName(), getCallbackHost());

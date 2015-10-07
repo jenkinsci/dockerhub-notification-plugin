@@ -2,6 +2,7 @@ package org.jenkinsci.plugins.registry.notification.webhook;
 
 import hudson.model.Cause;
 import hudson.model.ParameterValue;
+import hudson.model.Run;
 
 import javax.annotation.CheckForNull;
 import java.util.Date;
@@ -16,6 +17,13 @@ public abstract class PushNotification {
 
     protected String repoName;
     private Date pushedAt;
+
+    CallbackHandler callbackHandler = new CallbackHandler() {
+        @Override
+        public void notify(PushNotification pushNotification, Run<?, ?> run) {
+        }
+    };
+
     public PushNotification(WebHookPayload webHookPayload) {
         this.webHookPayload = webHookPayload;
     }
@@ -48,5 +56,17 @@ public abstract class PushNotification {
         return webHookPayload;
     }
 
+    public long getReceived() {
+        return webHookPayload.getReceived();
+    }
+
     abstract public String getShortDescription();
+
+    public CallbackHandler getCallbackHandler() {
+        return callbackHandler;
+    }
+
+    public void setCallbackHandler(CallbackHandler callbackHandler) {
+        this.callbackHandler = callbackHandler;
+    }
 }

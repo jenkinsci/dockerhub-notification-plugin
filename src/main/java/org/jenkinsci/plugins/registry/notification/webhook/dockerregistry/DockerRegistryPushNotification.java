@@ -114,10 +114,6 @@ public class DockerRegistryPushNotification extends PushNotification {
         return Util.getDigestOf("dockerRegistryNotification:" + repoName + Long.toBinaryString(getReceived()));
     }
 
-    private long getReceived() {
-        return getWebHookPayload().getReceived();
-    }
-
     @Override
     public String getShortDescription() {
         return String.format("Triggered by push of %s to DockerRegistry@%s", getRepoName(), getCallbackHost());

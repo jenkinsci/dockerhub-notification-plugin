@@ -29,6 +29,7 @@ import hudson.model.Result;
 import hudson.model.Run;
 import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
+import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
 
 import javax.annotation.Nonnull;
@@ -79,7 +80,7 @@ public class DockerHubCallbackPayload implements Serializable {
         }
     }
 
-    private static String constructUrl(@Nonnull List<TriggerStore.TriggerEntry.RunEntry> entries, @Nonnull WebHookPayload payload) {
+    private static String constructUrl(@Nonnull List<TriggerStore.TriggerEntry.RunEntry> entries, @Nonnull PushNotification pushNotification) {
         Jenkins jenkins = Jenkins.getInstance();
         StringBuilder str = new StringBuilder();
         if (jenkins != null) {
@@ -90,7 +91,7 @@ public class DockerHubCallbackPayload implements Serializable {
                 logger.warning("Jenkins root URL is not configured!");
             }
         }
-        return str.append(DockerHubWebHook.URL_NAME).append("/details/").append(payload.sha()).toString();
+        return str.append(DockerHubWebHook.URL_NAME).append("/details/").append(pushNotification.sha()).toString();
     }
 
     public JSONObject toJSON() {

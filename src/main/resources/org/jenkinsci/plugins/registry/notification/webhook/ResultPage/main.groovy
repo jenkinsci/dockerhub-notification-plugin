@@ -35,7 +35,7 @@ TriggerStore.TriggerEntry data = triggerData
 
 link(rel: "stylesheet", href: "${rootURL}/${res(my, "style.css")}", type: "text/css")
 
-h1(_("heading", repoName, data.payload.pushedAt))
+h1(_("heading", repoName, data.pushNotification.pushedAt))
 
 data.entries.each { entry ->
     Run run = entry.run

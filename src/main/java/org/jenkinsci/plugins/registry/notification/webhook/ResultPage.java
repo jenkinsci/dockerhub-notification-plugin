@@ -53,7 +53,7 @@ public class ResultPage implements ModelObject {
     public String getDisplayName() {
         String repoName = "<unknown>";
         if (data != null) {
-            repoName = data.getPayload().getRepoName();
+            repoName = data.getPushNotification().getRepoName();
         }
         return Messages.ResultPage_DisplayName(repoName);
     }

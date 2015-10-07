@@ -30,13 +30,9 @@ import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.model.listeners.RunListener;
 import jenkins.model.Jenkins;
-import org.apache.commons.lang.StringUtils;
-import org.jenkinsci.plugins.registry.notification.webhook.Http;
-import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
+import org.jenkinsci.plugins.registry.notification.webhook.*;
+import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubCallbackPayload;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubWebHookCause;
-import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubWebHookPayload;
-import org.jenkinsci.plugins.registry.notification.webhook.CallbackPayload;
-import org.jenkinsci.plugins.registry.notification.webhook.WebHookCause;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -46,15 +42,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Coordinates and sends back a {@link CallbackPayload}
+ * Coordinates and sends back a {@link DockerHubCallbackPayload}
  * to Docker Hub when all builds are finalized.
  */
 @Extension
 public class Coordinator extends RunListener<Run<?, ?>> {
 
-    public void onTriggered(@Nonnull Job job, @Nonnull WebHookPayload payload) {
-        logger.log(Level.FINER, "Job {0} triggered for payload: {1}", new Object[]{job.getFullDisplayName(), payload});
-        TriggerStore.getInstance().triggered(payload, job);
+    public void onTriggered(@Nonnull Job job, @Nonnull PushNotification pushNotification) {
+        logger.log(Level.FINER, "Job {0} triggered for payload: {1}", new Object[]{job.getFullDisplayName(), pushNotification});
+        TriggerStore.getInstance().triggered(pushNotification, job);
     }
 
     @Override
@@ -62,7 +58,7 @@ public class Coordinator extends RunListener<Run<?, ?>> {
         DockerHubWebHookCause cause = run.getCause(DockerHubWebHookCause.class);
         if (cause != null) {
             logger.log(Level.FINER, "Build {0} started for cause: {1}", new Object[]{run.getFullDisplayName(), cause});
-            TriggerStore.getInstance().started(cause.getPayload(), run);
+            TriggerStore.getInstance().started(cause.getPushNotification(), run);
         }
     }
 
@@ -71,17 +67,12 @@ public class Coordinator extends RunListener<Run<?, ?>> {
         WebHookCause cause = run.getCause(WebHookCause.class);
         if (cause != null) {
             logger.log(Level.FINER, "Build {0} done for cause: [{1}]", new Object[]{run.getFullDisplayName(), cause});
-            TriggerStore.TriggerEntry entry = TriggerStore.getInstance().finalized(cause.getPayload(), run);
+            TriggerStore.TriggerEntry entry = TriggerStore.getInstance().finalized(cause.getPushNotification(), run);
             if (entry != null) {
                 if(entry.areAllDone()) {
                     logger.log(Level.FINE, "All builds for [{0}] are done, preparing callback to Docker Hub", cause);
                     try {
-                        CallbackPayload callback = CallbackPayload.from(entry);
-                        if (callback != null) {
-                            entry.setCallbackData(callback);
-                            TriggerStore.getInstance().save(entry);
-                            sendResponse(cause.getPayload(), callback);
-                        }
+                        sendResponse(cause.getPushNotification(), run);
                     } catch (Exception e) {
                         logger.log(Level.SEVERE, "Failed to update Docker Hub!", e);
                     }
@@ -92,23 +83,15 @@ public class Coordinator extends RunListener<Run<?, ?>> {
         }
     }
 
-    private void sendResponse(@Nonnull final DockerHubWebHookPayload payload, @Nonnull final CallbackPayload callback) throws IOException, ExecutionException, InterruptedException {
-        final String callbackUrl = payload.getCallbackUrl();
-        if (!StringUtils.isBlank(callbackUrl)) {
-            logger.log(Level.FINE, "Sending callback to Docker Hub");
-            logger.log(Level.FINER, "Callback: {0}", callback);
-            int response = Http.post(callbackUrl, callback.toJSON());
-            logger.log(Level.FINE, "Docker Hub returned {0}", response);
-        } else {
-            logger.log(Level.WARNING, "No callback URL specified in {0}", payload);
-        }
+    private void sendResponse(@Nonnull final PushNotification pushNotification, Run<?, ?> run) throws IOException, ExecutionException, InterruptedException {
+        pushNotification.getCallbackHandler().notify(pushNotification, run);
     }
 
     @Override
     public void onDeleted(@Nonnull Run<?, ?> run) {
         DockerHubWebHookCause cause = run.getCause(DockerHubWebHookCause.class);
         if (cause != null) {
-            TriggerStore.getInstance().removed(cause.getPayload(), run);
+            TriggerStore.getInstance().removed(cause.getPushNotification(), run);
         }
     }
 

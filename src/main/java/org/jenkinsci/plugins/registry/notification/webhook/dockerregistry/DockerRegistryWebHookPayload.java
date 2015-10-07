@@ -40,7 +40,7 @@ public class DockerRegistryWebHookPayload extends WebHookPayload {
         this.pushNotifications.add(createPushNotification(repository.getString("repo_name"), data));
     }
 
-    private DockerHubPushNotification createPushNotification(@Nonnull final String repoName, @CheckForNull final JSONObject data) {
+    private DockerRegistryPushNotification createPushNotification(@Nonnull final String repoName, @CheckForNull final JSONObject data) {
         return new DockerRegistryPushNotification(this, repoName){{
             if(data != null) {
                 setCallbackUrl(data.optString("callback_url"));

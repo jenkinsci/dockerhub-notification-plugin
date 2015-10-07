@@ -6,6 +6,7 @@ import hudson.model.Queue;
 import hudson.security.ACL;
 import jenkins.model.Jenkins;
 import jenkins.model.ParameterizedJobMixIn;
+import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
 import org.jenkinsci.plugins.registry.notification.webhook.ResultPage;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubWebHookPayload;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
@@ -53,31 +54,7 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
         }
     }
 
-    private boolean isDebugMode() {
-        if (Main.isDevelopmentMode || Main.isUnitTest) {
-            return true;
-        } else if (System.getProperty("hudson.hpi.run") != null) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Helper for development without Dockerub integration.
-     *
-     * @param image    the docker image to trigger
-     * @param response to send a redirect to
-     * @throws IOException if so
-     */
-    public void doDebug(@QueryParameter(required = true) String image, StaplerResponse response) throws IOException {
-        if (!isDebugMode()) {
-            throw new IllegalStateException("This endpoint can only be used during development!");
-        }
-        trigger(response, new DockerHubWebHookPayload(image)); //TODO pre-filled json data when needed.
-    }
-
-    protected void trigger(StaplerResponse response, final WebHookPayload hookPayload) throws IOException {
+    protected void trigger(StaplerResponse response, final PushNotification pushNotification) throws IOException {
         final Jenkins jenkins = Jenkins.getInstance();
         if (jenkins == null) {
             return;
@@ -93,8 +70,8 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
                         continue;
                     }
                     logger.log(Level.FINER, "Inspecting candidate job {0}", p.getName());
-                    if (trigger.getAllRepoNames().contains(hookPayload.getRepoName())) {
-                        schedule((Job) p, hookPayload);
+                    if (trigger.getAllRepoNames().contains(pushNotification.getRepoName())) {
+                        schedule((Job) p, pushNotification);
                     }
                 }
             }
@@ -102,12 +79,12 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
         response.sendRedirect("../");
     }
 
-    private void schedule(@Nonnull final Job job, @Nonnull final WebHookPayload payload) {
-        if (new JobbMixIn(job).schedule(payload.getCause(), payload.getJobParamerers())) {
-            logger.info(payload.getCauseMessage());
+    private void schedule(@Nonnull final Job job, @Nonnull final PushNotification pushNotification) {
+        if (new JobbMixIn(job).schedule(pushNotification.getCause(), pushNotification.getJobParamerers())) {
+            logger.info(pushNotification.getCauseMessage());
             Coordinator coordinator = Coordinator.getInstance();
             if (coordinator != null) {
-                coordinator.onTriggered(job, payload);
+                coordinator.onTriggered(job, pushNotification);
             }
         }
     }

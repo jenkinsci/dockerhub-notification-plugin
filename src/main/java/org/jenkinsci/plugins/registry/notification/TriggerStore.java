@@ -23,7 +23,8 @@
  */
 package org.jenkinsci.plugins.registry.notification;
 
-import org.jenkinsci.plugins.registry.notification.webhook.CallbackPayload;
+import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubCallbackPayload;
+import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
 import hudson.Extension;
 import hudson.init.InitMilestone;
@@ -64,9 +65,9 @@ public final class TriggerStore extends Descriptor<TriggerStore>
         super(TriggerStore.class);
     }
 
-    public synchronized void triggered(@Nonnull final WebHookPayload payload, Job<?, ?> job) {
+    public synchronized void triggered(@Nonnull final PushNotification pushNotification, Job<?, ?> job) {
         try {
-            TriggerEntry entry = getOrCreateEntry(payload);
+            TriggerEntry entry = getOrCreateEntry(pushNotification);
             entry.addEntry(job);
             save(entry);
         } catch (Exception e) {
@@ -74,9 +75,9 @@ public final class TriggerStore extends Descriptor<TriggerStore>
         }
     }
 
-    public synchronized void started(@Nonnull final WebHookPayload payload, Run<?, ?> run) {
+    public synchronized void started(@Nonnull final PushNotification pushNotification, Run<?, ?> run) {
         try {
-            TriggerEntry entry = getOrCreateEntry(payload);
+            TriggerEntry entry = getOrCreateEntry(pushNotification);
             entry.updateEntry(run);
             save(entry);
         } catch (Exception e) {
@@ -85,9 +86,9 @@ public final class TriggerStore extends Descriptor<TriggerStore>
     }
 
     @CheckForNull
-    public synchronized TriggerEntry finalized(@Nonnull final WebHookPayload payload, Run<?, ?> run) {
+    public synchronized TriggerEntry finalized(@Nonnull final PushNotification pushNotification, Run<?, ?> run) {
         try {
-            TriggerEntry entry = getOrCreateEntry(payload);
+            TriggerEntry entry = getOrCreateEntry(pushNotification);
             entry.updateEntry(run);
             save(entry);
             return entry;
@@ -100,9 +101,10 @@ public final class TriggerStore extends Descriptor<TriggerStore>
     /**
      * When a build has been removed from jenkins it should also be removed from this store.
      *
+     * @param payload
      * @param run the build.
      */
-    public synchronized void removed(@Nonnull final WebHookPayload payload, Run<?, ?> run) {
+    public synchronized void removed(@Nonnull final PushNotification payload, Run<?, ?> run) {
         try {
             TriggerEntry entry = getEntry(payload.sha());
             if (entry != null) {
@@ -118,10 +120,10 @@ public final class TriggerStore extends Descriptor<TriggerStore>
     }
 
     @Nonnull
-    private synchronized TriggerEntry getOrCreateEntry(@Nonnull final WebHookPayload payload) throws IOException, InterruptedException {
-        Fingerprint fingerprint = jenkins.getFingerprintMap().getOrCreate(null, payload.getRepoName(), payload.sha());
+    private synchronized TriggerEntry getOrCreateEntry(@Nonnull final PushNotification pushNotification) throws IOException, InterruptedException {
+        Fingerprint fingerprint = jenkins.getFingerprintMap().getOrCreate(null, pushNotification.getRepoName(), pushNotification.sha());
         TriggerEntry entry = fingerprint.getFacet(TriggerEntry.class);
-        if (entry==null)    fingerprint.getFacets().add(entry=new TriggerEntry(fingerprint,payload));
+        if (entry==null)    fingerprint.getFacets().add(entry=new TriggerEntry(fingerprint,pushNotification));
         return entry;
     }
 
@@ -205,15 +207,15 @@ public final class TriggerStore extends Descriptor<TriggerStore>
 
     public static class TriggerEntry extends FingerprintFacet {
         @Nonnull
-        private final WebHookPayload payload;
+        private final PushNotification pushNotification;
         @Nonnull
         private final List<RunEntry> entries;
         @CheckForNull
-        private CallbackPayload callbackData;
+        private DockerHubCallbackPayload callbackData;
 
-        public TriggerEntry(Fingerprint fingerprint, @Nonnull WebHookPayload payload) {
-            super(fingerprint, payload.getReceived());
-            this.payload = payload;
+        public TriggerEntry(Fingerprint fingerprint, @Nonnull PushNotification pushNotification) {
+            super(fingerprint, pushNotification.getReceived());
+            this.pushNotification = pushNotification;
             entries = new LinkedList<RunEntry>();
         }
 
@@ -252,8 +254,8 @@ public final class TriggerStore extends Descriptor<TriggerStore>
         }
 
         @Nonnull
-        public WebHookPayload getPayload() {
-            return payload;
+        public PushNotification getPushNotification() {
+            return pushNotification;
         }
 
         @Nonnull
@@ -262,11 +264,11 @@ public final class TriggerStore extends Descriptor<TriggerStore>
         }
 
         @CheckForNull
-        public CallbackPayload getCallbackData() {
+        public DockerHubCallbackPayload getCallbackData() {
             return callbackData;
         }
 
-        public void setCallbackData(@CheckForNull CallbackPayload callbackData) {
+        public void setCallbackData(@CheckForNull DockerHubCallbackPayload callbackData) {
             this.callbackData = callbackData;
         }
 

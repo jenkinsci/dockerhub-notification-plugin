@@ -30,8 +30,8 @@ def l = namespace(lib.LayoutTagLib)
 def st = namespace("jelly:stapler")
 
 TriggerStore.TriggerEntry data = my.data
-String repoName = data != null ? data.payload.repoName : "<unknown>"
-Date timestamp = data?.payload?.pushedAt;
+String repoName = data != null ? data.pushNotification.repoName : "<unknown>"
+Date timestamp = data?.pushNotification?.pushedAt;
 
 
 l.layout(title: _("title", repoName, timestamp), norefresh: true, permission: Jenkins.READ) {

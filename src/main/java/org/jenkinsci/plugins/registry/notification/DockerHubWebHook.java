@@ -23,6 +23,9 @@
  */
 package org.jenkinsci.plugins.registry.notification;
 
+import hudson.Main;
+import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
+import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubPushNotification;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubWebHookPayload;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
 import hudson.Extension;
@@ -66,7 +69,36 @@ public class DockerHubWebHook extends JSONWebHook {
             hookPayload = parse(request);
         }
         if (hookPayload != null) {
-            trigger(response, hookPayload);
+            hookPayload.getPushNotifications();
+            for (PushNotification pushNotification : hookPayload.getPushNotifications()) {
+                trigger(response, pushNotification);
+            }
+        }
+    }
+    private boolean isDebugMode() {
+        if (Main.isDevelopmentMode || Main.isUnitTest) {
+            return true;
+        } else if (System.getProperty("hudson.hpi.run") != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Helper for development without Dockerub integration.
+     *
+     * @param image    the docker image to trigger
+     * @param response to send a redirect to
+     * @throws IOException if so
+     */
+    public void doDebug(@QueryParameter(required = true) String image, StaplerResponse response) throws IOException {
+        if (!isDebugMode()) {
+            throw new IllegalStateException("This endpoint can only be used during development!");
+        }
+        DockerHubWebHookPayload dockerHubWebHookPayload = new DockerHubWebHookPayload(image);
+        for (PushNotification pushNotification : dockerHubWebHookPayload.getPushNotifications()) {
+            trigger(response, pushNotification); //TODO pre-filled json data when needed.
         }
     }
 
