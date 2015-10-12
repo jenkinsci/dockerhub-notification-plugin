@@ -1,19 +1,24 @@
 package org.jenkinsci.plugins.registry.notification.webhook.dockerregistry;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
-import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubPushNotification;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
  * Created by lguminski on 07/10/15.
  */
 public class DockerRegistryWebHookPayload extends WebHookPayload {
-
-    private Date pushedAt = null;
 
     public DockerRegistryWebHookPayload(@Nonnull String repoName, final @CheckForNull JSONObject data) {
         super();
@@ -36,31 +41,34 @@ public class DockerRegistryWebHookPayload extends WebHookPayload {
         if (data != null) {
             setJson(data.toString());
         }
-        JSONObject repository = data.getJSONObject("repository");
-        this.pushNotifications.add(createPushNotification(repository.getString("repo_name"), data));
+        JSONArray events = data.getJSONArray("events");
+
+        for (int i = 0, size = events.size(); i < size; i++) {
+            JSONObject event = events.getJSONObject(i);
+            String separator = "/";
+            final String[] urlSegments = event.getJSONObject("target").optString("url").split(separator);
+            StringBuffer sb = new StringBuffer();
+            sb.append(urlSegments[2]);
+            sb.append(separator);
+            sb.append(event.getJSONObject("target").optString("repository"));
+            String repository = sb.toString();
+            pushNotifications.add(createPushNotification(repository, event));
+        }
+
     }
 
     private DockerRegistryPushNotification createPushNotification(@Nonnull final String repoName, @CheckForNull final JSONObject data) {
         return new DockerRegistryPushNotification(this, repoName){{
-            if(data != null) {
-                setCallbackUrl(data.optString("callback_url"));
-                JSONObject push_data = data.optJSONObject("push_data");
-                if (push_data != null) {
-                    try {
-                        long pushed_at = push_data.optLong("pushed_at");
-                        if (pushed_at > 0) {
-                            setPushedAt(new Date(pushed_at * 1000));
-                        }
-                    } catch (Exception e) {
-                        // ignore
-                    }
-                }
-            }
+            DateTimeFormatter parser = ISODateTimeFormat.dateTimeParser();
+            String timestamp = data.optString("timestamp");
+            setPushedAt(parser.parseDateTime(timestamp).toDate());
+            setRegistryHost(data.getJSONObject("request").optString("host"));
         }};
     }
 
     public DockerRegistryWebHookPayload(@Nonnull String repoName) {
         this(repoName, null);
     }
+
 
 }

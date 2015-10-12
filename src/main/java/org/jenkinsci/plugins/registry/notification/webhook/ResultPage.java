@@ -23,9 +23,9 @@
  */
 package org.jenkinsci.plugins.registry.notification.webhook;
 
+import hudson.model.ModelObject;
 import org.jenkinsci.plugins.registry.notification.Messages;
 import org.jenkinsci.plugins.registry.notification.TriggerStore;
-import hudson.model.ModelObject;
 
 import javax.annotation.CheckForNull;
 

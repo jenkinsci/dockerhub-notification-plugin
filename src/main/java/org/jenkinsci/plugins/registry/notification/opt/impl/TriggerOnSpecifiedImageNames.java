@@ -23,23 +23,19 @@
  */
 package org.jenkinsci.plugins.registry.notification.opt.impl;
 
-import org.jenkinsci.plugins.registry.notification.opt.TriggerOptionDescriptor;
-import org.jenkinsci.plugins.registry.notification.Messages;
-import org.jenkinsci.plugins.registry.notification.opt.TriggerOption;
 import hudson.Extension;
 import hudson.model.Job;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
+import org.jenkinsci.plugins.registry.notification.Messages;
+import org.jenkinsci.plugins.registry.notification.opt.TriggerOption;
+import org.jenkinsci.plugins.registry.notification.opt.TriggerOptionDescriptor;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.StaplerRequest;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * {@link TriggerOption} with manually specified names.

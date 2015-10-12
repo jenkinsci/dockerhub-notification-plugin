@@ -21,20 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jenkinsci.plugins.registry.notification;
+package org.jenkinsci.plugins.registry.notification.webhook.dockerregistry;
 
-import hudson.Main;
-import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
-import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubPushNotification;
-import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubWebHookPayload;
-import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
 import hudson.Extension;
+import hudson.Main;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
+import org.jenkinsci.plugins.registry.notification.webhook.JSONWebHook;
+import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
+import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.interceptor.RequirePOST;
+import org.kohsuke.stapler.interceptor.RespondSuccess;
 
 import java.io.IOException;
 import java.net.URLDecoder;
@@ -46,22 +46,23 @@ import java.util.logging.Logger;
  * See <a href="http://docs.docker.io/docker-hub/repos/#webhooks">Reference</a>
  */
 @Extension
-public class DockerHubWebHook extends JSONWebHook {
-    private static final Logger logger = Logger.getLogger(DockerHubWebHook.class.getName());
+public class DockerRegistryWebHook extends JSONWebHook {
+    private static final Logger logger = Logger.getLogger(DockerRegistryWebHook.class.getName());
 
     /**
      * The namespace under Jenkins context path that this Action is bound to.
      */
-    public static final String URL_NAME = "dockerhub-webhook";
+    public static final String URL_NAME = "dockerregistry-webhook";
 
     @Override
     @RequirePOST
+    @RespondSuccess
     public void doNotify(@QueryParameter(required = false) String payload, StaplerRequest request, StaplerResponse response) throws IOException {
 
         WebHookPayload hookPayload = null;
         if (payload != null) {
             try {
-                hookPayload = new DockerHubWebHookPayload(JSONObject.fromObject(payload));
+                hookPayload = new DockerRegistryWebHookPayload(JSONObject.fromObject(payload));
             } catch (Exception e) {
                 logger.log(Level.SEVERE, "Could not parse the web hook payload!", e);
             }
@@ -71,7 +72,11 @@ public class DockerHubWebHook extends JSONWebHook {
         if (hookPayload != null) {
             hookPayload.getPushNotifications();
             for (PushNotification pushNotification : hookPayload.getPushNotifications()) {
-                trigger(response, pushNotification);
+                try {
+                    trigger(response, pushNotification);
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, "Could not trigger a job!", e);
+                }
             }
         }
     }
@@ -96,8 +101,8 @@ public class DockerHubWebHook extends JSONWebHook {
         if (!isDebugMode()) {
             throw new IllegalStateException("This endpoint can only be used during development!");
         }
-        DockerHubWebHookPayload dockerHubWebHookPayload = new DockerHubWebHookPayload(image);
-        for (PushNotification pushNotification : dockerHubWebHookPayload.getPushNotifications()) {
+        DockerRegistryWebHookPayload DockerRegistryWebHookPayload = new DockerRegistryWebHookPayload(image);
+        for (PushNotification pushNotification : DockerRegistryWebHookPayload.getPushNotifications()) {
             trigger(response, pushNotification); //TODO pre-filled json data when needed.
         }
     }
@@ -112,11 +117,14 @@ public class DockerHubWebHook extends JSONWebHook {
         logger.log(Level.FINER, "Received commit hook notification : {0}", body);
         try {
             JSONObject payload = JSONObject.fromObject(body);
-            return new DockerHubWebHookPayload(payload);
+            return new DockerRegistryWebHookPayload(payload);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Could not parse the web hook payload!", e);
             return null;
         }
     }
 
+    public String getUrlName() {
+        return URL_NAME;
+    }
 }

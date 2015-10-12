@@ -30,7 +30,8 @@ import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.model.listeners.RunListener;
 import jenkins.model.Jenkins;
-import org.jenkinsci.plugins.registry.notification.webhook.*;
+import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
+import org.jenkinsci.plugins.registry.notification.webhook.WebHookCause;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubCallbackPayload;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubWebHookCause;
 
@@ -78,7 +79,7 @@ public class Coordinator extends RunListener<Run<?, ?>> {
                     }
                 }
             } else {
-                logger.log(Level.SEVERE, "Failed to do final evaluation of builds for cause [{0}]", cause);
+                logger.log(Level.INFO, "Failed to do final evaluation of builds for cause [{0}]", cause);
             }
         }
     }

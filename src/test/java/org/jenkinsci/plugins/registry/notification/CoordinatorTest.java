@@ -24,13 +24,14 @@
 package org.jenkinsci.plugins.registry.notification;
 
 
-import org.jenkinsci.plugins.registry.notification.opt.impl.TriggerOnSpecifiedImageNames;
-import org.jenkinsci.plugins.registry.notification.webhook.Http;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
 import hudson.model.UnprotectedRootAction;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
+import org.jenkinsci.plugins.registry.notification.opt.impl.TriggerOnSpecifiedImageNames;
+import org.jenkinsci.plugins.registry.notification.webhook.Http;
+import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubWebHook;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
@@ -42,11 +43,11 @@ import org.kohsuke.stapler.StaplerResponse;
 import java.io.IOException;
 import java.util.Arrays;
 
-import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
+import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.hamcrest.core.AllOf.allOf;
-import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
 import static org.hamcrest.core.IsSame.sameInstance;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.*;
@@ -74,7 +75,7 @@ public class CoordinatorTest {
         JSONObject json = JSONObject.fromObject(IOUtils.toString(getClass().getResourceAsStream("/own-repository-payload.json")));
         json.put("callback_url", j.getURL() + "fake-dockerhub/respond");
 
-        String url = j.getURL() + DockerRegistryWebHook.URL_NAME + "/notify";
+        String url = j.getURL() + DockerHubWebHook.URL_NAME + "/notify";
         assertEquals(302, Http.post(url, json));
         synchronized (resp) {
             resp.wait();
@@ -137,41 +138,6 @@ public class CoordinatorTest {
                 )
         ));
     }
-
-
-    @Test
-    public void testOneTriggered2() throws Exception {
-        j.jenkins.setCrumbIssuer(null);
-        FreeStyleProject one = j.createFreeStyleProject();
-        one.addTrigger(new DockerHubTrigger(new TriggerOnSpecifiedImageNames(Arrays.asList("jplock/zookeeper"))));
-        one.getBuildersList().add(new MockBuilder(Result.SUCCESS));
-
-        JSONObject json = JSONObject.fromObject(IOUtils.toString(getClass().getResourceAsStream("/private-registry-payload.json")));
-
-        String url = j.getURL() + DockerRegistryWebHook.URL_NAME + "/notify";
-        assertEquals(200, Http.post(url, json));
-        synchronized (resp) {
-            resp.wait();
-        }
-        JSONObject callback = resp.json;
-        assertNotNull(callback);
-        assertEquals("success", callback.getString("state"));
-        String target_url = callback.getString("target_url");
-        assertNull(target_url);
-        String sha = target_url.substring(target_url.lastIndexOf('/')+1);
-        TriggerStore.TriggerEntry entry = TriggerStore.getInstance().getEntry(sha);
-        assertNotNull(entry);
-        assertThat(entry.getEntries(), allOf(
-                hasSize(1),
-                contains(
-                        allOf(
-                                hasProperty("job", sameInstance(one)),
-                                hasProperty("run", sameInstance(one.getLastBuild()))
-                        )
-                )
-        ));
-    }
-
 
     @TestExtension
     public static class CallbackEndpoint implements UnprotectedRootAction {

@@ -65,7 +65,7 @@ public class DockerHubPushNotification extends PushNotification {
     }
 
     @CheckForNull
-    public String getCallbackHost() {
+    public String getRegistryHost() {
         String urlS = getCallbackUrl();
         if (urlS != null) {
             try {
@@ -98,7 +98,7 @@ public class DockerHubPushNotification extends PushNotification {
     public Set<ParameterValue> getJobParamerers() {
         Set<ParameterValue> parameters = new HashSet<ParameterValue>();
         parameters.add(new StringParameterValue(KEY_REPO_NAME, getRepoName()));
-        String host = getCallbackHost();
+        String host = getRegistryHost();
         if (!StringUtils.isBlank(host)) {
             parameters.add(new StringParameterValue(KEY_DOCKER_HUB_HOST, host));
         }
@@ -107,7 +107,7 @@ public class DockerHubPushNotification extends PushNotification {
 
     @Override
     public String getCauseMessage() {
-        return "Docker image " + getRepoName() + " has been rebuilt by DockerHub@" + getCallbackHost();
+        return "Docker image " + getRepoName() + " has been rebuilt by DockerHub@" + getRegistryHost();
     }
 
     public String sha() {
@@ -116,7 +116,7 @@ public class DockerHubPushNotification extends PushNotification {
 
     @Override
     public String getShortDescription() {
-        return String.format("Triggered by push of %s to DockerHub@%s", getRepoName(), getCallbackHost());
+        return String.format("Triggered by push of %s to DockerHub@%s", getRepoName(), getRegistryHost());
 
     }
 

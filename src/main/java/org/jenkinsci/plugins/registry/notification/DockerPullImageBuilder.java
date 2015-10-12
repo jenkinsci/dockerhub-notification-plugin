@@ -25,27 +25,20 @@ package org.jenkinsci.plugins.registry.notification;
 
 import hudson.Extension;
 import hudson.Launcher;
-import hudson.model.Build;
-import hudson.model.BuildListener;
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
-import hudson.model.Job;
-import hudson.model.Project;
+import hudson.model.*;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
+import org.jenkinsci.plugins.docker.commons.DockerImageExtractor;
+import org.jenkinsci.plugins.docker.commons.credentials.DockerRegistryEndpoint;
+import org.jenkinsci.plugins.docker.commons.credentials.KeyMaterial;
+import org.kohsuke.stapler.DataBoundConstructor;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.jenkinsci.plugins.docker.commons.DockerImageExtractor;
-import org.jenkinsci.plugins.docker.commons.credentials.KeyMaterial;
-import org.jenkinsci.plugins.docker.commons.credentials.DockerRegistryEndpoint;
-import org.kohsuke.stapler.DataBoundConstructor;
-
-import javax.annotation.Nonnull;
 
 /**
  * Pull and Run specified Docker image

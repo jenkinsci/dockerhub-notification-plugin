@@ -32,11 +32,8 @@ import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
 
 import javax.annotation.CheckForNull;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -49,6 +46,7 @@ public class DockerRegistryPushNotification extends PushNotification {
     public static final String KEY_DOCKER_HUB_HOST = WebHookPayload.PREFIX + "DOCKER_HUB_HOST";
     private static final Logger logger = Logger.getLogger(DockerRegistryPushNotification.class.getName());
     private String callbackUrl;
+    private String registryHost;
 
     public DockerRegistryPushNotification(DockerRegistryWebHookPayload webHookPayload, String repoName) {
         super(webHookPayload);
@@ -56,26 +54,12 @@ public class DockerRegistryPushNotification extends PushNotification {
     }
 
     @CheckForNull
-    public String getCallbackUrl() {
-        return this.callbackUrl;
+    public String getRegistryHost() {
+        return registryHost;
     }
 
-    public void setCallbackUrl(String callbackUrl) {
-        this.callbackUrl = callbackUrl;
-    }
-
-    @CheckForNull
-    public String getCallbackHost() {
-        String urlS = getCallbackUrl();
-        if (urlS != null) {
-            try {
-                URL url = new URL(urlS);
-                return url.getHost();
-            } catch (MalformedURLException e) {
-                logger.log(Level.WARNING, "DockerRegistry is sending malformed data. ", e);
-            }
-        }
-        return null;
+    public void setRegistryHost(String registryHost) {
+        this.registryHost = registryHost;
     }
 
     @Override
@@ -98,7 +82,7 @@ public class DockerRegistryPushNotification extends PushNotification {
     public Set<ParameterValue> getJobParamerers() {
         Set<ParameterValue> parameters = new HashSet<ParameterValue>();
         parameters.add(new StringParameterValue(KEY_REPO_NAME, getRepoName()));
-        String host = getCallbackHost();
+        String host = getRegistryHost();
         if (!StringUtils.isBlank(host)) {
             parameters.add(new StringParameterValue(KEY_DOCKER_HUB_HOST, host));
         }
@@ -107,7 +91,7 @@ public class DockerRegistryPushNotification extends PushNotification {
 
     @Override
     public String getCauseMessage() {
-        return "Docker image " + getRepoName() + " has been rebuilt by DockerRegistry@" + getCallbackHost();
+        return "Docker image " + getRepoName() + " has been rebuilt by DockerRegistry@" + getRegistryHost();
     }
 
     public String sha() {
@@ -116,7 +100,7 @@ public class DockerRegistryPushNotification extends PushNotification {
 
     @Override
     public String getShortDescription() {
-        return String.format("Triggered by push of %s to DockerRegistry@%s", getRepoName(), getCallbackHost());
+        return String.format("Triggered by push of %s to DockerRegistry@%s", getRepoName(), getRegistryHost());
 
     }
 

@@ -23,23 +23,17 @@
  */
 package org.jenkinsci.plugins.registry.notification;
 
-import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubCallbackPayload;
-import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
-import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
 import hudson.Extension;
 import hudson.init.InitMilestone;
-import hudson.model.Describable;
-import hudson.model.Descriptor;
-import hudson.model.Fingerprint;
-import hudson.model.Item;
-import hudson.model.Job;
-import hudson.model.Run;
+import hudson.model.*;
 import hudson.security.ACL;
 import jenkins.model.FingerprintFacet;
 import jenkins.model.Jenkins;
 import org.acegisecurity.context.SecurityContext;
 import org.acegisecurity.context.SecurityContextHolder;
 import org.apache.commons.lang.StringUtils;
+import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
+import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubCallbackPayload;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -130,7 +124,7 @@ public final class TriggerStore extends Descriptor<TriggerStore>
     /**
      * Gets an existing {@link TriggerEntry}, or null if no such thing exists.
      *
-     * @param sha the {@link WebHookPayload#sha()}.
+     * @param sha the {@link PushNotification#sha()}.
      * @return the entry if found.
      * @throws IOException          if so
      * @throws InterruptedException if so

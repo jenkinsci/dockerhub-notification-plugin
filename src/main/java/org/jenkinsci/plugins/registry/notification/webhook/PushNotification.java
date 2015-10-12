@@ -69,4 +69,6 @@ public abstract class PushNotification {
     public void setCallbackHandler(CallbackHandler callbackHandler) {
         this.callbackHandler = callbackHandler;
     }
+
+    abstract public String getRegistryHost();
 }

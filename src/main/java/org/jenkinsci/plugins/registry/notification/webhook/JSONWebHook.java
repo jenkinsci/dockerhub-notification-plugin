@@ -1,15 +1,13 @@
-package org.jenkinsci.plugins.registry.notification;
+package org.jenkinsci.plugins.registry.notification.webhook;
 
-import hudson.Main;
 import hudson.model.*;
 import hudson.model.Queue;
 import hudson.security.ACL;
 import jenkins.model.Jenkins;
 import jenkins.model.ParameterizedJobMixIn;
-import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
-import org.jenkinsci.plugins.registry.notification.webhook.ResultPage;
-import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubWebHookPayload;
-import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
+import org.jenkinsci.plugins.registry.notification.Coordinator;
+import org.jenkinsci.plugins.registry.notification.DockerHubTrigger;
+import org.jenkinsci.plugins.registry.notification.TriggerStore;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -32,10 +30,6 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
 
     public String getDisplayName() {
         return "DockerHub web hook";
-    }
-
-    public String getUrlName() {
-        return DockerHubWebHook.URL_NAME;
     }
 
     abstract public void doNotify(@QueryParameter(required = false) String payload, StaplerRequest request, StaplerResponse response) throws IOException;
@@ -76,7 +70,6 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
                 }
             }
         });
-        response.sendRedirect("../");
     }
 
     private void schedule(@Nonnull final Job job, @Nonnull final PushNotification pushNotification) {

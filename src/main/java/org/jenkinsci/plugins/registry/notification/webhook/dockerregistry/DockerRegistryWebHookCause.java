@@ -24,8 +24,8 @@
 package org.jenkinsci.plugins.registry.notification.webhook.dockerregistry;
 
 
-import org.jenkinsci.plugins.registry.notification.DockerHubWebHook;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookCause;
+import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubWebHook;
 
 import javax.annotation.Nonnull;
 

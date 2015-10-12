@@ -23,8 +23,6 @@
  */
 package org.jenkinsci.plugins.registry.notification;
 
-import org.jenkinsci.plugins.registry.notification.opt.TriggerOptionDescriptor;
-import org.jenkinsci.plugins.registry.notification.opt.TriggerOption;
 import hudson.Extension;
 import hudson.model.Item;
 import hudson.model.Job;
@@ -34,19 +32,16 @@ import hudson.util.DescribableList;
 import jenkins.model.Jenkins;
 import jenkins.model.ParameterizedJobMixIn;
 import net.sf.json.JSONObject;
+import org.jenkinsci.plugins.registry.notification.opt.TriggerOption;
+import org.jenkinsci.plugins.registry.notification.opt.TriggerOptionDescriptor;
+import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubWebHook;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.StaplerRequest;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * The trigger configuration. The actual trigger logic is in {@link DockerHubWebHook}.

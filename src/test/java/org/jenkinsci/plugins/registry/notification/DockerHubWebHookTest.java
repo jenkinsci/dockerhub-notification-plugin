@@ -44,9 +44,7 @@ public class DockerHubWebHookTest {
         project.getBuildersList().add(new MockBuilder(Result.SUCCESS));
         j.createWebClient().goTo("dockerhub-webhook/debug?image=" + repoName);
 
-        while(project.getBuilds().isEmpty()) {
-            Thread.sleep(500);
-        }
+        j.waitUntilNoActivity();
 
         j.assertLogContains(repoName, project.getLastBuild());
     }

@@ -23,12 +23,12 @@
  */
 package org.jenkinsci.plugins.registry.notification;
 
-import org.jenkinsci.plugins.registry.notification.opt.impl.TriggerOnSpecifiedImageNames;
-import org.jenkinsci.plugins.registry.notification.opt.TriggerOption;
 import hudson.Extension;
 import hudson.model.Job;
 import jenkins.model.ParameterizedJobMixIn;
 import org.jenkinsci.plugins.docker.commons.DockerImageExtractor;
+import org.jenkinsci.plugins.registry.notification.opt.TriggerOption;
+import org.jenkinsci.plugins.registry.notification.opt.impl.TriggerOnSpecifiedImageNames;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;

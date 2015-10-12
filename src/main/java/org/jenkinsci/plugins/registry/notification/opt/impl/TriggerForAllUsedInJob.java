@@ -23,13 +23,13 @@
  */
 package org.jenkinsci.plugins.registry.notification.opt.impl;
 
-import org.jenkinsci.plugins.registry.notification.Messages;
-import org.jenkinsci.plugins.registry.notification.opt.TriggerOption;
-import org.jenkinsci.plugins.registry.notification.opt.TriggerOptionDescriptor;
 import hudson.Extension;
 import hudson.model.Job;
 import jenkins.model.Jenkins;
 import org.jenkinsci.plugins.docker.commons.DockerImageExtractor;
+import org.jenkinsci.plugins.registry.notification.Messages;
+import org.jenkinsci.plugins.registry.notification.opt.TriggerOption;
+import org.jenkinsci.plugins.registry.notification.opt.TriggerOptionDescriptor;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import javax.annotation.CheckForNull;

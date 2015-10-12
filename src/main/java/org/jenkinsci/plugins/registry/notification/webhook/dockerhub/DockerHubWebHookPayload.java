@@ -4,10 +4,7 @@ import hudson.model.Run;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.registry.notification.TriggerStore;
-import org.jenkinsci.plugins.registry.notification.webhook.CallbackHandler;
-import org.jenkinsci.plugins.registry.notification.webhook.Http;
-import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
-import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
+import org.jenkinsci.plugins.registry.notification.webhook.*;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;

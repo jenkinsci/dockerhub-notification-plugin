@@ -23,14 +23,12 @@
  */
 package org.jenkinsci.plugins.registry.notification.webhook.dockerhub;
 
-import org.jenkinsci.plugins.registry.notification.DockerHubWebHook;
-import org.jenkinsci.plugins.registry.notification.TriggerStore;
 import hudson.model.Result;
 import hudson.model.Run;
 import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
+import org.jenkinsci.plugins.registry.notification.TriggerStore;
 import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
-import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
