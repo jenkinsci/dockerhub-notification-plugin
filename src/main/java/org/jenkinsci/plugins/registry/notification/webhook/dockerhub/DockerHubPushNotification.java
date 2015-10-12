@@ -79,17 +79,6 @@ public class DockerHubPushNotification extends PushNotification {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof DockerHubPushNotification)) return false;
-
-        DockerHubPushNotification that = (DockerHubPushNotification)o;
-
-        if (!getRepoName().equals(that.repoName)) return false;
-        return getWebHookPayload().equals(that.getWebHookPayload());
-    }
-
-    @Override
     public Cause getCause() {
         return new DockerHubWebHookCause(this);
     }

@@ -26,18 +26,13 @@ package org.jenkinsci.plugins.registry.notification.webhook.dockerhub;
 import hudson.Extension;
 import hudson.Main;
 import net.sf.json.JSONObject;
-import org.apache.commons.io.IOUtils;
 import org.jenkinsci.plugins.registry.notification.webhook.JSONWebHook;
 import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
 import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
-import org.kohsuke.stapler.interceptor.RequirePOST;
 
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -53,27 +48,6 @@ public class DockerHubWebHook extends JSONWebHook {
      */
     public static final String URL_NAME = "dockerhub-webhook";
 
-    @Override
-    @RequirePOST
-    public void doNotify(@QueryParameter(required = false) String payload, StaplerRequest request, StaplerResponse response) throws IOException {
-
-        WebHookPayload hookPayload = null;
-        if (payload != null) {
-            try {
-                hookPayload = new DockerHubWebHookPayload(JSONObject.fromObject(payload));
-            } catch (Exception e) {
-                logger.log(Level.SEVERE, "Could not parse the web hook payload!", e);
-            }
-        } else {
-            hookPayload = parse(request);
-        }
-        if (hookPayload != null) {
-            hookPayload.getPushNotifications();
-            for (PushNotification pushNotification : hookPayload.getPushNotifications()) {
-                trigger(response, pushNotification);
-            }
-        }
-    }
     private boolean isDebugMode() {
         if (Main.isDevelopmentMode || Main.isUnitTest) {
             return true;
@@ -101,27 +75,15 @@ public class DockerHubWebHook extends JSONWebHook {
         }
     }
 
-    private WebHookPayload parse(StaplerRequest req) throws IOException {
-        //TODO Actually test what duckerhub is really sending
-        String body = IOUtils.toString(req.getInputStream(), req.getCharacterEncoding());
-        String contentType = req.getContentType();
-        if (contentType != null && contentType.startsWith("application/x-www-form-urlencoded")) {
-            body = URLDecoder.decode(body, req.getCharacterEncoding());
-        }
-        logger.log(Level.FINER, "Received commit hook notification : {0}", body);
-        try {
-            JSONObject payload = JSONObject.fromObject(body);
-            return new DockerHubWebHookPayload(payload);
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "Could not parse the web hook payload!", e);
-            return null;
-        }
-    }
-
     @Override
     protected void trigger(StaplerResponse response, PushNotification pushNotification) throws IOException {
         super.trigger(response, pushNotification);
         response.sendRedirect("../");
+    }
+
+    @Override
+    protected WebHookPayload createPushNotification(JSONObject payload) {
+        return new DockerHubWebHookPayload(payload);
     }
 
     public String getUrlName() {

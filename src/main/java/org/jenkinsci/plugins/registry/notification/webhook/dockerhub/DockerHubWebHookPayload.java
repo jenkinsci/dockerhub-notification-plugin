@@ -4,7 +4,10 @@ import hudson.model.Run;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.registry.notification.TriggerStore;
-import org.jenkinsci.plugins.registry.notification.webhook.*;
+import org.jenkinsci.plugins.registry.notification.webhook.CallbackHandler;
+import org.jenkinsci.plugins.registry.notification.webhook.Http;
+import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
+import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -14,9 +17,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Created by lguminski on 07/10/15.
- */
 public class DockerHubWebHookPayload extends WebHookPayload {
     private static final Logger logger = Logger.getLogger(DockerHubWebHookPayload.class.getName());
 

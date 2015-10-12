@@ -50,8 +50,8 @@ import static org.hamcrest.core.AllOf.allOf;
 import static org.junit.Assert.*;
 
 /**
- * Tests scenarios involving {@link Coordinator}.
- * @author Robert Sandell &lt;rsandell@cloudbees.com&gt;.
+ * Testing Registry v2 webhook.
+ * @author Lukasz Guminski &lt;Lukasz.Guminski.Extern@holidaycheck.com&gt;.
  */
 public class RegistryWebHookTest {
     @Rule
@@ -77,7 +77,7 @@ public class RegistryWebHookTest {
     }
 
     @Test
-    public void testOneImagesPushedToRegistryOneProjectTriggeredMultipleTimesl() throws Exception {
+    public void testOneImagePushedToRegistryOneProjectTriggeredMultipleTimes() throws Exception {
         HashSet<String> repositories = new HashSet<String>() {{
             add("localhost:5000/jplock/zookeeper");
         }};
@@ -118,15 +118,6 @@ public class RegistryWebHookTest {
         private Set<String> expectedCauses;
         private Integer hitCounter;
 
-        public void setExpectedCauses(Set<String> expectedCauses) {
-            this.expectedCauses = expectedCauses;
-        }
-
-        @Override
-        public void onStarted(Run<?, ?> run, TaskListener listener) {
-            super.onStarted(run, listener);
-        }
-
         @Override
         public void onFinalized(Run<?, ?> run) {
             super.onFinalized(run);
@@ -144,12 +135,16 @@ public class RegistryWebHookTest {
             return expectedCauses;
         }
 
-        public void setHitCounter(Integer hitCounter) {
-            this.hitCounter = hitCounter;
+        public void setExpectedCauses(Set<String> expectedCauses) {
+            this.expectedCauses = expectedCauses;
         }
 
         public Integer getHitCounter() {
             return hitCounter;
+        }
+
+        public void setHitCounter(Integer hitCounter) {
+            this.hitCounter = hitCounter;
         }
     }
 }

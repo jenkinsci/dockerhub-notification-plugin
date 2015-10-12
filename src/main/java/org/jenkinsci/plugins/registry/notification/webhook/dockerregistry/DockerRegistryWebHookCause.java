@@ -1,7 +1,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2015, CloudBees, Inc.
+ * Copyright (c) 2015, HolidayCheck AG.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,17 +25,16 @@ package org.jenkinsci.plugins.registry.notification.webhook.dockerregistry;
 
 
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookCause;
-import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubWebHook;
 
 import javax.annotation.Nonnull;
 
 /**
- * The build cause of {@link DockerHubWebHook}.
+ * The build cause of {@link DockerRegistryWebHook}.
  */
 public class DockerRegistryWebHookCause extends WebHookCause {
 
-    public DockerRegistryWebHookCause(@Nonnull DockerRegistryPushNotification dockerHubPushNotification) {
-        super(dockerHubPushNotification);
+    public DockerRegistryWebHookCause(@Nonnull DockerRegistryPushNotification dockerRegistryPushNotification) {
+        super(dockerRegistryPushNotification);
     }
 
     @Override
@@ -45,7 +44,7 @@ public class DockerRegistryWebHookCause extends WebHookCause {
 
     @Override
     public String toString() {
-        return "DockerHubWebHookCause{" +
+        return "DockerRegistryWebHookCause{" +
                 "payload=" + getPushNotification().getWebHookPayload() +
                 '}';
     }

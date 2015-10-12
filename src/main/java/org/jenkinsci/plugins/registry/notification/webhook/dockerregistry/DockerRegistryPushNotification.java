@@ -1,7 +1,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2015, CloudBees, Inc.
+ * Copyright (c) 2015, HolidayCheck AG.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,15 +37,14 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 /**
- * Received payload of data from the Docker Hub web hook.
- * See <a href="http://docs.docker.io/docker-hub/repos/#webhooks">Reference</a>
+ * Received notification from the Docker Registry web hook.
+ * See <a href="https://docs.docker.com/registry/notifications/">Reference</a>
  */
 public class DockerRegistryPushNotification extends PushNotification {
     private static final long serialVersionUID = 207798312860576090L;
-    public static final String KEY_REPO_NAME = WebHookPayload.PREFIX + "REPO_NAME";
-    public static final String KEY_DOCKER_HUB_HOST = WebHookPayload.PREFIX + "DOCKER_HUB_HOST";
     private static final Logger logger = Logger.getLogger(DockerRegistryPushNotification.class.getName());
-    private String callbackUrl;
+    public static final String KEY_REPO_NAME = WebHookPayload.PREFIX + "REPO_NAME";
+    public static final String KEY_DOCKER_REGISTRY_HOST = WebHookPayload.PREFIX + "DOCKER_REGISTRY_HOST";
     private String registryHost;
 
     public DockerRegistryPushNotification(DockerRegistryWebHookPayload webHookPayload, String repoName) {
@@ -63,17 +62,6 @@ public class DockerRegistryPushNotification extends PushNotification {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof DockerRegistryPushNotification)) return false;
-
-        DockerRegistryPushNotification that = (DockerRegistryPushNotification)o;
-
-        if (!getRepoName().equals(that.repoName)) return false;
-        return getWebHookPayload().equals(that.getWebHookPayload());
-    }
-
-    @Override
     public Cause getCause() {
         return new DockerRegistryWebHookCause(this);
     }
@@ -84,7 +72,7 @@ public class DockerRegistryPushNotification extends PushNotification {
         parameters.add(new StringParameterValue(KEY_REPO_NAME, getRepoName()));
         String host = getRegistryHost();
         if (!StringUtils.isBlank(host)) {
-            parameters.add(new StringParameterValue(KEY_DOCKER_HUB_HOST, host));
+            parameters.add(new StringParameterValue(KEY_DOCKER_REGISTRY_HOST, host));
         }
         return parameters;
     }

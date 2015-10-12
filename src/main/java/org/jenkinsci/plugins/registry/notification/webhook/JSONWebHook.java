@@ -1,3 +1,26 @@
+/**
+ * The MIT License
+ *
+ * Copyright (c) 2015, CloudBees, Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 package org.jenkinsci.plugins.registry.notification.webhook;
 
 import hudson.model.*;
@@ -5,22 +28,24 @@ import hudson.model.Queue;
 import hudson.security.ACL;
 import jenkins.model.Jenkins;
 import jenkins.model.ParameterizedJobMixIn;
+import net.sf.json.JSONObject;
+import org.apache.commons.io.IOUtils;
 import org.jenkinsci.plugins.registry.notification.Coordinator;
 import org.jenkinsci.plugins.registry.notification.DockerHubTrigger;
 import org.jenkinsci.plugins.registry.notification.TriggerStore;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.interceptor.RequirePOST;
+import org.kohsuke.stapler.interceptor.RespondSuccess;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Created by lguminski on 06/10/15.
- */
 public abstract class JSONWebHook implements UnprotectedRootAction {
     private static final Logger logger = Logger.getLogger(JSONWebHook.class.getName());
 
@@ -32,7 +57,31 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
         return "DockerHub web hook";
     }
 
-    abstract public void doNotify(@QueryParameter(required = false) String payload, StaplerRequest request, StaplerResponse response) throws IOException;
+    @RequirePOST
+    @RespondSuccess
+    public void doNotify(@QueryParameter(required = false) String payload, StaplerRequest request, StaplerResponse response) throws IOException {
+
+        WebHookPayload hookPayload = null;
+        if (payload != null) {
+            try {
+                hookPayload = createPushNotification(JSONObject.fromObject(payload));
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, "Could not parse the web hook payload!", e);
+            }
+        } else {
+            hookPayload = parse(request);
+        }
+        if (hookPayload != null) {
+            hookPayload.getPushNotifications();
+            for (PushNotification pushNotification : hookPayload.getPushNotifications()) {
+                try {
+                    trigger(response, pushNotification);
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, "Could not trigger a job!", e);
+                }
+            }
+        }
+    }
 
     /**
      * Stapler entry for the multi build result page
@@ -90,6 +139,25 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
      */
     public void doIndex(StaplerRequest request, StaplerResponse response) throws IOException {
         response.sendRedirect(request.getContextPath() + "/");
+    }
+
+    protected abstract WebHookPayload createPushNotification(JSONObject data);
+
+    private WebHookPayload parse(StaplerRequest req) throws IOException {
+        //TODO Actually test what duckerhub is really sending
+        String body = IOUtils.toString(req.getInputStream(), req.getCharacterEncoding());
+        String contentType = req.getContentType();
+        if (contentType != null && contentType.startsWith("application/x-www-form-urlencoded")) {
+            body = URLDecoder.decode(body, req.getCharacterEncoding());
+        }
+        logger.log(Level.FINER, "Received commit hook notification : {0}", body);
+        try {
+            JSONObject payload = JSONObject.fromObject(body);
+            return createPushNotification(payload);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Could not parse the web hook payload!", e);
+            return null;
+        }
     }
 
     /**
