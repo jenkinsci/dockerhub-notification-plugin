@@ -51,7 +51,6 @@ import static org.junit.Assert.*;
 
 /**
  * Testing Registry v2 webhook.
- * @author Lukasz Guminski &lt;Lukasz.Guminski.Extern@holidaycheck.com&gt;.
  */
 public class RegistryWebHookTest {
     @Rule
