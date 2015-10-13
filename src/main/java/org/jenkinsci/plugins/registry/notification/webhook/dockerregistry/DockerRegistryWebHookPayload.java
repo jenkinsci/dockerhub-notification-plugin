@@ -33,16 +33,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 public class DockerRegistryWebHookPayload extends WebHookPayload {
-
-    public DockerRegistryWebHookPayload(@Nonnull String repoName, final @CheckForNull JSONObject data) {
-        super();
-        setData(data);
-        if (data != null) {
-            setJson(data.toString());
-        }
-        this.pushNotifications.add(createPushNotification(repoName, data));
-    }
-
+    
     /**
      * Creates the object from the json payload
      *
