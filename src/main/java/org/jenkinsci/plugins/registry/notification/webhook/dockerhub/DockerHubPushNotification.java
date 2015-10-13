@@ -105,7 +105,7 @@ public class DockerHubPushNotification extends PushNotification {
 
     @Override
     public String getShortDescription() {
-        return String.format("Triggered by push of %s to DockerHub@%s", getRepoName(), getRegistryHost());
+        return String.format("push of %s to DockerHub@%s", getRepoName(), getRegistryHost());
 
     }
 

@@ -57,31 +57,30 @@ public class RegistryWebHookTest {
     public JenkinsRule j = new JenkinsRule();
 
     @Test
-    public void testTwoImagesPushedToRegistryTwoProjectsTriggered() throws Exception {
+    public void testTwoTriggered() throws Exception {
         HashSet<String> repositories = new HashSet<String>() {{
-            add("localhost:5000/jplock/zookeeper");
-            add("localhost:5000/ubuntu");
+            add("registry:5000/jplock/zookeeper");
+            add("registry:5000/ubuntu");
         }};
         createProjectsTriggeredByRepository(repositories);
         simulatePushNotification(2, "/private-registry-payload-2-repositories.json", repositories);
     }
 
     @Test
-    public void testTwoImagesPushedToRegistryOneProjectTriggered() throws Exception {
+    public void testOneTriggered() throws Exception {
         HashSet<String> repositories = new HashSet<String>() {{
-            add("localhost:5000/jplock/zookeeper");
+            add("registry:5000/jplock/zookeeper");
         }};
         createProjectsTriggeredByRepository(repositories);
         simulatePushNotification(1, "/private-registry-payload-2-repositories.json", repositories);
     }
 
     @Test
-    public void testOneImagePushedToRegistryOneProjectTriggeredMultipleTimes() throws Exception {
+    public void testOneTriggeredMultipleTimes() throws Exception {
         HashSet<String> repositories = new HashSet<String>() {{
-            add("localhost:5000/jplock/zookeeper");
+            add("registry:5000/jplock/zookeeper");
         }};
         createProjectsTriggeredByRepository(repositories);
-        simulatePushNotification(1, "/private-registry-payload-1-repository.json", repositories);
         simulatePushNotification(1, "/private-registry-payload-1-repository.json", repositories);
         simulatePushNotification(1, "/private-registry-payload-1-repository.json", repositories);
     }

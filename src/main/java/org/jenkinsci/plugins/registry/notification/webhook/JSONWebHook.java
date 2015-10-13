@@ -113,7 +113,9 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
                         continue;
                     }
                     logger.log(Level.FINER, "Inspecting candidate job {0}", p.getName());
-                    if (trigger.getAllRepoNames().contains(pushNotification.getRepoName())) {
+                    Set<String> allRepoNames = trigger.getAllRepoNames();
+                    String repoName = pushNotification.getRepoName();
+                    if (allRepoNames.contains(repoName)) {
                         schedule((Job) p, pushNotification);
                     }
                 }

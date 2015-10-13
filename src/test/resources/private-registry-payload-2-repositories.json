@@ -10,12 +10,12 @@
         "digest": "sha256:55d2be3e073109b6dfa68aa6ffbce9f5441ab8dd451834eaf0e81874a0b1b720",
         "length": 17680408,
         "repository": "jplock/zookeeper",
-        "url": "http://localhost:5000/v2/jplock/zookeeper/blobs/sha256:55d2be3e073109b6dfa68aa6ffbce9f5441ab8dd451834eaf0e81874a0b1b720"
+        "url": "http://registry:5000/v2/jplock/zookeeper/blobs/sha256:55d2be3e073109b6dfa68aa6ffbce9f5441ab8dd451834eaf0e81874a0b1b720"
       },
       "request": {
         "id": "d5af37fb-e766-43a1-81a2-ff6270d96ac8",
         "addr": "172.17.42.1:48845",
-        "host": "localhost:5000",
+        "host": "registry:5000",
         "method": "PUT",
         "useragent": "docker/1.7.0 go/go1.4.2 git-commit/0baf609 kernel/4.0.5-boot2docker os/linux arch/amd64"
       },
@@ -35,12 +35,12 @@
         "digest": "sha256:2dbe4abf311d67ec224f926d4b21b9be6f96dfba9be139e6936156a67b75a1ad",
         "length": 71478,
         "repository": "ubuntu",
-        "url": "http://localhost:5000/v2/ubuntu/blobs/sha256:2dbe4abf311d67ec224f926d4b21b9be6f96dfba9be139e6936156a67b75a1ad"
+        "url": "http://registry:5000/v2/ubuntu/blobs/sha256:2dbe4abf311d67ec224f926d4b21b9be6f96dfba9be139e6936156a67b75a1ad"
       },
       "request": {
         "id": "bd07c479-6ad8-4d80-b9cc-aaf9952e39d8",
         "addr": "172.17.42.1:41179",
-        "host": "localhost:5000",
+        "host": "registry:5000",
         "method": "PUT",
         "useragent": "docker/1.7.0 go/go1.4.2 git-commit/0baf609 kernel/4.0.5-boot2docker os/linux arch/amd64"
       },
