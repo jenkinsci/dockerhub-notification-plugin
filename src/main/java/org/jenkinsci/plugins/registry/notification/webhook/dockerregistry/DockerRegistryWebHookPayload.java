@@ -71,7 +71,7 @@ public class DockerRegistryWebHookPayload extends WebHookPayload {
 
     }
 
-    private DockerRegistryPushNotification createPushNotification(@Nonnull final String repoName, @CheckForNull final JSONObject data) {
+    private DockerRegistryPushNotification createPushNotification(@Nonnull final String repoName, @Nonnull final JSONObject data) {
         return new DockerRegistryPushNotification(this, repoName){{
             DateTimeFormatter parser = ISODateTimeFormat.dateTimeParser();
             String timestamp = data.optString("timestamp");
@@ -79,10 +79,4 @@ public class DockerRegistryWebHookPayload extends WebHookPayload {
             setRegistryHost(data.getJSONObject("request").optString("host"));
         }};
     }
-
-    public DockerRegistryWebHookPayload(@Nonnull String repoName) {
-        this(repoName, null);
-    }
-
-
 }

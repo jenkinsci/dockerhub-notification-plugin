@@ -67,15 +67,20 @@ public class DockerHubWebHookPayload extends WebHookPayload {
                 public void notify(PushNotification pushNotification, Run<?, ?> run) throws InterruptedException, ExecutionException, IOException {
                     final String callbackUrl = dockerHubPushNotification.getCallbackUrl();
                     TriggerStore.TriggerEntry entry = TriggerStore.getInstance().finalized(dockerHubPushNotification, run);
-                    DockerHubCallbackPayload callback = DockerHubCallbackPayload.from(entry);
-                    if (!StringUtils.isBlank(callbackUrl)) {
-                        logger.log(Level.FINE, "Sending callback to Docker Hub");
-                        logger.log(Level.FINER, "Callback: {0}", callback);
-                        int response = Http.post(callbackUrl, callback.toJSON());
-                        logger.log(Level.FINE, "Docker Hub returned {0}", response);
-                    } else {
-                        logger.log(Level.WARNING, "No callback URL specified in {0}", pushNotification);
+                    if(entry != null) {
+                        DockerHubCallbackPayload callback = DockerHubCallbackPayload.from(entry);
+                        if (callback != null) {
+                            if (!StringUtils.isBlank(callbackUrl)) {
+                                logger.log(Level.FINE, "Sending callback to Docker Hub");
+                                logger.log(Level.FINER, "Callback: {0}", callback);
+                                int response = Http.post(callbackUrl, callback.toJSON());
+                                logger.log(Level.FINE, "Docker Hub returned {0}", response);
+                                return;
+                            }
+                            logger.log(Level.WARNING, "No callback URL specified in {0}", pushNotification);
+                        }
                     }
+                    logger.log(Level.WARNING, "Failed to prepare Docker Hub callback payload for {0}", pushNotification);
                 }
             });
         }
