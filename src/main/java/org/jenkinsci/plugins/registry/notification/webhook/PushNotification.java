@@ -52,12 +52,23 @@ public abstract class PushNotification {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof DockerHubPushNotification)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        DockerHubPushNotification that = (DockerHubPushNotification)o;
+        PushNotification that = (PushNotification) o;
 
-        if (!getRepoName().equals(that.repoName)) return false;
-        return getWebHookPayload().equals(that.getWebHookPayload());
+        if (webHookPayload != null ? !webHookPayload.equals(that.webHookPayload) : that.webHookPayload != null)
+            return false;
+        if (repoName != null ? !repoName.equals(that.repoName) : that.repoName != null) return false;
+        return !(pushedAt != null ? !pushedAt.equals(that.pushedAt) : that.pushedAt != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = webHookPayload != null ? webHookPayload.hashCode() : 0;
+        result = 31 * result + (repoName != null ? repoName.hashCode() : 0);
+        result = 31 * result + (pushedAt != null ? pushedAt.hashCode() : 0);
+        return result;
     }
 
     abstract public Cause getCause();
@@ -77,11 +88,11 @@ public abstract class PushNotification {
 
     @CheckForNull
     public Date getPushedAt() {
-        return this.pushedAt;
+        return new Date(this.pushedAt.getTime());
     }
 
     public void setPushedAt(Date pushedAt) {
-        this.pushedAt = pushedAt;
+        this.pushedAt = new Date(pushedAt.getTime());
     }
 
     public WebHookPayload getWebHookPayload() {

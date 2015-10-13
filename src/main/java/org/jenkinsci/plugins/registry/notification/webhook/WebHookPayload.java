@@ -93,7 +93,7 @@ public abstract class WebHookPayload implements Serializable {
         return result;
     }
 
-    private Object readResolve() {
+    protected Object readResolve() {
         if (this.data == null && this.json != null) {
             this.data = JSONObject.fromObject(this.json);
         }

@@ -72,7 +72,6 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
             hookPayload = parse(request);
         }
         if (hookPayload != null) {
-            hookPayload.getPushNotifications();
             for (PushNotification pushNotification : hookPayload.getPushNotifications()) {
                 try {
                     trigger(response, pushNotification);
