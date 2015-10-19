@@ -51,11 +51,11 @@
     </scm>
 
     <licenses>
-           <license>
-                   <name>MIT</name>
-                   <url>http://opensource.org/licenses/MIT</url>
-                   <distribution>repo</distribution>
-           </license>
+        <license>
+            <name>MIT</name>
+            <url>http://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
     </licenses>
 
     <build>
@@ -63,15 +63,14 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>2.5.1</version>
+                <version>2.5.2</version>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
-                <version>3.0.1</version>
+                <version>3.0.2</version>
                 <configuration>
                     <xmlOutput>true</xmlOutput>
-                    <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
                     <failOnError>false</failOnError>
                 </configuration>
             </plugin>
