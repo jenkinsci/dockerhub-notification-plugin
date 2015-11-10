@@ -85,6 +85,25 @@ public class RegistryWebHookTest {
         simulatePushNotification(1, "/private-registry-payload-1-repository.json", repositories);
     }
 
+    @Test
+    public void testPullIgnore() throws Exception {
+        HashSet<String> repositories = new HashSet<String>() {{
+            add("registry:5000/jplock/zookeeper");
+        }};
+        createProjectsTriggeredByRepository(repositories);
+        simulatePushNotification(1, "/private-registry-payload-pull-1-repository.json", repositories);
+    }
+  
+    @Test
+    public void testBlobIgnore() throws Exception {
+        HashSet<String> repositories = new HashSet<String>() {{
+                add("registry:5000/jplock/zookeeper");
+            }};
+        createProjectsTriggeredByRepository(repositories);
+        simulatePushNotification(1, "/private-registry-payload-blob-1-repository.json", repositories);
+    }
+
+
     private void createProjectsTriggeredByRepository(Set<String> repositories) throws Exception {
         j.jenkins.setCrumbIssuer(null);
         for (final String repository : repositories) {

@@ -10,7 +10,7 @@
         "digest": "sha256:55d2be3e073109b6dfa68aa6ffbce9f5441ab8dd451834eaf0e81874a0b1b720",
         "length": 17680408,
         "repository": "jplock/zookeeper",
-        "url": "http://registry:5000/v2/jplock/zookeeper/blobs/sha256:55d2be3e073109b6dfa68aa6ffbce9f5441ab8dd451834eaf0e81874a0b1b720"
+        "url": "http://registry:5000/v2/jplock/zookeeper/manifests/sha256:55d2be3e073109b6dfa68aa6ffbce9f5441ab8dd451834eaf0e81874a0b1b720"
       },
       "request": {
         "id": "d5af37fb-e766-43a1-81a2-ff6270d96ac8",

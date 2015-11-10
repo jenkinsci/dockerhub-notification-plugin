@@ -31,8 +31,12 @@ import org.joda.time.format.ISODateTimeFormat;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 public class DockerRegistryWebHookPayload extends WebHookPayload {
+
+    private static final Logger logger = Logger.getLogger(DockerRegistryPushNotification.class.getName());
     
     /**
      * Creates the object from the json payload
@@ -59,7 +63,14 @@ public class DockerRegistryWebHookPayload extends WebHookPayload {
                 sb.append(separator);
                 sb.append(event.getJSONObject("target").optString("repository"));
                 String repository = sb.toString();
-                pushNotifications.add(createPushNotification(repository, event));
+                if (urlSegments[urlSegments.length - 2 ].equals("manifests")) {
+                    pushNotifications.add(createPushNotification(repository, event));
+                } else {
+                    logger.log(Level.FINER, "Skipping Layer Push notifications");
+
+                }
+            } else {
+                logger.log(Level.FINER, "Skipping pull notification" + event.getJSONObject("target").optString("repository"));
             }
         }
 
