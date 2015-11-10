@@ -51,8 +51,8 @@ public class DockerRegistryWebHookPayload extends WebHookPayload {
         for (int i = 0, size = events.size(); i < size; i++) {
             JSONObject event = events.getJSONObject(i);
             String separator = "/";
-            
-            if (event.optString("action") == "push") {
+
+            if ( event.optString("action").equals("push") ) {
                 final String[] urlSegments = event.getJSONObject("target").optString("url").split(separator);
                 StringBuffer sb = new StringBuffer();
                 sb.append(urlSegments[2]);
