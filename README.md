@@ -16,6 +16,15 @@ In your <a href="https://hub.docker.com/">hub.docker.com</a> repository, you can
 
 <img src="dockerhub.png">
 
+# Environment variables
+
+The following variables will be set in your build environment:
+
+* DOCKER_TRIGGER_REPO_NAME
+* DOCKER_TRIGGER_PUSHER
+* DOCKER_TRIGGER_TAG
+* DOCKER_TRIGGER_DOCKER_HUB_HOST
+
 # Examples
 
 Payloads submitted by the hub:
