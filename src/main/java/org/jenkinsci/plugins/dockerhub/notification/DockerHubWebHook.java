@@ -200,6 +200,8 @@ public class DockerHubWebHook implements UnprotectedRootAction {
     static class JobbMixIn<JobT extends Job<JobT, RunT> & ParameterizedJobMixIn.ParameterizedJob & Queue.Task, RunT extends Run<JobT, RunT> & Queue.Executable> extends ParameterizedJobMixIn<JobT, RunT> {
         public static final String PREFIX = "DOCKER_TRIGGER_";
         public static final String KEY_REPO_NAME = PREFIX + "REPO_NAME";
+        public static final String KEY_PUSHER = PREFIX + "PUSHER";
+        public static final String KEY_TAG = PREFIX + "TAG";
         public static final String KEY_DOCKER_HUB_HOST = PREFIX + "DOCKER_HUB_HOST";
         /**
          * Some breathing room to iterate through most/all of the jobs before the first triggered build starts.
@@ -248,12 +250,17 @@ public class DockerHubWebHook implements UnprotectedRootAction {
             if (isParameterized()) {
                 Collection<ParameterValue> defaults = getDefaultParametersValues();
                 for (ParameterValue value : defaults) {
-                    if (!value.getName().equalsIgnoreCase(KEY_REPO_NAME) && !value.getName().equalsIgnoreCase(KEY_DOCKER_HUB_HOST)) {
+                    if (!value.getName().equalsIgnoreCase(KEY_REPO_NAME)
+                        && !value.getName().equalsIgnoreCase(KEY_PUSHER)
+                        && !value.getName().equalsIgnoreCase(KEY_TAG)
+                        && !value.getName().equalsIgnoreCase(KEY_DOCKER_HUB_HOST)) {
                         parameters.add(value);
                     }
                 }
             }
             parameters.add(new StringParameterValue(KEY_REPO_NAME, payload.getRepoName()));
+            parameters.add(new StringParameterValue(KEY_PUSHER, payload.getPusher()));
+            parameters.add(new StringParameterValue(KEY_TAG, payload.getTag()));
             String host = payload.getCallbackHost();
             if (!StringUtils.isBlank(host)) {
                 parameters.add(new StringParameterValue(KEY_DOCKER_HUB_HOST, host));

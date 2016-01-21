@@ -133,6 +133,28 @@ public class WebHookPayload implements Serializable {
         return null;
     }
 
+    public String getPusher() {
+        JSONObject data = getData();
+        if (data != null) {
+            JSONObject push_data = data.optJSONObject("push_data");
+            if (push_data != null) {
+                return push_data.optString("pusher");
+            }
+        }
+        return null;
+    }
+
+    public String getTag() {
+        JSONObject data = getData();
+        if (data != null) {
+            JSONObject push_data = data.optJSONObject("push_data");
+            if (push_data != null) {
+                return push_data.optString("tag");
+            }
+        }
+        return null;
+    }
+
     /**
      * {@link System#currentTimeMillis()} when this object's constructor was called.
      *
