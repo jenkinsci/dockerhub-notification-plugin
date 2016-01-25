@@ -25,6 +25,7 @@ package org.jenkinsci.plugins.dockerhub.notification;
 
 import hudson.Extension;
 import hudson.Launcher;
+import hudson.EnvVars;
 import hudson.model.Build;
 import hudson.model.BuildListener;
 import hudson.model.AbstractBuild;
@@ -70,18 +71,20 @@ public class DockerPullImageBuilder extends Builder {
     }
 
     @Override
-    public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException {
+    public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException, InterruptedException {
 
         // TODO could maybe use Docker REST API, need first to check Java can talk with linux sockets
         // TODO maybe use DockerHost API
         int status = 0;
         KeyMaterial key = null;
+        final EnvVars env = build.getEnvironment(listener);
+        String expandedImage = env.expand(image);
         try {
             // get Docker registry credentials
             key = registry.newKeyMaterialFactory(build).materialize();
 
             status = launcher.launch()
-                    .cmds("docker", "pull", registry.imageName(image)).envs(key.env())
+                    .cmds("docker", "pull", registry.imageName(expandedImage)).envs(key.env())
                     .writeStdin().stdout(listener.getLogger()).stderr(listener.getLogger()).join();
             if (status != 0) {
                 throw new RuntimeException("Failed to pull docker image");
