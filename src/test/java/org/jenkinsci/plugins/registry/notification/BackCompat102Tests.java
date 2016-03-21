@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.dockerhub.notification;
+package org.jenkinsci.plugins.registry.notification;
 
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import hudson.model.FreeStyleBuild;
@@ -6,10 +6,12 @@ import hudson.model.FreeStyleProject;
 import hudson.model.Result;
 import hudson.util.RunList;
 import org.jenkinsci.plugins.docker.commons.credentials.DockerRegistryEndpoint;
-import org.jenkinsci.plugins.dockerhub.notification.opt.impl.TriggerForAllUsedInJob;
-import org.jenkinsci.plugins.dockerhub.notification.opt.impl.TriggerOnSpecifiedImageNames;
-import org.jenkinsci.plugins.dockerhub.notification.webhook.CallbackPayload;
-import org.jenkinsci.plugins.dockerhub.notification.webhook.WebHookPayload;
+//import org.jenkinsci.plugins.dockerhub.notification.opt.impl.TriggerForAllUsedInJob; //old name
+import org.jenkinsci.plugins.registry.notification.opt.impl.TriggerForAllUsedInJob;
+import org.jenkinsci.plugins.registry.notification.opt.impl.TriggerOnSpecifiedImageNames;
+import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
+import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubCallbackPayload;
+import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubWebHookCause;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
@@ -84,10 +86,10 @@ public class BackCompat102Tests {
 
         DockerHubWebHookCause cause = two.getCause(DockerHubWebHookCause.class);
         assertNotNull("The cause should be loaded", cause);
-        WebHookPayload payload = cause.getPayload();
-        assertNotNull("The cause should have a payload", payload);
-        assertEquals("csanchez/jenkins-swarm-slave", payload.getRepoName());
-        assertEquals("registry.hub.example.com", payload.getCallbackHost());
+        PushNotification notification = cause.getPushNotification();
+        assertNotNull("The cause should have a notification", notification);
+        assertEquals("csanchez/jenkins-swarm-slave", notification.getRepoName());
+        assertEquals("registry.hub.example.com", notification.getRegistryHost());
     }
 
     @Test
@@ -102,15 +104,14 @@ public class BackCompat102Tests {
         TriggerStore.TriggerEntry.RunEntry run = runEntries.get(0);
         assertEquals("JenkinsSlaveTrigger", run.getJobName());
         assertNotNull("The run should be retrievable", run.getRun());
+        PushNotification notification = entry.getPushNotification();
+        assertNotNull("The entry should have a notification", notification);
+        assertEquals("csanchez/jenkins-swarm-slave", notification.getRepoName());
+        assertEquals("registry.hub.example.com", notification.getRegistryHost());
 
-        WebHookPayload payload = entry.getPayload();
-        assertNotNull("The entry should have a payload", payload);
-        assertEquals("csanchez/jenkins-swarm-slave", payload.getRepoName());
-        assertEquals("registry.hub.example.com", payload.getCallbackHost());
-
-        CallbackPayload data = entry.getCallbackData();
+        DockerHubCallbackPayload data = entry.getCallbackData();
         assertNotNull("There should be stored callback data", data);
-        assertSame(CallbackPayload.States.success, data.getState());
+        assertSame(DockerHubCallbackPayload.States.success, data.getState());
         assertEquals("dockerhub-webhook/details/e9d6eb6cd6a7bfcd2bd622765a87893f", data.getTargetUrl());
     }
 
