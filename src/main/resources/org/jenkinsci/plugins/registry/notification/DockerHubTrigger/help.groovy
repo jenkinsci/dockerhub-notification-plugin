@@ -27,7 +27,7 @@ import jenkins.model.Jenkins
 
 def webHookUrl() {
     String rootUrl = Jenkins.instance?.getRootUrl() ?: "http://myJENKINS/";
-    return rootUrl + "dockerhub-webhook/nowwtify"
+    return rootUrl + "dockerhub-webhook/notify"
 }
 
 p(_("generalBlurb"))
