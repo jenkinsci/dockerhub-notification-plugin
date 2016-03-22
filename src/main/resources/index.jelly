@@ -25,5 +25,5 @@
 -->
 <?jelly escape-by-default='true'?>
 <div>
-  Integrates Jenkins with <a href="http://hub.docker.com">DockerHub</a>
+  Integrates Jenkins with <a href="http://hub.docker.com">DockerHub</a> and Docker Registry
 </div>

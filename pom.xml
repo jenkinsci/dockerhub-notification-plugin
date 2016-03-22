@@ -37,7 +37,7 @@
     <version>1.0.3-SNAPSHOT</version>
     <packaging>hpi</packaging>
 
-    <name>CloudBees Docker Hub Notification</name>
+    <name>CloudBees Docker Hub/Registry Notification</name>
     <url>https://wiki.jenkins-ci.org/display/JENKINS/CloudBees+Docker+Hub+Notification</url>
 
     <properties>

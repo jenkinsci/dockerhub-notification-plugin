@@ -25,13 +25,26 @@ package org.jenkinsci.plugins.registry.notification.DockerHubTrigger
 
 import jenkins.model.Jenkins
 
-def webHookUrl() {
+def webHookUrl(String rootAction) {
     String rootUrl = Jenkins.instance?.getRootUrl() ?: "http://myJENKINS/";
-    return rootUrl + "dockerhub-webhook/notify"
+    return rootUrl + "${rootAction}/notify"
 }
 
 p(_("generalBlurb"))
 p(_("details"))
-em {
-    strong(webHookUrl())
+ul {
+    li {
+        em {
+            strong(webHookUrl('dockerhub-webhook'))
+            raw('&nbsp;')
+            span(_('dockerHubUrlBlurb'))
+        }
+    }
+    li {
+        em {
+            strong(webHookUrl('dockerregistry-webhook'))
+            raw('&nbsp;')
+            span(_('dockerRegistryUrlBlurb'))
+        }
+    }
 }
