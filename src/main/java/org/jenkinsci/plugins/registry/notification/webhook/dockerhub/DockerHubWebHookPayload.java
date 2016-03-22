@@ -38,13 +38,16 @@ public class DockerHubWebHookPayload extends WebHookPayload {
         if (this.pushNotifications == null || this.pushNotifications.isEmpty()) {
             this.pushNotifications = new ArrayList<PushNotification>();
             String repoName = "";
-            JSONObject repository = this.getData().optJSONObject("repository");
-            if (repository != null) {
-                if (repository.has("repo_name")) {
-                    repoName = repository.getString("repo_name");
+            JSONObject data = this.getData();
+            if (data != null) {
+                JSONObject repository = data.optJSONObject("repository");
+                if (repository != null) {
+                    if (repository.has("repo_name")) {
+                        repoName = repository.getString("repo_name");
+                    }
                 }
+                this.pushNotifications.add(createPushNotification(repoName, data));
             }
-            this.pushNotifications.add(createPushNotification(repoName, this.getData()));
         }
         return this;
     }
