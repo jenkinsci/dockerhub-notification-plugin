@@ -48,4 +48,13 @@ public class DockerHubWebHookCause extends WebHookCause {
                 "payload=" + getPushNotification().getWebHookPayload() +
                 '}';
     }
+
+    private transient DockerHubWebHookPayload payload;
+
+    public Object readResolve() {
+        if (payload != null) {
+            this.pushNotification = payload.getPushNotifications().get(0);
+        }
+        return this;
+    }
 }

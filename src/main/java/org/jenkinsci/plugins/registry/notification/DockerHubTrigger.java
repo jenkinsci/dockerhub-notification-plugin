@@ -24,24 +24,44 @@
 package org.jenkinsci.plugins.registry.notification;
 
 import hudson.Extension;
+import hudson.init.InitMilestone;
+import hudson.init.Initializer;
+import hudson.model.Fingerprint;
 import hudson.model.Item;
+import hudson.model.Items;
 import hudson.model.Job;
+import hudson.model.Run;
 import hudson.triggers.Trigger;
 import hudson.triggers.TriggerDescriptor;
 import hudson.util.DescribableList;
+import hudson.util.XStream2;
 import jenkins.model.Jenkins;
 import jenkins.model.ParameterizedJobMixIn;
 import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.registry.notification.opt.TriggerOption;
 import org.jenkinsci.plugins.registry.notification.opt.TriggerOptionDescriptor;
+import org.jenkinsci.plugins.registry.notification.opt.impl.TriggerForAllUsedInJob;
+import org.jenkinsci.plugins.registry.notification.opt.impl.TriggerOnSpecifiedImageNames;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubWebHook;
+import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubWebHookCause;
+import org.kohsuke.accmod.Restricted;
+import org.kohsuke.accmod.restrictions.NoExternalUse;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.StaplerRequest;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The trigger configuration. The actual trigger logic is in {@link DockerHubWebHook}.
@@ -129,5 +149,58 @@ public class DockerHubTrigger extends Trigger<Job<?, ?>> {
             }
             return new DockerHubTrigger(r);
         }
+    }
+
+    @Initializer(before = InitMilestone.JOB_LOADED)
+    @Restricted(NoExternalUse.class)
+    public static void packageRenameConverting() {
+        for(XStream2 xs : Arrays.asList(Items.XSTREAM2, Run.XSTREAM2, Jenkins.XSTREAM2, getFingerprintXStream())) {
+            xs.addCompatibilityAlias("org.jenkinsci.plugins.dockerhub.notification.DockerHubTrigger",
+                                     DockerHubTrigger.class);
+            xs.addCompatibilityAlias("org.jenkinsci.plugins.dockerhub.notification.DockerHubWebHookCause",
+                                     DockerHubWebHookCause.class);
+            xs.addCompatibilityAlias("org.jenkinsci.plugins.dockerhub.notification.DockerPullImageBuilder",
+                                     DockerPullImageBuilder.class);
+            //TODO no back-compat tests for the column and filter
+            xs.addCompatibilityAlias("org.jenkinsci.plugins.dockerhub.notification.TriggerListViewColumn",
+                                     TriggerListViewColumn.class);
+            xs.addCompatibilityAlias("org.jenkinsci.plugins.dockerhub.notification.TriggerViewFilter",
+                                     TriggerViewFilter.class);
+            //The TriggerOption extension point has also changed package name and will not be backwards compatible API
+            xs.addCompatibilityAlias("org.jenkinsci.plugins.dockerhub.notification.opt.impl.TriggerForAllUsedInJob",
+                                     TriggerForAllUsedInJob.class);
+            xs.addCompatibilityAlias("org.jenkinsci.plugins.dockerhub.notification.opt.impl.TriggerOnSpecifiedImageNames",
+                                     TriggerOnSpecifiedImageNames.class);
+            xs.addCompatibilityAlias("org.jenkinsci.plugins.dockerhub.notification.TriggerStore$TriggerEntry",
+                                     TriggerStore.TriggerEntry.class);
+            xs.addCompatibilityAlias("org.jenkinsci.plugins.dockerhub.notification.TriggerStore$TriggerEntry$RunEntry",
+                                     TriggerStore.TriggerEntry.RunEntry.class);
+        }
+    }
+
+    /**
+     * Hack to get around the fact that {@link Fingerprint#XSTREAM} has private access.
+     * If any issues arise when trying to access the field a new XStream object is returned to avoid null values.
+     * @return {@link Fingerprint}'s XStream2 static field.
+     */
+    @Nonnull
+    private static XStream2 getFingerprintXStream() {
+        try {
+            Field field = Fingerprint.class.getDeclaredField("XSTREAM");
+            field.setAccessible(true);
+            XStream2 xStream2 = (XStream2)field.get(null);
+            if (xStream2 == null) {
+                xStream2 = new XStream2();
+            }
+            return xStream2;
+        } catch (NoSuchFieldException e) {
+            Logger.getLogger(DockerHubTrigger.class.getName()).log(Level.WARNING, "Fingerprint XStream instance gone? " +
+                    "Old data conversion of stored callback reports can't be performed. Risk of data loss.", e);
+        } catch (IllegalAccessException e) {
+            Logger.getLogger(DockerHubTrigger.class.getName()).log(Level.WARNING,
+                    "Fingerprint XStream instance inaccessible due to installed security manager. " +
+                    "Old data conversion of stored callback reports can't be performed. Risk of data loss.", e);
+        }
+        return new XStream2();
     }
 }

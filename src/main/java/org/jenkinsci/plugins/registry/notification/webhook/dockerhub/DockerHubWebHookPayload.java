@@ -12,6 +12,7 @@ import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
@@ -29,6 +30,23 @@ public class DockerHubWebHookPayload extends WebHookPayload {
             setJson(data.toString());
         }
         this.pushNotifications.add(createPushNotification(repoName, data));
+    }
+
+    @Override
+    protected Object readResolve() {
+        super.readResolve();
+        if (this.pushNotifications == null || this.pushNotifications.isEmpty()) {
+            this.pushNotifications = new ArrayList<PushNotification>();
+            String repoName = "";
+            JSONObject repository = this.getData().optJSONObject("repository");
+            if (repository != null) {
+                if (repository.has("repo_name")) {
+                    repoName = repository.getString("repo_name");
+                }
+            }
+            this.pushNotifications.add(createPushNotification(repoName, this.getData()));
+        }
+        return this;
     }
 
     /**

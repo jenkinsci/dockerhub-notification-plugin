@@ -29,7 +29,7 @@ import javax.annotation.Nonnull;
 
 public abstract class WebHookCause extends Cause {
     @Nonnull
-    protected final PushNotification pushNotification;
+    protected PushNotification pushNotification;
 
     public WebHookCause(@Nonnull PushNotification pushNotification) {
         this.pushNotification = pushNotification;

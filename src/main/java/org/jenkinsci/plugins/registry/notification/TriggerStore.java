@@ -34,6 +34,8 @@ import org.acegisecurity.context.SecurityContextHolder;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubCallbackPayload;
+import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubPushNotification;
+import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubWebHookPayload;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -201,7 +203,7 @@ public final class TriggerStore extends Descriptor<TriggerStore>
 
     public static class TriggerEntry extends FingerprintFacet {
         @Nonnull
-        private final PushNotification pushNotification;
+        private PushNotification pushNotification;
         @Nonnull
         private final List<RunEntry> entries;
         @CheckForNull
@@ -280,6 +282,15 @@ public final class TriggerStore extends Descriptor<TriggerStore>
                 }
             }
             return true;
+        }
+
+        private transient DockerHubWebHookPayload payload;
+
+        public Object readResolve() {
+            if (payload != null) {
+                pushNotification = payload.getPushNotifications().get(0);
+            }
+            return this;
         }
 
         public static class RunEntry implements Serializable {

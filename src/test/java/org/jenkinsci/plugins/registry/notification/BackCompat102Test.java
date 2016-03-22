@@ -6,7 +6,6 @@ import hudson.model.FreeStyleProject;
 import hudson.model.Result;
 import hudson.util.RunList;
 import org.jenkinsci.plugins.docker.commons.credentials.DockerRegistryEndpoint;
-//import org.jenkinsci.plugins.dockerhub.notification.opt.impl.TriggerForAllUsedInJob; //old name
 import org.jenkinsci.plugins.registry.notification.opt.impl.TriggerForAllUsedInJob;
 import org.jenkinsci.plugins.registry.notification.opt.impl.TriggerOnSpecifiedImageNames;
 import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
@@ -36,7 +35,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Testing that stored data from version 1.0.2 of the plugin can be loaded from disk in newer versions.
  */
-public class BackCompat102Tests {
+public class BackCompat102Test {
     @Rule
     public JenkinsRule j = new JenkinsRule();
 
