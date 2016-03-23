@@ -1,0 +1,54 @@
+{
+  "events": [
+    {
+      "id": "9d9e2ab1-d38e-4f71-8091-2ed699e7a6a5",
+      "timestamp": "2015-10-06T13:00:54.450615408Z",
+      "action": "push",
+      "target": {
+        "mediaType": "application/octet-stream",
+        "size": 17680408,
+        "digest": "sha256:55d2be3e073109b6dfa68aa6ffbce9f5441ab8dd451834eaf0e81874a0b1b720",
+        "length": 17680408,
+        "repository": "jplock/zookeeper",
+        "url": "http://registry:5000/v2/jplock/zookeeper/blob/sha256:55d2be3e073109b6dfa68aa6ffbce9f5441ab8dd451834eaf0e81874a0b1b720"
+      },
+      "request": {
+        "id": "d5af37fb-e766-43a1-81a2-ff6270d96ac8",
+        "addr": "172.17.42.1:48845",
+        "host": "registry:5000",
+        "method": "PUT",
+        "useragent": "docker/1.7.0 go/go1.4.2 git-commit/0baf609 kernel/4.0.5-boot2docker os/linux arch/amd64"
+      },
+      "actor": {},
+      "source": {
+        "addr": "5dc36776cd85:5000",
+        "instanceID": "7ca5f1ec-f184-4c47-b4ce-4ad7090dc25d"
+      }
+    },
+    {
+      "id": "9d9e2ab1-d38e-4f71-8091-2ed699e7a6a5",
+      "timestamp": "2015-10-06T13:00:54.450615408Z",
+      "action": "push",
+      "target": {
+        "mediaType": "application/octet-stream",
+        "size": 17680408,
+        "digest": "sha256:55d2be3e073109b6dfa68aa6ffbce9f5441ab8dd451834eaf0e81874a0b1b720",
+        "length": 17680408,
+        "repository": "jplock/zookeeper",
+        "url": "http://registry:5000/v2/jplock/zookeeper/manifests/sha256:55d2be3e073109b6dfa68aa6ffbce9f5441ab8dd451834eaf0e81874a0b1b720"
+      },
+      "request": {
+        "id": "d5af37fb-e766-43a1-81a2-ff6270d96ac8",
+        "addr": "172.17.42.1:48845",
+        "host": "registry:5000",
+        "method": "PUT",
+        "useragent": "docker/1.7.0 go/go1.4.2 git-commit/0baf609 kernel/4.0.5-boot2docker os/linux arch/amd64"
+      },
+      "actor": {},
+      "source": {
+        "addr": "5dc36776cd85:5000",
+        "instanceID": "7ca5f1ec-f184-4c47-b4ce-4ad7090dc25d"
+      }
+    }
+  ]
+}
