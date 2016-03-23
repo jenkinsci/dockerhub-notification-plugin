@@ -27,6 +27,7 @@ package org.jenkinsci.plugins.registry.notification;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
 import hudson.model.UnprotectedRootAction;
+import hudson.security.csrf.CrumbExclusion;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
 import org.jenkinsci.plugins.registry.notification.opt.impl.TriggerOnSpecifiedImageNames;
@@ -40,6 +41,10 @@ import org.jvnet.hudson.test.TestExtension;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -63,7 +68,6 @@ public class CoordinatorTest {
 
     @Test
     public void testTwoTriggered() throws Exception {
-        j.jenkins.setCrumbIssuer(null);
         FreeStyleProject one = j.createFreeStyleProject();
         one.addTrigger(new DockerHubTrigger(new TriggerOnSpecifiedImageNames(Arrays.asList("csanchez/jenkins-swarm-slave"))));
         one.getBuildersList().add(new MockBuilder(Result.SUCCESS));
@@ -106,7 +110,6 @@ public class CoordinatorTest {
 
     @Test
     public void testOneTriggered() throws Exception {
-        j.jenkins.setCrumbIssuer(null);
         FreeStyleProject one = j.createFreeStyleProject();
         one.addTrigger(new DockerHubTrigger(new TriggerOnSpecifiedImageNames(Arrays.asList("csanchez/jenkins-swarm-slave"))));
         one.getBuildersList().add(new MockBuilder(Result.SUCCESS));
@@ -169,5 +172,19 @@ public class CoordinatorTest {
 
     static class Response {
         JSONObject json;
+    }
+
+    @TestExtension
+    public static class CallbackEndpointCrumbExclusion extends CrumbExclusion {
+
+        @Override
+        public boolean process(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+            String pathInfo = request.getPathInfo();
+            if (pathInfo != null && (pathInfo.startsWith("/fake-dockerhub"))) {
+                chain.doFilter(request, response);
+                return true;
+            }
+            return false;
+        }
     }
 }
