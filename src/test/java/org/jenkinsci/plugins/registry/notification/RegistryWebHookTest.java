@@ -38,6 +38,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.MockBuilder;
+import org.jvnet.hudson.test.TestExtension;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -105,7 +106,6 @@ public class RegistryWebHookTest {
 
 
     private void createProjectsTriggeredByRepository(Set<String> repositories) throws Exception {
-        j.jenkins.setCrumbIssuer(null);
         for (final String repository : repositories) {
             FreeStyleProject project = j.createFreeStyleProject();
             project.addTrigger(new DockerHubTrigger(new TriggerOnSpecifiedImageNames(new ArrayList<String>() {{
@@ -130,7 +130,7 @@ public class RegistryWebHookTest {
     }
 
 
-    @Extension
+    @TestExtension
     public static class PushNotificationRunListener extends RunListener<Run<?,?>> {
         private Set<String> expectedCauses;
         private Integer hitCounter;
