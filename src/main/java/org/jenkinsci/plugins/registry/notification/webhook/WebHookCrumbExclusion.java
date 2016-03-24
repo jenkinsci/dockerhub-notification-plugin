@@ -41,8 +41,8 @@ import java.io.IOException;
  */
 @Extension
 public class WebHookCrumbExclusion extends CrumbExclusion {
-    private static final String REGISTRY_BASE = "/" + DockerRegistryWebHook.URL_NAME;
-    private static final String HUB_BASE = "/" + DockerHubWebHook.URL_NAME;
+    private static final String REGISTRY_BASE = "/" + DockerRegistryWebHook.URL_NAME + "/";
+    private static final String HUB_BASE = "/" + DockerHubWebHook.URL_NAME + "/";
 
     @Override
     public boolean process(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
