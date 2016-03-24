@@ -11,6 +11,8 @@ Only noting significant user-visible or major API changes, not internal code cle
     [PR #7](https://github.com/jenkinsci/dockerhub-notification-plugin/pull/7),
     [PR #11](https://github.com/jenkinsci/dockerhub-notification-plugin/pull/11)_
     _This resulted in significant refactoring and API changes in the plugin, hence the bump of major version. Data from older versions of the plugin should migrate correctly._
+* Substitute Environment Variables into Image Name. 
+  _[PR #8](https://github.com/jenkinsci/dockerhub-notification-plugin/pull/8)_
 * Added CSRF protection exclusions on the web hooks so that the plugin behaves correctly in a more secured Jenkins.
   _[PR #12](https://github.com/jenkinsci/dockerhub-notification-plugin/pull/12)_
 
