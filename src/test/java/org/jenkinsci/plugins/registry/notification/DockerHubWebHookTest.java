@@ -23,13 +23,25 @@
  */
 package org.jenkinsci.plugins.registry.notification;
 
+import hudson.EnvVars;
+import hudson.Launcher;
+import hudson.model.AbstractBuild;
+import hudson.model.BuildListener;
+import hudson.model.FreeStyleBuild;
+import hudson.tasks.BuildStep;
+import hudson.tasks.Builder;
+import jenkins.tasks.SimpleBuildStep;
 import org.jenkinsci.plugins.registry.notification.opt.impl.TriggerOnSpecifiedImageNames;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
+import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubPushNotification;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.MockBuilder;
+
+import java.io.IOException;
+import java.util.Map;
 
 public class DockerHubWebHookTest {
 
@@ -47,5 +59,31 @@ public class DockerHubWebHookTest {
         j.waitUntilNoActivity();
 
         j.assertLogContains(repoName, project.getLastBuild());
+    }
+
+    @Test(timeout = 60000)
+    public void testEnvironment() throws Exception {
+        FreeStyleProject project = j.createFreeStyleProject();
+        final String repoName = "cb/jenkins";
+        project.addTrigger(new DockerHubTrigger(new TriggerOnSpecifiedImageNames(repoName)));
+        project.getBuildersList().add(new PrintEnvironment());
+        project.getBuildersList().add(new MockBuilder(Result.SUCCESS));
+        j.createWebClient().goTo("dockerhub-webhook/debug?image=" + repoName);
+
+        j.waitUntilNoActivity();
+        FreeStyleBuild build = project.getLastBuild();
+        j.assertLogContains(repoName, build);
+        j.assertLogContains(DockerHubPushNotification.KEY_REPO_NAME + " = " + repoName, build);
+    }
+
+    static class PrintEnvironment extends Builder {
+        @Override
+        public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
+            EnvVars vars = build.getEnvironment(listener);
+            for (Map.Entry<String, String> var : vars.entrySet()) {
+                listener.getLogger().println(var.getKey() + " = " + var.getValue());
+            }
+            return true;
+        }
     }
 }

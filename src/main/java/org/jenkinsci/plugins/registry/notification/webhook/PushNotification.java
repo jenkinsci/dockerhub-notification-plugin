@@ -23,12 +23,14 @@
  */
 package org.jenkinsci.plugins.registry.notification.webhook;
 
+import hudson.Util;
 import hudson.model.Cause;
 import hudson.model.ParameterValue;
 import hudson.model.Run;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubPushNotification;
 
 import javax.annotation.CheckForNull;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
 
@@ -73,7 +75,25 @@ public abstract class PushNotification {
 
     abstract public Cause getCause();
 
-    abstract public Set<ParameterValue> getJobParamerers();
+    /**
+     * Provide parameters to be put into a build.
+     * @return the parameters
+     * @deprecated misspelled and wrong context naming. Use {@link #getRunParameters()}
+     */
+    @Deprecated
+    public Set<ParameterValue> getJobParamerers() {
+        if (Util.isOverridden(PushNotification.class, getClass(), "getRunParameters")) {
+            return getRunParameters();
+        }
+        return Collections.emptySet();
+    }
+
+    public Set<ParameterValue> getRunParameters() {
+        if (Util.isOverridden(PushNotification.class, getClass(), "getJobParamerers")) {
+            return getJobParamerers();
+        }
+        return Collections.emptySet();
+    }
 
     abstract public String getCauseMessage();
 
