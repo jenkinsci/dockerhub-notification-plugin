@@ -4,6 +4,10 @@ Only noting significant user-visible or major API changes, not internal code cle
 
 ## upcoming relese
 
+## 2.1 (May 30, 2016)
+* Fix for [SECURITY-170](https://issues.jenkins-ci.org/browse/SECURITY-170) by changing from adding parameters to the build to adding plain environment variables instead.
+  _[PR #13](https://github.com/jenkinsci/dockerhub-notification-plugin/pull/13)_
+
 ## 2.0 (March 24, 2016)
 
 * [JENKINS-30931](https://issues.jenkins-ci.org/browse/JENKINS-30931) Added improved support for Docker Registry 2.0.
