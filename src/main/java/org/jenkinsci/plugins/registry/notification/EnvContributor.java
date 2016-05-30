@@ -31,6 +31,8 @@ import hudson.model.ParameterValue;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookCause;
+import org.kohsuke.accmod.Restricted;
+import org.kohsuke.accmod.restrictions.NoExternalUse;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -42,6 +44,7 @@ import java.util.Set;
  * @author Robert Sandell &lt;rsandell@cloudbees.com&gt;.
  */
 @Extension
+@Restricted(NoExternalUse.class)
 public class EnvContributor extends EnvironmentContributor {
 
     @Override
