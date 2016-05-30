@@ -123,7 +123,7 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
     }
 
     private void schedule(@Nonnull final Job job, @Nonnull final PushNotification pushNotification) {
-        if (new JobbMixIn(job).schedule(pushNotification.getCause(), pushNotification.getJobParamerers())) {
+        if (new JobbMixIn(job).schedule(pushNotification.getCause())) {
             logger.info(pushNotification.getCauseMessage());
             Coordinator coordinator = Coordinator.getInstance();
             if (coordinator != null) {
@@ -174,7 +174,7 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
         private JobT the;
 
 
-        public JobbMixIn(JobT the) {
+        JobbMixIn(JobT the) {
             this.the = the;
         }
 
@@ -183,13 +183,13 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
             return the;
         }
 
-        public boolean schedule(Cause cause, Set<ParameterValue> parameters) {
+        boolean schedule(Cause cause) {
             if (!asJob().isBuildable()) {
                 return false;
             }
             List<Action> queueActions = new LinkedList<Action>();
 
-            queueActions.add(new ParametersAction(getParameterValues(parameters)));
+            queueActions.add(new ParametersAction(getParameterValues()));
             queueActions.add(new CauseAction(cause));
 
             int quiet = Math.max(MIN_QUIET, asJob().getQuietPeriod());
@@ -207,12 +207,11 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
             return i != null && i.getFuture() != null;
         }
 
-        private List<ParameterValue> getParameterValues(Set<ParameterValue> parameters) {
+        private List<ParameterValue> getParameterValues() {
             Set<ParameterValue> result = new HashSet<ParameterValue>();
             if (isParameterized()) {
                 result.addAll(getDefaultParametersValues());
             }
-            result.addAll(parameters);
             return Collections.unmodifiableList(new LinkedList<ParameterValue>(result));
         }
 

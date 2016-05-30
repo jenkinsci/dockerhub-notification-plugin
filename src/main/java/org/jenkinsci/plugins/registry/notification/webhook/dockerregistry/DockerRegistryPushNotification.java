@@ -67,7 +67,7 @@ public class DockerRegistryPushNotification extends PushNotification {
     }
 
     @Override
-    public Set<ParameterValue> getJobParamerers() {
+    public Set<ParameterValue> getRunParameters() {
         Set<ParameterValue> parameters = new HashSet<ParameterValue>();
         parameters.add(new StringParameterValue(KEY_REPO_NAME, getRepoName()));
         String host = getRegistryHost();
