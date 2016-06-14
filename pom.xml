@@ -43,7 +43,6 @@
     <properties>
         <jenkins.version>1.580.1</jenkins.version>
         <java.level>6</java.level>
-        <findbugs.failOnError>false</findbugs.failOnError>
     </properties>
 
     <scm>
