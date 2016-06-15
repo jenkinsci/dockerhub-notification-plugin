@@ -4,7 +4,7 @@ Only noting significant user-visible or major API changes, not internal code cle
 
 ## 2.2 (Jun 15, 2016)
 * Expose tag and pusher in the build environment _([PR #15](https://github.com/jenkinsci/dockerhub-notification-plugin/pull/15))_
-* _Dev:_ [JENKINS-35629]((https://issues.jenkins-ci.org/browse/JENKINS-35629)) Convert to new plugin parent pom _([PR #14](https://github.com/jenkinsci/dockerhub-notification-plugin/pull/14))_
+* _Dev:_ [JENKINS-35629](https://issues.jenkins-ci.org/browse/JENKINS-35629) Convert to new plugin parent pom _([PR #14](https://github.com/jenkinsci/dockerhub-notification-plugin/pull/14))_
 
 ## 2.1 (May 30, 2016)
 * Fix for [SECURITY-170](https://issues.jenkins-ci.org/browse/SECURITY-170) by changing from adding parameters to the build to adding plain environment variables instead.
