@@ -27,6 +27,7 @@ import hudson.Util;
 import hudson.model.Cause;
 import hudson.model.ParameterValue;
 import hudson.model.StringParameterValue;
+import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
@@ -47,6 +48,8 @@ public class DockerHubPushNotification extends PushNotification {
     private static final long serialVersionUID = 207798312860576090L;
     public static final String KEY_REPO_NAME = WebHookPayload.PREFIX + "REPO_NAME";
     public static final String KEY_DOCKER_HUB_HOST = WebHookPayload.PREFIX + "DOCKER_HUB_HOST";
+    public static final String KEY_PUSHER = WebHookPayload.PREFIX + "PUSHER";
+    public static final String KEY_TAG = WebHookPayload.PREFIX + "TAG";
     private static final Logger logger = Logger.getLogger(DockerHubPushNotification.class.getName());
     private String callbackUrl;
 
@@ -78,6 +81,30 @@ public class DockerHubPushNotification extends PushNotification {
         return null;
     }
 
+    @CheckForNull
+    public String getPusher() {
+        JSONObject data = getWebHookPayload().getData();
+        if (data != null) {
+            JSONObject push_data = data.optJSONObject("push_data");
+            if (push_data != null) {
+                return push_data.optString("pusher");
+            }
+        }
+        return null;
+    }
+
+    @CheckForNull
+    public String getTag() {
+        JSONObject data = getWebHookPayload().getData();
+        if (data != null) {
+            JSONObject push_data = data.optJSONObject("push_data");
+            if (push_data != null) {
+                return push_data.optString("tag");
+            }
+        }
+        return null;
+    }
+
     @Override
     public Cause getCause() {
         return new DockerHubWebHookCause(this);
@@ -90,6 +117,14 @@ public class DockerHubPushNotification extends PushNotification {
         String host = getRegistryHost();
         if (!StringUtils.isBlank(host)) {
             parameters.add(new StringParameterValue(KEY_DOCKER_HUB_HOST, host));
+        }
+        String tag = getTag();
+        if (!StringUtils.isBlank(tag)) {
+            parameters.add(new StringParameterValue(KEY_TAG, tag));
+        }
+        String pusher = getPusher();
+        if (!StringUtils.isBlank(pusher)) {
+            parameters.add(new StringParameterValue(KEY_PUSHER, pusher));
         }
         return parameters;
     }
