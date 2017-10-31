@@ -29,7 +29,6 @@ import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -76,12 +75,13 @@ public class DockerRegistryWebHookPayload extends WebHookPayload {
 
     }
 
-    private DockerRegistryPushNotification createPushNotification(@Nonnull final String repoName, @Nonnull final JSONObject data) {
+    private DockerRegistryPushNotification createPushNotification(@Nonnull final String repoName, @Nonnull JSONObject data) {
+        final String timestamp = data.optString("timestamp");
+        final String host = data.getJSONObject("request").optString("host");
         return new DockerRegistryPushNotification(this, repoName){{
             DateTimeFormatter parser = ISODateTimeFormat.dateTimeParser();
-            String timestamp = data.optString("timestamp");
             setPushedAt(parser.parseDateTime(timestamp).toDate());
-            setRegistryHost(data.getJSONObject("request").optString("host"));
+            setRegistryHost(host);
         }};
     }
 }
