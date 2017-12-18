@@ -49,7 +49,7 @@ public class WebHookCrumbExclusion extends CrumbExclusion {
     @Override
     public boolean process(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String pathInfo = request.getPathInfo();
-        if (pathInfo != null && (pathInfo.startsWith(REGISTRY_BASE) || pathInfo.startsWith(HUB_BASE)) || pathInfo.startsWith(TRUSTED_REGISTRY_BASE)) {
+        if (pathInfo != null && (pathInfo.startsWith(REGISTRY_BASE) || pathInfo.startsWith(HUB_BASE) || pathInfo.startsWith(TRUSTED_REGISTRY_BASE))) {
             chain.doFilter(request, response);
             return true;
         }
