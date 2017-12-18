@@ -21,9 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jenkinsci.plugins.registry.notification.webhook.dockertrustedregistry.dockerregistry;
+package org.jenkinsci.plugins.registry.notification.webhook.dockertrustedregistry;
 
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
 import org.joda.time.format.DateTimeFormatter;
@@ -49,10 +48,9 @@ public class DockerTrustedRegistryWebHookPayload extends WebHookPayload {
         if (data != null) {
             setJson(data.toString());
         }
-
+        logger.warning("ERIC DEBUG: Got into DTR hook");
         String type = data.getString("type");
         JSONObject contents = data.getJSONObject("contents");
-        String separator = "/";
 
         if ( type.equals("TAG_PUSH") ) {
             String repository = contents.getString("imageName").split(":")[0];
@@ -66,10 +64,13 @@ public class DockerTrustedRegistryWebHookPayload extends WebHookPayload {
     private DockerTrustedRegistryPushNotification createPushNotification(@Nonnull final String repoName, @Nonnull JSONObject contents) {
         final String timestamp = contents.optString("pushedAt");
         final String host = contents.getString("imageName").split("/")[0];
+        final String tag = contents.getString("tag");
+        logger.info("ERIC DEBUG: Creating push notification with time: "+timestamp+" host:"+host+" repoName:"+repoName);
         return new DockerTrustedRegistryPushNotification(this, repoName){{
             DateTimeFormatter parser = ISODateTimeFormat.dateTimeParser();
             setPushedAt(parser.parseDateTime(timestamp).toDate());
             setRegistryHost(host);
+            setImageTag(tag);
         }};
     }
 }

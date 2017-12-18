@@ -27,7 +27,7 @@ import hudson.Extension;
 import hudson.security.csrf.CrumbExclusion;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubWebHook;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerregistry.DockerRegistryWebHook;
-import org.jenkinsci.plugins.registry.notification.webhook.dockertrustedregistry.dockerregistry.DockerTrustedRegistryWebHook;
+import org.jenkinsci.plugins.registry.notification.webhook.dockertrustedregistry.DockerTrustedRegistryWebHook;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Excludes {@link DockerHubWebHook} and {@link DockerRegistryWebHook} from having a CSRF protection filter.
+ * Excludes {@link DockerHubWebHook}, {@link DockerRegistryWebHook} and {@link DockerTrustedRegistryWebHook} from having a CSRF protection filter.
  *
  * @author Robert Sandell &lt;rsandell@cloudbees.com&gt;.
  */

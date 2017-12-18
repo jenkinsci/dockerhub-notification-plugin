@@ -47,4 +47,11 @@ ul {
             span(_('dockerRegistryUrlBlurb'))
         }
     }
+    li {
+        em {
+            strong(webHookUrl('dockertrustedregistry-webhook'))
+            raw('&nbsp;')
+            span(_('dockerTrustedRegistryUrlBlurb'))
+        }
+    }
 }

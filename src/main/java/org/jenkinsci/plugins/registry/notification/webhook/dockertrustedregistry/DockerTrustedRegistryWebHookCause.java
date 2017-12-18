@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jenkinsci.plugins.registry.notification.webhook.dockertrustedregistry.dockerregistry;
+package org.jenkinsci.plugins.registry.notification.webhook.dockertrustedregistry;
 
 
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookCause;

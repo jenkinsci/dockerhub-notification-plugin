@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jenkinsci.plugins.registry.notification.webhook.dockertrustedregistry.dockerregistry;
+package org.jenkinsci.plugins.registry.notification.webhook.dockertrustedregistry;
 
 import hudson.Util;
 import hudson.model.Cause;
@@ -45,12 +45,18 @@ public class DockerTrustedRegistryPushNotification extends PushNotification {
     private static final Logger logger = Logger.getLogger(DockerTrustedRegistryPushNotification.class.getName());
     public static final String KEY_REPO_NAME = WebHookPayload.PREFIX + "REPO_NAME";
     public static final String KEY_DOCKER_REGISTRY_HOST = WebHookPayload.PREFIX + "DOCKER_REGISTRY_HOST";
+    public static final String KEY_DOCKER_IMAGE_TAG = WebHookPayload.PREFIX + "DOCKER_IMAGE_TAG";
     private String registryHost;
+    private String imageTag;
 
     public DockerTrustedRegistryPushNotification(DockerTrustedRegistryWebHookPayload webHookPayload, String repoName) {
         super(webHookPayload);
         this.repoName = repoName;
     }
+
+    public String getImageTag() { return imageTag; }
+
+    public void setImageTag(String tag) { this.imageTag = tag; }
 
     @CheckForNull
     public String getRegistryHost() {
@@ -73,6 +79,10 @@ public class DockerTrustedRegistryPushNotification extends PushNotification {
         String host = getRegistryHost();
         if (!StringUtils.isBlank(host)) {
             parameters.add(new StringParameterValue(KEY_DOCKER_REGISTRY_HOST, host));
+        }
+        String tag = getImageTag();
+        if (!StringUtils.isBlank(tag)) {
+            parameters.add(new StringParameterValue(KEY_DOCKER_IMAGE_TAG, tag));
         }
         return parameters;
     }
