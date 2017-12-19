@@ -65,12 +65,14 @@ public class DockerTrustedRegistryWebHookPayload extends WebHookPayload {
         final String timestamp = contents.optString("pushedAt");
         final String host = contents.getString("imageName").split("/")[0];
         final String tag = contents.getString("tag");
+        final String hash = contents.getString("digest");
         logger.info("ERIC DEBUG: Creating push notification with time: "+timestamp+" host:"+host+" repoName:"+repoName);
         return new DockerTrustedRegistryPushNotification(this, repoName){{
             DateTimeFormatter parser = ISODateTimeFormat.dateTimeParser();
             setPushedAt(parser.parseDateTime(timestamp).toDate());
             setRegistryHost(host);
             setImageTag(tag);
+            setImageDigest(hash);
         }};
     }
 }

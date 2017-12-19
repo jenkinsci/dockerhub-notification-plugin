@@ -46,8 +46,10 @@ public class DockerTrustedRegistryPushNotification extends PushNotification {
     public static final String KEY_REPO_NAME = WebHookPayload.PREFIX + "REPO_NAME";
     public static final String KEY_DOCKER_REGISTRY_HOST = WebHookPayload.PREFIX + "DOCKER_REGISTRY_HOST";
     public static final String KEY_DOCKER_IMAGE_TAG = WebHookPayload.PREFIX + "DOCKER_IMAGE_TAG";
+    public static final String KEY_DOCKER_IMAGE_DIGEST = WebHookPayload.PREFIX + "DOCKER_IMAGE_DIGEST";
     private String registryHost;
     private String imageTag;
+    private String imageDigest;
 
     public DockerTrustedRegistryPushNotification(DockerTrustedRegistryWebHookPayload webHookPayload, String repoName) {
         super(webHookPayload);
@@ -67,6 +69,10 @@ public class DockerTrustedRegistryPushNotification extends PushNotification {
         this.registryHost = registryHost;
     }
 
+    public String getImageDigest() { return imageDigest; }
+
+    public void setImageDigest(String imageDigest) { this.imageDigest = imageDigest; }
+
     @Override
     public Cause getCause() {
         return new DockerTrustedRegistryWebHookCause(this);
@@ -84,6 +90,11 @@ public class DockerTrustedRegistryPushNotification extends PushNotification {
         if (!StringUtils.isBlank(tag)) {
             parameters.add(new StringParameterValue(KEY_DOCKER_IMAGE_TAG, tag));
         }
+        String hash = getImageDigest();
+        if (!StringUtils.isBlank(hash)) {
+            parameters.add(new StringParameterValue(KEY_DOCKER_IMAGE_DIGEST, hash));
+        }
+
         return parameters;
     }
 

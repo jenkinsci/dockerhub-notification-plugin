@@ -67,6 +67,15 @@ public class DockerTrustedRegistryWebHookTest {
         simulatePushNotification(1, "/docker-trusted-registry-payload-tag-push.json", repositories);
     }
 
+    @Test
+    public void testTagDelete() throws Exception {
+        HashSet<String> repositories = new HashSet<String>() {{
+            add("dtr.unit.test.com/foo/bar");
+        }};
+        createProjectsTriggeredByRepository(repositories);
+        simulatePushNotification(1, "/docker-trusted-registry-payload-tag-delete.json", repositories);
+    }
+
     @Ignore
     @Test
     public void testPullIgnore() throws Exception {
