@@ -27,15 +27,21 @@ package org.jenkinsci.plugins.registry.notification;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.model.EnvironmentContributor;
+import hudson.model.Job;
 import hudson.model.ParameterValue;
 import hudson.model.Run;
 import hudson.model.TaskListener;
+import hudson.triggers.Trigger;
+import jenkins.model.ParameterizedJobMixIn;
+import org.jenkinsci.plugins.registry.notification.events.EventType;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookCause;
+import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
 import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.NoExternalUse;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -55,6 +61,22 @@ public class EnvContributor extends EnvironmentContributor {
             for (ParameterValue parameter : parameters) {
                 parameter.buildEnvironment(r, envs);
             }
+            final Job parent = r.getParent();
+            if (parent instanceof ParameterizedJobMixIn.ParameterizedJob) {
+                final DockerHubTrigger trigger = (DockerHubTrigger) ((ParameterizedJobMixIn.ParameterizedJob) parent).getTriggers().get(DockerHubTrigger.DescriptorImpl.class);
+                if (trigger != null) {
+                    final List<EventType> eventTypes = trigger.getEventTypes();
+                    if (eventTypes != null) {
+                        final WebHookPayload payload = cause.getPushNotification().getWebHookPayload();
+                        for (EventType type : eventTypes) {
+                            if (type.accepts(payload)) {
+                                type.buildEnvironment(r, envs);
+                            }
+                        }
+                    }
+                }
+            }
+
         }
     }
 }
