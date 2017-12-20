@@ -24,6 +24,7 @@
 package org.jenkinsci.plugins.registry.notification.DockerHubTrigger
 
 import org.jenkinsci.plugins.registry.notification.DockerHubTrigger
+import org.jenkinsci.plugins.registry.notification.events.EventTypeDescriptor
 import org.jenkinsci.plugins.registry.notification.opt.TriggerOptionDescriptor
 import org.jenkinsci.plugins.registry.notification.opt.impl.TriggerForAllUsedInJob
 
@@ -40,4 +41,10 @@ l.descriptorList(title: null,
         field: "options",
         descriptors: TriggerOptionDescriptor.all(),
         instances: trigger != null ? trigger.optionsList : defaultOption)
+
+f.advanced {
+    f.entry(title: _('Events'), description: 'If using DTR; what type of events to trigger on (default: Tag Pushed)') {
+        f.'hetero-list'(name: 'eventTypes',descriptors: EventTypeDescriptor.all(), items: trigger?.eventTypes, hasHeader: true)
+    }
+}
 
