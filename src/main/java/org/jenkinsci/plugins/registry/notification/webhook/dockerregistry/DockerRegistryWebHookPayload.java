@@ -46,9 +46,7 @@ public class DockerRegistryWebHookPayload extends WebHookPayload {
     public DockerRegistryWebHookPayload(@Nonnull JSONObject data) {
         super();
         setData(data);
-        if (data != null) {
-            setJson(data.toString());
-        }
+        setJson(data.toString());
         JSONArray events = data.getJSONArray("events");
 
         for (int i = 0, size = events.size(); i < size; i++) {

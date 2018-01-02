@@ -1,40 +1,46 @@
 package org.jenkinsci.plugins.registry.notification.events.impl;
 
-import hudson.EnvVars;
 import hudson.Extension;
-import hudson.model.Run;
+import jenkins.model.Jenkins;
+import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.registry.notification.Messages;
 import org.jenkinsci.plugins.registry.notification.events.EventType;
 import org.jenkinsci.plugins.registry.notification.events.EventTypeDescriptor;
-import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-import javax.annotation.Nonnull;
+import javax.annotation.CheckForNull;
 
 public class SecurityScanCompleted extends EventType {
 
+    public static final String JSON_TYPE = "SCAN_COMPLETED";
+
     @DataBoundConstructor
-    public SecurityScanCompleted() {
-    }
+    public SecurityScanCompleted() {}
 
     @Override
-    public boolean accepts(WebHookPayload payload) {
-        return false; //TODO
-    }
+    public String getType() { return JSON_TYPE; }
 
     @Override
-    public void buildEnvironment(@Nonnull Run r, @Nonnull EnvVars envs) {
-        envs.put(EventTypeDescriptor.ENVIRONMENT_KEY, "Security_Scan_Completed"); //TODO perhaps something more appropriate?
-    }
+    public String getTimeStamp(JSONObject contents) { return contents.getJSONObject("scanSummary").optString("check_completed_at"); }
+
+    @Override
+    public boolean hasDigest() { return false; }
 
     @Extension
     public static class DescriptorImpl extends EventTypeDescriptor {
-        public DescriptorImpl() {
-        }
-
         @Override
         public String getDisplayName() {
             return Messages.EventType_SecurityScanCompleted_DisplayName();
         }
+
+        @CheckForNull
+        public static SecurityScanCompleted.DescriptorImpl getInstance() {
+            Jenkins jenkins = Jenkins.getInstance();
+            if (jenkins != null) {
+                return jenkins.getDescriptorByType(SecurityScanCompleted.DescriptorImpl.class);
+            }
+            return null;
+        }
+
     }
 }

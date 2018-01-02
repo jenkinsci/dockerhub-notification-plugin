@@ -43,7 +43,7 @@ l.descriptorList(title: null,
         instances: trigger != null ? trigger.optionsList : defaultOption)
 
 f.advanced {
-    f.entry(title: _('Events'), description: 'If using DTR; what type of events to trigger on (default: Tag Pushed)') {
+    f.entry(title: _('WebHook Event Types'), description: 'If using DTR, what type of events to trigger on (default: Tag Pushed)') {
         f.'hetero-list'(name: 'eventTypes',descriptors: EventTypeDescriptor.all(), items: trigger?.eventTypes, hasHeader: true)
     }
 }

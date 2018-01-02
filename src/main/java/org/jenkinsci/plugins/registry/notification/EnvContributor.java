@@ -31,11 +31,9 @@ import hudson.model.Job;
 import hudson.model.ParameterValue;
 import hudson.model.Run;
 import hudson.model.TaskListener;
-import hudson.triggers.Trigger;
 import jenkins.model.ParameterizedJobMixIn;
 import org.jenkinsci.plugins.registry.notification.events.EventType;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookCause;
-import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
 import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.NoExternalUse;
 
@@ -43,6 +41,7 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * Provides environment variables to builds triggered by the plugin.
@@ -52,6 +51,7 @@ import java.util.Set;
 @Extension
 @Restricted(NoExternalUse.class)
 public class EnvContributor extends EnvironmentContributor {
+    private static final Logger logger = Logger.getLogger(EnvContributor.class.getName());
 
     @Override
     public void buildEnvironmentFor(@Nonnull Run r, @Nonnull EnvVars envs, @Nonnull TaskListener listener) throws IOException, InterruptedException {
@@ -63,14 +63,14 @@ public class EnvContributor extends EnvironmentContributor {
             }
             final Job parent = r.getParent();
             if (parent instanceof ParameterizedJobMixIn.ParameterizedJob) {
-                final DockerHubTrigger trigger = (DockerHubTrigger) ((ParameterizedJobMixIn.ParameterizedJob) parent).getTriggers().get(DockerHubTrigger.DescriptorImpl.class);
+                final DockerHubTrigger trigger = DockerHubTrigger.getTrigger((ParameterizedJobMixIn.ParameterizedJob)parent);
                 if (trigger != null) {
                     final List<EventType> eventTypes = trigger.getEventTypes();
                     if (eventTypes != null) {
-                        final WebHookPayload payload = cause.getPushNotification().getWebHookPayload();
+                        final String dtrJsonType = cause.getPushNotification().getDtrEventJSONTypeEventJSONType();
                         for (EventType type : eventTypes) {
-                            if (type.accepts(payload)) {
-                                type.buildEnvironment(r, envs);
+                            if (type.accepts(dtrJsonType)) {
+                                type.buildEnvironment(envs, cause.getPushNotification());
                             }
                         }
                     }

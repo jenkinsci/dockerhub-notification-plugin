@@ -27,7 +27,6 @@ import hudson.Util;
 import hudson.model.Cause;
 import hudson.model.ParameterValue;
 import hudson.model.Run;
-import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubPushNotification;
 
 import javax.annotation.CheckForNull;
 import java.util.Collections;
@@ -39,6 +38,7 @@ public abstract class PushNotification {
     private final WebHookPayload webHookPayload;
 
     protected String repoName;
+    protected String dtrEventJSONType;
     private Date pushedAt;
 
     CallbackHandler callbackHandler = new CallbackHandler() {
@@ -115,6 +115,7 @@ public abstract class PushNotification {
         this.pushedAt = new Date(pushedAt.getTime());
     }
 
+    @CheckForNull
     public WebHookPayload getWebHookPayload() {
         return webHookPayload;
     }
@@ -134,4 +135,10 @@ public abstract class PushNotification {
     }
 
     abstract public String getRegistryHost();
+
+    public String getDtrEventJSONTypeEventJSONType() { return dtrEventJSONType; }
+
+    public void setDtrEventJSONType(String type) { this.dtrEventJSONType = type; }
+
+
 }

@@ -70,7 +70,7 @@ import java.util.logging.Logger;
 public class DockerHubTrigger extends Trigger<Job<?, ?>> {
 
     private List<TriggerOption> options;
-    private List<EventType> eventTypes;
+    private List<EventType> eventTypes = new Vector<EventType>();
 
     @DataBoundConstructor
     public DockerHubTrigger(List<TriggerOption> options) {
@@ -102,7 +102,7 @@ public class DockerHubTrigger extends Trigger<Job<?, ?>> {
     }
 
     public List<EventType> getEventTypes() {
-        return Collections.unmodifiableList(eventTypes);
+        return Collections.unmodifiableList(eventTypes == null ? new Vector<EventType>() : eventTypes);
     }
 
     @DataBoundSetter

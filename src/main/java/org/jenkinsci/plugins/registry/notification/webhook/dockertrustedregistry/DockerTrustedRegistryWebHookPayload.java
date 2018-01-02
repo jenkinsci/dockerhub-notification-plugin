@@ -25,8 +25,6 @@ package org.jenkinsci.plugins.registry.notification.webhook.dockertrustedregistr
 
 import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 
 import javax.annotation.Nonnull;
 import java.util.logging.Level;
@@ -40,39 +38,24 @@ public class DockerTrustedRegistryWebHookPayload extends WebHookPayload {
      * Creates the object from the json payload
      *
      * @param data the json payload
-     * @throws net.sf.json.JSONException if the key {@code repository.repo_name} doesn't exist.
+     * @throws net.sf.json.JSONException if the key {@code repository.  repo_name} doesn't exist.
      */
     public DockerTrustedRegistryWebHookPayload(@Nonnull JSONObject data) {
         super();
         setData(data);
-        if (data != null) {
-            setJson(data.toString());
-        }
-        logger.warning("ERIC DEBUG: Got into DTR hook");
-        String type = data.getString("type");
+        setJson(data.toString());
         JSONObject contents = data.getJSONObject("contents");
 
-        if ( type.equals("TAG_PUSH") ) {
+        if (contents != null) {
             String repository = contents.getString("imageName").split(":")[0];
-            pushNotifications.add(createPushNotification(repository, contents));
+            String eventType = data.getString("type");
+            DockerTrustedRegistryPushNotification pn = new DockerTrustedRegistryPushNotification(this, repository, eventType);
+            pn.setRegistryHost(contents.getString("imageName").split("/")[0]);
+            pn.setImageTag(contents.getString("tag"));
+            pushNotifications.add(pn);
         } else {
             logger.log(Level.FINER, "Skipping notification" + data.getString("location"));
         }
 
-    }
-
-    private DockerTrustedRegistryPushNotification createPushNotification(@Nonnull final String repoName, @Nonnull JSONObject contents) {
-        final String timestamp = contents.optString("pushedAt");
-        final String host = contents.getString("imageName").split("/")[0];
-        final String tag = contents.getString("tag");
-        final String hash = contents.getString("digest");
-        logger.info("ERIC DEBUG: Creating push notification with time: "+timestamp+" host:"+host+" repoName:"+repoName);
-        return new DockerTrustedRegistryPushNotification(this, repoName){{
-            DateTimeFormatter parser = ISODateTimeFormat.dateTimeParser();
-            setPushedAt(parser.parseDateTime(timestamp).toDate());
-            setRegistryHost(host);
-            setImageTag(tag);
-            setImageDigest(hash);
-        }};
     }
 }

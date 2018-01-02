@@ -1,40 +1,42 @@
 package org.jenkinsci.plugins.registry.notification.events.impl;
 
-import hudson.EnvVars;
 import hudson.Extension;
-import hudson.model.Run;
+import jenkins.model.Jenkins;
+import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.registry.notification.Messages;
 import org.jenkinsci.plugins.registry.notification.events.EventType;
 import org.jenkinsci.plugins.registry.notification.events.EventTypeDescriptor;
-import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-import javax.annotation.Nonnull;
+import javax.annotation.CheckForNull;
 
 public class TagDeleted extends EventType {
 
+    public static final String JSON_TYPE = "TAG_DELETE";
+
     @DataBoundConstructor
-    public TagDeleted() {
-    }
+    public TagDeleted() {}
 
     @Override
-    public boolean accepts(WebHookPayload payload) {
-        return false; //TODO
-    }
+    public String getType() { return JSON_TYPE; }
 
     @Override
-    public void buildEnvironment(@Nonnull Run r, @Nonnull EnvVars envs) {
-        envs.put(EventTypeDescriptor.ENVIRONMENT_KEY, "TAG_DELETED"); //TODO perhaps something more appropriate?
-    }
+    public String getTimeStamp(JSONObject contents) { return contents.optString("deletedAt"); }
 
     @Extension
     public static class DescriptorImpl extends EventTypeDescriptor {
-        public DescriptorImpl() {
-        }
-
         @Override
         public String getDisplayName() {
             return Messages.EventType_TagDeleted_DisplayName();
+        }
+
+        @CheckForNull
+        public static TagDeleted.DescriptorImpl getInstance() {
+            Jenkins jenkins = Jenkins.getInstance();
+            if (jenkins != null) {
+                return jenkins.getDescriptorByType(TagDeleted.DescriptorImpl.class);
+            }
+            return null;
         }
     }
 }
