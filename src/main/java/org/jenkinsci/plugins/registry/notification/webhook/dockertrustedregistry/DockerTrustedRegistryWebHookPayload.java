@@ -49,8 +49,7 @@ public class DockerTrustedRegistryWebHookPayload extends WebHookPayload {
         if (contents != null) {
             String repository = contents.getString("imageName").split(":")[0];
             String eventType = data.getString("type");
-            DockerTrustedRegistryPushNotification pn = new DockerTrustedRegistryPushNotification(this, repository, eventType);
-            pn.setRegistryHost(contents.getString("imageName").split("/")[0]);
+            DockerTrustedRegistryPushNotification pn = new DockerTrustedRegistryPushNotification(this, repository, eventType, contents.getString("imageName").split("/")[0]);
             pn.setImageTag(contents.getString("tag"));
             pushNotifications.add(pn);
         } else {

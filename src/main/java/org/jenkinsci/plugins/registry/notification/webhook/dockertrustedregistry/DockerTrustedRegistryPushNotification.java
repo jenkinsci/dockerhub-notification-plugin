@@ -50,10 +50,11 @@ public class DockerTrustedRegistryPushNotification extends PushNotification {
     private String imageTag;
     private String imageDigest;
 
-    public DockerTrustedRegistryPushNotification(DockerTrustedRegistryWebHookPayload webHookPayload, String repoName, String jsonEventType) {
+    public DockerTrustedRegistryPushNotification(DockerTrustedRegistryWebHookPayload webHookPayload, String repoName, String jsonEventType, String registryHost) {
         super(webHookPayload);
         this.repoName = repoName;
         this.dtrEventJSONType = jsonEventType;
+        this.registryHost = registryHost;
     }
 
     public String getImageTag() { return imageTag; }
@@ -63,10 +64,6 @@ public class DockerTrustedRegistryPushNotification extends PushNotification {
     @CheckForNull
     public String getRegistryHost() {
         return registryHost;
-    }
-
-    public void setRegistryHost(String registryHost) {
-        this.registryHost = registryHost;
     }
 
     public String getImageDigest() { return imageDigest; }

@@ -9,6 +9,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
 import javax.annotation.Nonnull;
+import java.text.ParseException;
 import java.util.logging.Logger;
 
 public abstract class EventType extends AbstractDescribableImpl<EventType> {
@@ -28,7 +29,10 @@ public abstract class EventType extends AbstractDescribableImpl<EventType> {
                 JSONObject contents = data.getJSONObject("contents");
                 if (contents != null) {
                     DateTimeFormatter parser = ISODateTimeFormat.dateTimeParser();
-                    push.setPushedAt(parser.parseDateTime(getTimeStamp(contents)).toDate());
+                    String timeStamp = getTimeStamp(contents);
+                    if( timeStamp != null ) {
+                        push.setPushedAt(parser.parseDateTime(timeStamp).toDate());
+                    }
 
                     envs.put(EventTypeDescriptor.ENVIRONMENT_KEY, getType());
                     if (hasDigest()) {
@@ -41,7 +45,7 @@ public abstract class EventType extends AbstractDescribableImpl<EventType> {
 
 
     public abstract String getType();
-    public abstract String getTimeStamp(JSONObject contents);
+    protected abstract String getTimeStamp(JSONObject contents);
 
     public boolean hasDigest() { return true; }
 

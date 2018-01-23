@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
@@ -28,7 +27,7 @@ public class EventTypeTest {
     private Map<EventType, PushNotification> pushTypes;
 
     public EventTypeTest() throws IOException {
-        pushTypes = new HashMap<>();
+        pushTypes = new HashMap<EventType, PushNotification>();
         pushTypes.putAll(getWebHookPayload(new TagPushed(), "/docker-trusted-registry-payload-tag-push.json"));
         pushTypes.putAll(getWebHookPayload(new TagDeleted(),"/docker-trusted-registry-payload-tag-delete.json"));
         pushTypes.putAll(getWebHookPayload(new ManifestPushed(), "/docker-trusted-registry-payload-manifest-push.json"));
@@ -38,9 +37,9 @@ public class EventTypeTest {
 
     private Set<Map.Entry<EventType, PushNotification>> getPushTypes(){ return pushTypes.entrySet(); }
 
-    private Map<EventType, PushNotification> getWebHookPayload(EventType et, String s) throws IOException {
-        JSONObject json = JSONObject.fromObject(IOUtils.toString(this.getClass().getResourceAsStream(s)));
-        return new HashMap<EventType, PushNotification>(){{ put(et, new DockerTrustedRegistryPushNotification( new DockerTrustedRegistryWebHookPayload(json), "junit/reponame", et.getType())); }};
+    private Map<EventType, PushNotification> getWebHookPayload(final EventType et, String s) throws IOException {
+        final JSONObject json = JSONObject.fromObject(IOUtils.toString(this.getClass().getResourceAsStream(s)));
+        return new HashMap<EventType, PushNotification>(){{ put(et, new DockerTrustedRegistryPushNotification( new DockerTrustedRegistryWebHookPayload(json), "junit/reponame", et.getType(), json.getJSONObject("contents").getString("imageName").split("/")[0])); }};
     }
 
     @Test
@@ -78,15 +77,21 @@ public class EventTypeTest {
     @Test
     @Parameters(method = "getPushTypes")
     public void testEachEventTypeShouldNotAcceptOtherPayloads(Map.Entry<EventType,PushNotification> pushType) throws Exception {
-        getOtherPushNotifications(pushType.getKey())
-                .forEach((otherType, otherPayload) ->
-                        assertFalse(pushType.getKey() + " accepted payload for "+otherType.getType()+" but should not have!", pushType.getKey().accepts(otherPayload.getDtrEventJSONTypeEventJSONType())));
+        for (Map.Entry<EventType, PushNotification> other : getOtherPushNotifications(pushType.getKey()).entrySet()) {
+            EventType otherType = other.getKey();
+            PushNotification otherPayload = other.getValue();
+            assertFalse(pushType.getKey() + " accepted payload for " + otherType.getType() + " but should not have!", pushType.getKey().accepts(otherPayload.getDtrEventJSONTypeEventJSONType()));
+        }
     }
 
-    private Map<EventType,PushNotification> getOtherPushNotifications(EventType eventType) {
-        return pushTypes.entrySet().stream()
-                .filter(map -> !map.getKey().equals(eventType))
-                .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
+    private Map<EventType, PushNotification> getOtherPushNotifications(EventType eventType) {
+        Map<EventType, PushNotification> others = new HashMap<EventType, PushNotification>();
+        for (Map.Entry<EventType, PushNotification> pt : pushTypes.entrySet()) {
+            if (!pt.getKey().equals(eventType)) {
+                others.put(pt.getKey(), pt.getValue());
+            }
+        }
+        return others;
     }
 
 }

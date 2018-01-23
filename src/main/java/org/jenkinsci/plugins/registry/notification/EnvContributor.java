@@ -51,8 +51,6 @@ import java.util.logging.Logger;
 @Extension
 @Restricted(NoExternalUse.class)
 public class EnvContributor extends EnvironmentContributor {
-    private static final Logger logger = Logger.getLogger(EnvContributor.class.getName());
-
     @Override
     public void buildEnvironmentFor(@Nonnull Run r, @Nonnull EnvVars envs, @Nonnull TaskListener listener) throws IOException, InterruptedException {
         WebHookCause cause = (WebHookCause)r.getCause(WebHookCause.class);
@@ -66,12 +64,10 @@ public class EnvContributor extends EnvironmentContributor {
                 final DockerHubTrigger trigger = DockerHubTrigger.getTrigger((ParameterizedJobMixIn.ParameterizedJob)parent);
                 if (trigger != null) {
                     final List<EventType> eventTypes = trigger.getEventTypes();
-                    if (eventTypes != null) {
-                        final String dtrJsonType = cause.getPushNotification().getDtrEventJSONTypeEventJSONType();
-                        for (EventType type : eventTypes) {
-                            if (type.accepts(dtrJsonType)) {
-                                type.buildEnvironment(envs, cause.getPushNotification());
-                            }
+                    final String dtrJsonType = cause.getPushNotification().getDtrEventJSONTypeEventJSONType();
+                    for (EventType type : eventTypes) {
+                        if (type.accepts(dtrJsonType)) {
+                            type.buildEnvironment(envs, cause.getPushNotification());
                         }
                     }
                 }

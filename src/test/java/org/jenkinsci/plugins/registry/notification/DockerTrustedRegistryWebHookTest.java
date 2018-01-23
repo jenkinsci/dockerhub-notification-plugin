@@ -59,7 +59,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertEquals;
@@ -108,13 +107,17 @@ public class DockerTrustedRegistryWebHookTest {
         }
     }
 
-    private List<Set<EventType>> allEventCombinationsWith(EventType firstType){
-        Set<EventType> types = new HashSet<EventType>(){{ add(firstType); }};
+    private List<Set<EventType>> allEventCombinationsWith(final EventType firstType){
+        final Set<EventType> types = new HashSet<EventType>(){{ add(firstType); }};
         List<Set<EventType>> typeList = new ArrayList<Set<EventType>>(){{ add(new HashSet<EventType>(){{addAll(types);}}); }};
 
-        Set<EventType> otherTypes = jsonPayload.keySet().stream()
-                .filter(t -> !t.equals(firstType))
-                .collect(Collectors.toSet());
+        Set<EventType> otherTypes = new HashSet<EventType>();
+        for ( EventType t : jsonPayload.keySet() ) {
+            if(!t.equals(firstType)){
+                otherTypes.add(t);
+            }
+
+        }
         for( EventType otherType: otherTypes){
             types.add(otherType);
             typeList.add(new HashSet<EventType>(){{addAll(types);}});
@@ -133,8 +136,8 @@ public class DockerTrustedRegistryWebHookTest {
        return createProjectsTriggeredByRepository(repositories, new HashSet<EventType>());
     }
 
-    private List <FreeStyleProject> createProjectsTriggeredByRepository(Set<String> repositories, Set<EventType> eventTypes) throws Exception {
-        List <FreeStyleProject> projects = new ArrayList<>();
+    private List <FreeStyleProject> createProjectsTriggeredByRepository(Set<String> repositories, final Set<EventType> eventTypes) throws Exception {
+        List <FreeStyleProject> projects = new ArrayList<FreeStyleProject>();
         for (final String repository : repositories) {
             FreeStyleProject project = j.createFreeStyleProject();
             DockerHubTrigger dht = new DockerHubTrigger(new TriggerOnSpecifiedImageNames(new ArrayList<String>() {{
@@ -192,7 +195,7 @@ public class DockerTrustedRegistryWebHookTest {
             return expectedRepos;
         }
 
-        public void setExpectedRepos(Set<String> expectedRepos) {
+        public void setExpectedRepos(final Set<String> expectedRepos) {
             this.expectedRepos = new HashSet<String>(){{ addAll(expectedRepos); }};
         }
 
