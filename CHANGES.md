@@ -2,6 +2,12 @@
 
 Only noting significant user-visible or major API changes, not internal code cleanups and minor bug fixes.
 
+## 2.2.1 (Jan 04, 2018)
+
+* [JENKINS-47736](https://issues.jenkins-ci.org/browse/JENKINS-47736) - 
+Stop serializing `JSONObjects` over the Remoting to make the plugin compatible with Jenkins 2.102+
+  * More info: [Plugins affected by fix for JEP-200](https://wiki.jenkins.io/display/JENKINS/Plugins+affected+by+fix+for+JEP-200)
+
 ## 2.2.0 (Jun 15, 2016)
 * Expose tag and pusher in the build environment _([PR #15](https://github.com/jenkinsci/dockerhub-notification-plugin/pull/15))_
 * _Dev:_ [JENKINS-35629](https://issues.jenkins-ci.org/browse/JENKINS-35629) Convert to new plugin parent pom _([PR #14](https://github.com/jenkinsci/dockerhub-notification-plugin/pull/14))_
