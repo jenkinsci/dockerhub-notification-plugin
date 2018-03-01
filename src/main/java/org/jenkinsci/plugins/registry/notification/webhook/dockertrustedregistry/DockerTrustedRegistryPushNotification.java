@@ -66,10 +66,6 @@ public class DockerTrustedRegistryPushNotification extends PushNotification {
         return registryHost;
     }
 
-    public String getImageDigest() { return imageDigest; }
-
-    public void setImageDigest(String imageDigest) { this.imageDigest = imageDigest; }
-
     @Override
     public Cause getCause() {
         return new DockerTrustedRegistryWebHookCause(this);
