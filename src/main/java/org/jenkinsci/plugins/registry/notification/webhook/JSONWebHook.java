@@ -136,7 +136,7 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
 
     private boolean isTriggeredDTRNotification(PushNotification pn, List<EventType> triggeredEventTypes ) {
         if (isDTRNofification(pn)) {
-            String pnType = pn.getDtrEventJSONTypeEventJSONType();
+            String pnType = ((DockerTrustedRegistryPushNotification)pn).getDtrEventJSONType();
             if (!triggeredEventTypes.isEmpty()) {
                 for( EventType t : triggeredEventTypes ){
                     if (t.accepts(pnType)){

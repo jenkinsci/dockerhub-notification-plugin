@@ -48,7 +48,8 @@ public class DockerTrustedRegistryPushNotification extends PushNotification {
     public static final String KEY_DOCKER_IMAGE_TAG = WebHookPayload.PREFIX + "DOCKER_IMAGE_TAG";
     private String registryHost;
     private String imageTag;
-    private String imageDigest;
+    private String dtrEventJSONType;
+
 
     public DockerTrustedRegistryPushNotification(DockerTrustedRegistryWebHookPayload webHookPayload, String repoName, String jsonEventType, String registryHost) {
         super(webHookPayload);
@@ -71,7 +72,8 @@ public class DockerTrustedRegistryPushNotification extends PushNotification {
         return new DockerTrustedRegistryWebHookCause(this);
     }
 
-    @Override
+    public String getDtrEventJSONType() { return dtrEventJSONType; }
+
     public Set<ParameterValue> getRunParameters() {
         Set<ParameterValue> parameters = new HashSet<ParameterValue>();
         parameters.add(new StringParameterValue(KEY_REPO_NAME, getRepoName()));
@@ -88,7 +90,7 @@ public class DockerTrustedRegistryPushNotification extends PushNotification {
 
     @Override
     public String getCauseMessage() {
-        return "WebHook " + getDtrEventJSONTypeEventJSONType() +" notification for " + getRepoName() + " has been received from DTR " + getRegistryHost();
+        return "WebHook " + getDtrEventJSONType() +" notification for " + getRepoName() + " has been received from DTR " + getRegistryHost();
     }
 
     public String sha() {
@@ -97,7 +99,7 @@ public class DockerTrustedRegistryPushNotification extends PushNotification {
 
     @Override
     public String getShortDescription() {
-        return String.format("WebHook %s notification for %s to DTR %s", getDtrEventJSONTypeEventJSONType() ,getRepoName(), getRegistryHost());
+        return String.format("WebHook %s notification for %s to DTR %s", getDtrEventJSONType() ,getRepoName(), getRegistryHost());
     }
 
 }

@@ -33,7 +33,9 @@ import hudson.model.Run;
 import hudson.model.TaskListener;
 import jenkins.model.ParameterizedJobMixIn;
 import org.jenkinsci.plugins.registry.notification.events.EventType;
+import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookCause;
+import org.jenkinsci.plugins.registry.notification.webhook.dockertrustedregistry.DockerTrustedRegistryPushNotification;
 import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.NoExternalUse;
 
@@ -62,9 +64,10 @@ public class EnvContributor extends EnvironmentContributor {
             final Job parent = r.getParent();
             if (parent instanceof ParameterizedJobMixIn.ParameterizedJob) {
                 final DockerHubTrigger trigger = DockerHubTrigger.getTrigger((ParameterizedJobMixIn.ParameterizedJob)parent);
-                if (trigger != null) {
+                final PushNotification push = cause.getPushNotification();
+                if (trigger != null && push instanceof DockerTrustedRegistryPushNotification) {
                     final List<EventType> eventTypes = trigger.getEventTypes();
-                    final String dtrJsonType = cause.getPushNotification().getDtrEventJSONTypeEventJSONType();
+                    final String dtrJsonType = ((DockerTrustedRegistryPushNotification)push).getDtrEventJSONType();
                     for (EventType type : eventTypes) {
                         if (type.accepts(dtrJsonType)) {
                             type.buildEnvironment(envs, cause.getPushNotification());

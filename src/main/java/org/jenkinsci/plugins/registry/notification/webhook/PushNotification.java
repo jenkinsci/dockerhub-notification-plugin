@@ -38,7 +38,6 @@ public abstract class PushNotification {
     private final WebHookPayload webHookPayload;
 
     protected String repoName;
-    protected String dtrEventJSONType;
     private Date pushedAt;
 
     CallbackHandler callbackHandler = new CallbackHandler() {
@@ -135,10 +134,5 @@ public abstract class PushNotification {
     }
 
     abstract public String getRegistryHost();
-
-    public String getDtrEventJSONTypeEventJSONType() { return dtrEventJSONType; }
-
-    public void setDtrEventJSONType(String type) { this.dtrEventJSONType = type; }
-
 
 }

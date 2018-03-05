@@ -43,6 +43,7 @@ import org.jenkinsci.plugins.registry.notification.events.impl.TagPushed;
 import org.jenkinsci.plugins.registry.notification.opt.impl.TriggerOnSpecifiedImageNames;
 import org.jenkinsci.plugins.registry.notification.webhook.Http;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookCause;
+import org.jenkinsci.plugins.registry.notification.webhook.dockertrustedregistry.DockerTrustedRegistryPushNotification;
 import org.jenkinsci.plugins.registry.notification.webhook.dockertrustedregistry.DockerTrustedRegistryWebHook;
 import org.junit.Rule;
 import org.junit.Test;
@@ -180,7 +181,8 @@ public class DockerTrustedRegistryWebHookTest {
             super.onFinalized(run);
             Cause cause = run.getCauses().get(0);
             if (cause instanceof WebHookCause) {
-                String eventType = ((WebHookCause) cause).getPushNotification().getDtrEventJSONTypeEventJSONType();
+                DockerTrustedRegistryPushNotification pn = (DockerTrustedRegistryPushNotification) ((WebHookCause) cause).getPushNotification();
+                String eventType = pn.getDtrEventJSONType();
                 if( expectedEventType.accepts(eventType) ) {
                     hitCounter++;
                     String repoName = ((WebHookCause) cause).getPushNotification().getRepoName();

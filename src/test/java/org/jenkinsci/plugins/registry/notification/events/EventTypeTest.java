@@ -24,10 +24,10 @@ import static org.junit.Assert.*;
 
 @RunWith(JUnitParamsRunner.class)
 public class EventTypeTest {
-    private Map<EventType, PushNotification> pushTypes;
+    private Map<EventType, DockerTrustedRegistryPushNotification> pushTypes;
 
     public EventTypeTest() throws IOException {
-        pushTypes = new HashMap<EventType, PushNotification>();
+        pushTypes = new HashMap<EventType, DockerTrustedRegistryPushNotification>();
         pushTypes.putAll(getWebHookPayload(new TagPushed(), "/docker-trusted-registry-payload-tag-push.json"));
         pushTypes.putAll(getWebHookPayload(new TagDeleted(),"/docker-trusted-registry-payload-tag-delete.json"));
         pushTypes.putAll(getWebHookPayload(new ManifestPushed(), "/docker-trusted-registry-payload-manifest-push.json"));
@@ -35,11 +35,11 @@ public class EventTypeTest {
         pushTypes.putAll(getWebHookPayload(new SecurityScanCompleted(),"/docker-trusted-registry-payload-scan-completed.json"));
     }
 
-    private Set<Map.Entry<EventType, PushNotification>> getPushTypes(){ return pushTypes.entrySet(); }
+    private Set<Map.Entry<EventType, DockerTrustedRegistryPushNotification>> getPushTypes(){ return pushTypes.entrySet(); }
 
-    private Map<EventType, PushNotification> getWebHookPayload(final EventType et, String s) throws IOException {
+    private Map<EventType, DockerTrustedRegistryPushNotification> getWebHookPayload(final EventType et, String s) throws IOException {
         final JSONObject json = JSONObject.fromObject(IOUtils.toString(this.getClass().getResourceAsStream(s)));
-        return new HashMap<EventType, PushNotification>(){{ put(et, new DockerTrustedRegistryPushNotification( new DockerTrustedRegistryWebHookPayload(json), "junit/reponame", et.getType(), json.getJSONObject("contents").getString("imageName").split("/")[0])); }};
+        return new HashMap<EventType, DockerTrustedRegistryPushNotification>(){{ put(et, new DockerTrustedRegistryPushNotification( new DockerTrustedRegistryWebHookPayload(json), "junit/reponame", et.getType(), json.getJSONObject("contents").getString("imageName").split("/")[0])); }};
     }
 
     @Test
@@ -70,23 +70,23 @@ public class EventTypeTest {
 
     @Test
     @Parameters(method = "getPushTypes")
-    public void testEachEventTypeShouldAcceptItsOwnPayload(Map.Entry<EventType,PushNotification> pushType) throws Exception {
-        assertTrue(pushType.getKey() + " should have accepted it's own payload but didn't!", pushType.getKey().accepts(pushType.getValue().getDtrEventJSONTypeEventJSONType()));
+    public void testEachEventTypeShouldAcceptItsOwnPayload(Map.Entry<EventType,DockerTrustedRegistryPushNotification> pushType) throws Exception {
+        assertTrue(pushType.getKey() + " should have accepted it's own payload but didn't!", pushType.getKey().accepts(pushType.getValue().getDtrEventJSONType()));
     }
 
     @Test
     @Parameters(method = "getPushTypes")
-    public void testEachEventTypeShouldNotAcceptOtherPayloads(Map.Entry<EventType,PushNotification> pushType) throws Exception {
-        for (Map.Entry<EventType, PushNotification> other : getOtherPushNotifications(pushType.getKey()).entrySet()) {
+    public void testEachEventTypeShouldNotAcceptOtherPayloads(Map.Entry<EventType,DockerTrustedRegistryPushNotification> pushType) throws Exception {
+        for (Map.Entry<EventType, DockerTrustedRegistryPushNotification> other : getOtherPushNotifications(pushType.getKey()).entrySet()) {
             EventType otherType = other.getKey();
-            PushNotification otherPayload = other.getValue();
-            assertFalse(pushType.getKey() + " accepted payload for " + otherType.getType() + " but should not have!", pushType.getKey().accepts(otherPayload.getDtrEventJSONTypeEventJSONType()));
+            DockerTrustedRegistryPushNotification otherPayload = other.getValue();
+            assertFalse(pushType.getKey() + " accepted payload for " + otherType.getType() + " but should not have!", pushType.getKey().accepts(otherPayload.getDtrEventJSONType()));
         }
     }
 
-    private Map<EventType, PushNotification> getOtherPushNotifications(EventType eventType) {
-        Map<EventType, PushNotification> others = new HashMap<EventType, PushNotification>();
-        for (Map.Entry<EventType, PushNotification> pt : pushTypes.entrySet()) {
+    private Map<EventType, DockerTrustedRegistryPushNotification> getOtherPushNotifications(EventType eventType) {
+        Map<EventType, DockerTrustedRegistryPushNotification> others = new HashMap<EventType, DockerTrustedRegistryPushNotification>();
+        for (Map.Entry<EventType, DockerTrustedRegistryPushNotification> pt : pushTypes.entrySet()) {
             if (!pt.getKey().equals(eventType)) {
                 others.put(pt.getKey(), pt.getValue());
             }
