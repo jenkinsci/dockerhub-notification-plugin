@@ -25,6 +25,7 @@ package org.jenkinsci.plugins.registry.notification.webhook;
 
 import hudson.Extension;
 import hudson.security.csrf.CrumbExclusion;
+import org.jenkinsci.plugins.registry.notification.webhook.acr.ACRWebHook;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubWebHook;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerregistry.DockerRegistryWebHook;
 
@@ -43,11 +44,12 @@ import java.io.IOException;
 public class WebHookCrumbExclusion extends CrumbExclusion {
     private static final String REGISTRY_BASE = "/" + DockerRegistryWebHook.URL_NAME + "/";
     private static final String HUB_BASE = "/" + DockerHubWebHook.URL_NAME + "/";
+    private static final String ACR_BASE = "/" + ACRWebHook.URL_NAME + "/";
 
     @Override
     public boolean process(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String pathInfo = request.getPathInfo();
-        if (pathInfo != null && (pathInfo.startsWith(REGISTRY_BASE) || pathInfo.startsWith(HUB_BASE))) {
+        if (pathInfo != null && (pathInfo.startsWith(REGISTRY_BASE) || pathInfo.startsWith(HUB_BASE) || pathInfo.startsWith(ACR_BASE))) {
             chain.doFilter(request, response);
             return true;
         }
