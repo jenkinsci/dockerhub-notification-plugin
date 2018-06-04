@@ -30,9 +30,7 @@ public class ACRWebHookPayload extends WebHookPayload {
 
     public ACRWebHookPayload(@Nonnull final JSONObject data) {
         setData(data);
-        if (data != null) {
-            setJson(data.toString());
-        }
+        setJson(data.toString());
 
         if (Action.PUSH.getName().equals(data.optString("action"))) {
             final JSONObject event = data;

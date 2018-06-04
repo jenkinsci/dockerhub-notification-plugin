@@ -4,6 +4,7 @@ import hudson.Util;
 import hudson.model.Cause;
 import hudson.model.ParameterValue;
 import hudson.model.StringParameterValue;
+import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
@@ -22,7 +23,15 @@ public class ACRPushNotification extends PushNotification {
 
     public ACRPushNotification(ACRWebHookPayload webHookPayload, String repoName) {
         super(webHookPayload);
-        this.tag = webHookPayload.getData().getJSONObject("target").getString("tag");
+        if (webHookPayload != null) {
+            JSONObject data = webHookPayload.getData();
+            if (data != null) {
+                JSONObject target = data.getJSONObject("target");
+                if (target != null) {
+                    this.tag = target.optString("tag");
+                }
+            }
+        }
         this.repoName = repoName;
     }
 
