@@ -47,4 +47,11 @@ ul {
             span(_('dockerRegistryUrlBlurb'))
         }
     }
+    li {
+        em {
+            strong(webHookUrl('acr-webhook'))
+            raw('&nbsp;')
+            span(_('acrUrlBlurb'))
+        }
+    }
 }

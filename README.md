@@ -35,6 +35,12 @@ The simplest viable configuration looks like this:
         backoff: 1s
 ```
 
+# Configuring Azure Container Registry
+
+You can find a detailed guide on how to configure webhooks on ACR on
+[docs.microsoft.com](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-webhook).
+Use `http://JENKINS/acr-webhook/notify` as "Service URI".
+
 
 # Examples
 

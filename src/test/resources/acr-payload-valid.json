@@ -1,0 +1,19 @@
+{
+  "id": "52ba983c-67d6-11e8-8c71-4a0006ae5a20",
+  "timestamp": "2018-06-04T09:04:00.000000000Z",
+  "action": "push",
+  "target": {
+    "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+    "size": 524,
+    "digest": "sha256:f5233545e43561214ca4891fd1157e1c3c563316ed8e237750d59bde73361e77",
+    "length": 524,
+    "repository": "hello-world",
+    "tag": "v1"
+  },
+  "request": {
+    "id": "5d97eae8-67d6-11e8-b1ec-4a0006ae5a20",
+    "host": "myregistry.azurecr.io",
+    "method": "PUT",
+    "useragent": "some user agent"
+  }
+}

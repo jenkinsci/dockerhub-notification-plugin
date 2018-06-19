@@ -2,6 +2,10 @@
 
 Only noting significant user-visible or major API changes, not internal code cleanups and minor bug fixes.
 
+## Unreleased
+
+* Add support for ACR webhooks.
+
 ## 2.2.1 (Jan 04, 2018)
 
 * [JENKINS-47736](https://issues.jenkins-ci.org/browse/JENKINS-47736) - 
