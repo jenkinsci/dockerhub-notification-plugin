@@ -35,9 +35,9 @@ public class ACRWebHookPayload extends WebHookPayload {
         if (Action.PUSH.getName().equals(data.optString("action"))) {
             final JSONObject event = data;
             final String host = event.getJSONObject("request").getString("host");
-            final String url = String.format("%s/%s",
-                    host,
-                    event.getJSONObject("target").getString("repository"));
+            final String url = new StringBuilder()
+                    .append(host).append("/").append(event.getJSONObject("target").getString("repository"))
+                    .toString();
             if (logger.isLoggable(Level.FINE)) {
                 logger.log(Level.FINE, "Creating push notification for " + url);
             }

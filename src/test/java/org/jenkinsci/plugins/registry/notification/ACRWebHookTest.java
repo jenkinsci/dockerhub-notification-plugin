@@ -49,6 +49,7 @@ public class ACRWebHookTest {
         ACRPushNotification notification = listener.getPushNotification();
         assertNotNull(notification);
         assertEquals("v1", notification.getTag());
+        assertEquals("myregistry.azurecr.io", notification.getRegistryHost());
 
     }
 
