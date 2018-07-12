@@ -2,9 +2,9 @@
 
 Only noting significant user-visible or major API changes, not internal code cleanups and minor bug fixes.
 
-## Unreleased
+## 2.3.0 (Jul 12, 2018)
 
-* Add support for ACR webhooks.
+* Added support for ACR webhooks.
 
 ## 2.2.1 (Jan 04, 2018)
 
