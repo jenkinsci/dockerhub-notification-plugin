@@ -64,7 +64,7 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
         WebHookPayload hookPayload = null;
         if (payload != null) {
             try {
-                hookPayload = createPushNotification(JSONObject.fromObject(payload));
+                hookPayload = createPushNotification(JSONObject.fromObject(payload), request);
             } catch (Exception e) {
                 logger.log(Level.SEVERE, "Could not parse the web hook payload!", e);
             }
@@ -105,14 +105,15 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
             @Override
             public void run() {
                 // search all jobs for DockerHubTrigger
+                logger.log(Level.FINER, "Triggering all jobs watching {0}", pushNotification.getRepoName());
                 for (ParameterizedJobMixIn.ParameterizedJob p : jenkins.getAllItems(ParameterizedJobMixIn.ParameterizedJob.class)) {
                     DockerHubTrigger trigger = DockerHubTrigger.getTrigger(p);
                     if (trigger == null) {
                         logger.log(Level.FINER, "job {0} doesn't have DockerHubTrigger set", p.getName());
                         continue;
                     }
-                    logger.log(Level.FINER, "Inspecting candidate job {0}", p.getName());
                     Set<String> allRepoNames = trigger.getAllRepoNames();
+                    logger.log(Level.FINER, "Inspecting candidate job {0} repos {1}", new Object[]{p.getName(), allRepoNames});
                     String repoName = pushNotification.getRepoName();
                     if (allRepoNames.contains(repoName)) {
                         schedule((Job) p, pushNotification);
@@ -142,7 +143,7 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
         response.sendRedirect(request.getContextPath() + "/");
     }
 
-    protected abstract WebHookPayload createPushNotification(JSONObject data);
+    protected abstract WebHookPayload createPushNotification(JSONObject data, StaplerRequest request);
 
     private WebHookPayload parse(StaplerRequest req) throws IOException {
         //TODO Actually test what duckerhub is really sending
@@ -154,7 +155,7 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
         logger.log(Level.FINER, "Received commit hook notification : {0}", body);
         try {
             JSONObject payload = JSONObject.fromObject(body);
-            return createPushNotification(payload);
+            return createPushNotification(payload, req);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Could not parse the web hook payload!", e);
             return null;

@@ -30,6 +30,7 @@ import org.jenkinsci.plugins.registry.notification.webhook.JSONWebHook;
 import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
 import java.io.IOException;
@@ -82,7 +83,7 @@ public class DockerHubWebHook extends JSONWebHook {
     }
 
     @Override
-    protected WebHookPayload createPushNotification(JSONObject payload) {
+    protected WebHookPayload createPushNotification(JSONObject payload, StaplerRequest request) {
         return new DockerHubWebHookPayload(payload);
     }
 
