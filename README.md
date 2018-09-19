@@ -4,6 +4,7 @@ CloudBees Docker Hub/Registry Notification
 This plugin provides integration between 
 * Jenkins and Docker Hub
 * Jenkins and Docker Registry 2.0
+* Jenkins and Docker Trusted Registry (DTR)
 
 , utilizing webhooks to trigger one (or more) Jenkins job(s).
 This allows you to implement continuous delivery pipelines based on Docker in Jenkins.
@@ -18,7 +19,7 @@ Configure your Docker Hub repository with a webhook to your public jenkins insta
 
 In your <a href="https://hub.docker.com/">hub.docker.com</a> repository, you can find the "webhooks" section and point it to your jenkins instance: 
 
-<img src="dockerhub.png">
+<img src="images/dockerhub.png">
 
 # Configuring Docker Registry 2.0
 
@@ -40,6 +41,25 @@ The simplest viable configuration looks like this:
 You can find a detailed guide on how to configure webhooks on ACR on
 [docs.microsoft.com](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-webhook).
 Use `http://JENKINS/acr-webhook/notify` as "Service URI".
+
+# Configuring Docker Trusted Registry
+
+The basic setup is done by opening the "WEBHOOKS" tab in a DTR repository, click "New Webhook" and fill in the form with to send notifications to `http://JENKINS/dockertrustedregistry-webhook/notify`.
+
+![dtr-webhook](images/dtr-webhook-config.png)
+
+See Docker Trusted Registry [documentation](https://docs.docker.com/datacenter/dtr/2.4/guides/user/create-and-manage-webhooks/) for full details on how to configure DTR webhooks.
+
+Note that DTR offers discreet webhooks for several different notification types so additional configuration may be needed in your Jenkins project "Build Triggers" section.  By default, Jenkins will trigger a build for only DTR, `"TAG_PUSH"`, notifications; if you wish to build for other types you will need to open the "Advanced" section in the configuration and select which event types to listen for.
+
+![project-config](images/project-config-triggers-advanced.png)
+
+Currently, this plugin supports all event types available in DTR 2.4:
+* Tag pushed to repository: `TAG_PUSH`  (Default)
+* Tag deleted on repoitory: `TAG_DELETE`
+* Manifest pushed to repository `MANIFEST_PUSH`
+* Manifest deleted on repository `MANIFEST_DELETE`
+* Security scan completed: `SCAN_COMPLETED`
 
 
 # Examples

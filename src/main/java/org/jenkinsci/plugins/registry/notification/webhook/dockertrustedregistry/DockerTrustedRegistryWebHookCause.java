@@ -1,7 +1,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2015, CloudBees, Inc.
+ * Copyright (c) 2015, HolidayCheck AG.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,44 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jenkinsci.plugins.registry.notification.DockerHubTrigger
+package org.jenkinsci.plugins.registry.notification.webhook.dockertrustedregistry;
 
-import jenkins.model.Jenkins
 
-def webHookUrl(String rootAction) {
-    String rootUrl = Jenkins.instance?.getRootUrl() ?: "http://myJENKINS/";
-    return rootUrl + "${rootAction}/notify"
-}
+import org.jenkinsci.plugins.registry.notification.webhook.WebHookCause;
 
-p(_("generalBlurb"))
-p(_("details"))
-ul {
-    li {
-        em {
-            strong(webHookUrl('dockerhub-webhook'))
-            raw('&nbsp;')
-            span(_('dockerHubUrlBlurb'))
-        }
+import javax.annotation.Nonnull;
+
+/**
+ * The build cause of {@link DockerTrustedRegistryWebHook}.
+ */
+public class DockerTrustedRegistryWebHookCause extends WebHookCause {
+
+    public DockerTrustedRegistryWebHookCause(@Nonnull DockerTrustedRegistryPushNotification dockerTrustedRegistryPushNotification) {
+        super(dockerTrustedRegistryPushNotification);
     }
-    li {
-        em {
-            strong(webHookUrl('dockerregistry-webhook'))
-            raw('&nbsp;')
-            span(_('dockerRegistryUrlBlurb'))
-        }
+
+    @Override
+    public String getShortDescription() {
+        return String.format("Triggered by %s", getPushNotification().getShortDescription());
     }
-    li {
-        em {
-            strong(webHookUrl('acr-webhook'))
-            raw('&nbsp;')
-            span(_('acrUrlBlurb'))
-        }
-    }
-    li {
-        em {
-            strong(webHookUrl('dockertrustedregistry-webhook'))
-            raw('&nbsp;')
-            span(_('dockerTrustedRegistryUrlBlurb'))
-        }
+
+    @Override
+    public String toString() {
+        return "DockerTrustedRegistryWebHookCause{" +
+                "payload=" + getPushNotification().getWebHookPayload() +
+                '}';
     }
 }

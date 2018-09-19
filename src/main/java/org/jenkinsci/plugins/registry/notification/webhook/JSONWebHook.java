@@ -33,6 +33,9 @@ import org.apache.commons.io.IOUtils;
 import org.jenkinsci.plugins.registry.notification.Coordinator;
 import org.jenkinsci.plugins.registry.notification.DockerHubTrigger;
 import org.jenkinsci.plugins.registry.notification.TriggerStore;
+import org.jenkinsci.plugins.registry.notification.events.EventType;
+import org.jenkinsci.plugins.registry.notification.events.impl.TagPushed;
+import org.jenkinsci.plugins.registry.notification.webhook.dockertrustedregistry.DockerTrustedRegistryPushNotification;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -112,14 +115,39 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
                         continue;
                     }
                     logger.log(Level.FINER, "Inspecting candidate job {0}", p.getName());
+
+                    List<EventType> eventTypes = trigger.getEventTypes();
                     Set<String> allRepoNames = trigger.getAllRepoNames();
                     String repoName = pushNotification.getRepoName();
-                    if (allRepoNames.contains(repoName)) {
+
+                    if( (!isDTRNofification(pushNotification) || isTriggeredDTRNotification(pushNotification, eventTypes)) &&
+                        allRepoNames.contains(repoName)) {
                         schedule((Job) p, pushNotification);
                     }
+
                 }
             }
         });
+    }
+
+    private boolean isDTRNofification(PushNotification pn) {
+        return pn instanceof DockerTrustedRegistryPushNotification;
+    }
+
+    private boolean isTriggeredDTRNotification(PushNotification pn, List<EventType> triggeredEventTypes ) {
+        if (isDTRNofification(pn)) {
+            String pnType = ((DockerTrustedRegistryPushNotification)pn).getDtrEventJSONType();
+            if (!triggeredEventTypes.isEmpty()) {
+                for( EventType t : triggeredEventTypes ){
+                    if (t.accepts(pnType)){
+                        return true;
+                    }
+                }
+            } else {
+                return pnType.equals(TagPushed.JSON_TYPE);
+            }
+        }
+        return false;
     }
 
     private void schedule(@Nonnull final Job job, @Nonnull final PushNotification pushNotification) {

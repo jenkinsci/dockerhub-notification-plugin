@@ -1,0 +1,17 @@
+{
+  "type": "MANIFEST_DELETE",
+  "createdAt": "2017-12-18T02:33:45.452418977Z",
+  "contents": {
+    "namespace": "foo",
+    "repository": "bar",
+    "tag": "latest",
+    "digest": "sha256:b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c",
+    "imageName": "dtr.unit.test.com/foo/bar:latest",
+    "os": "linux",
+    "architecture": "amd64",
+    "author": "",
+    "deletedAt": "2015-01-02T15:04:05Z"
+  },
+  "location": "/repositories/foo/bar/manifests/sha256:b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c"
+}
+

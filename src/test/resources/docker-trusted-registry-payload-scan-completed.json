@@ -1,0 +1,23 @@
+{
+  "type": "SCAN_COMPLETED",
+  "createdAt": "2017-12-19T03:47:17.912418368Z",
+  "contents": {
+    "namespace": "foo",
+    "repository": "bar",
+    "tag": "latest",
+    "imageName": "dtr.unit.test.com/foo/bar:latest",
+    "scanSummary": {
+      "namespace": "foo",
+      "reponame": "bar",
+      "tag": "latest",
+      "critical": 5,
+      "major": 3,
+      "minor": 0,
+      "last_scan_status": 6,
+      "check_completed_at": "2015-01-02T15:04:05Z",
+      "should_rescan": false,
+      "has_foreign_layers": false
+    }
+  },
+  "location": "/repositories/foo/bar/tags/latest"
+}

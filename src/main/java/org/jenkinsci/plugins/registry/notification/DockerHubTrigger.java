@@ -38,6 +38,7 @@ import hudson.util.XStream2;
 import jenkins.model.Jenkins;
 import jenkins.model.ParameterizedJobMixIn;
 import net.sf.json.JSONObject;
+import org.jenkinsci.plugins.registry.notification.events.EventType;
 import org.jenkinsci.plugins.registry.notification.opt.TriggerOption;
 import org.jenkinsci.plugins.registry.notification.opt.TriggerOptionDescriptor;
 import org.jenkinsci.plugins.registry.notification.opt.impl.TriggerForAllUsedInJob;
@@ -69,6 +70,7 @@ import java.util.logging.Logger;
 public class DockerHubTrigger extends Trigger<Job<?, ?>> {
 
     private List<TriggerOption> options;
+    private List<EventType> eventTypes;
 
     @DataBoundConstructor
     public DockerHubTrigger(List<TriggerOption> options) {
@@ -97,6 +99,19 @@ public class DockerHubTrigger extends Trigger<Job<?, ?>> {
     @DataBoundSetter
     public void setOptions(List<TriggerOption> options) {
         this.options = options;
+    }
+
+    public List<EventType> getEventTypes() {
+        return Collections.unmodifiableList(eventTypes == null ? new Vector<EventType>() : eventTypes);
+    }
+
+    @DataBoundSetter
+    public void setEventTypes(List<EventType> eventTypes) {
+        if (eventTypes != null) {
+            this.eventTypes = new Vector<EventType>(eventTypes);
+        } else {
+            this.eventTypes = new Vector<EventType>();
+        }
     }
 
     @Nonnull
@@ -138,6 +153,7 @@ public class DockerHubTrigger extends Trigger<Job<?, ?>> {
 
         @Override
         public Trigger<?> newInstance(StaplerRequest req, JSONObject formData) throws FormException {
+            //TODO can't remember why we are doing it this convoluted way but it looks intentional
             JSONObject data = formData.getJSONObject("options");
             List<TriggerOption> r = new Vector<TriggerOption>();
             for (TriggerOptionDescriptor d : TriggerOptionDescriptor.all()) {
@@ -147,7 +163,9 @@ public class DockerHubTrigger extends Trigger<Job<?, ?>> {
                     r.add(instance);
                 }
             }
-            return new DockerHubTrigger(r);
+            final DockerHubTrigger dockerHubTrigger = new DockerHubTrigger(r);
+            dockerHubTrigger.setEventTypes(req.bindJSONToList(EventType.class, formData.opt("eventTypes")));
+            return dockerHubTrigger;
         }
     }
 

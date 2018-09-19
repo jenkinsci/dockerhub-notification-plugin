@@ -27,16 +27,23 @@ package org.jenkinsci.plugins.registry.notification;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.model.EnvironmentContributor;
+import hudson.model.Job;
 import hudson.model.ParameterValue;
 import hudson.model.Run;
 import hudson.model.TaskListener;
+import jenkins.model.ParameterizedJobMixIn;
+import org.jenkinsci.plugins.registry.notification.events.EventType;
+import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookCause;
+import org.jenkinsci.plugins.registry.notification.webhook.dockertrustedregistry.DockerTrustedRegistryPushNotification;
 import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.NoExternalUse;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * Provides environment variables to builds triggered by the plugin.
@@ -46,7 +53,6 @@ import java.util.Set;
 @Extension
 @Restricted(NoExternalUse.class)
 public class EnvContributor extends EnvironmentContributor {
-
     @Override
     public void buildEnvironmentFor(@Nonnull Run r, @Nonnull EnvVars envs, @Nonnull TaskListener listener) throws IOException, InterruptedException {
         WebHookCause cause = (WebHookCause)r.getCause(WebHookCause.class);
@@ -55,6 +61,21 @@ public class EnvContributor extends EnvironmentContributor {
             for (ParameterValue parameter : parameters) {
                 parameter.buildEnvironment(r, envs);
             }
+            final Job parent = r.getParent();
+            if (parent instanceof ParameterizedJobMixIn.ParameterizedJob) {
+                final DockerHubTrigger trigger = DockerHubTrigger.getTrigger((ParameterizedJobMixIn.ParameterizedJob)parent);
+                final PushNotification push = cause.getPushNotification();
+                if (trigger != null && push instanceof DockerTrustedRegistryPushNotification) {
+                    final List<EventType> eventTypes = trigger.getEventTypes();
+                    final String dtrJsonType = ((DockerTrustedRegistryPushNotification)push).getDtrEventJSONType();
+                    for (EventType type : eventTypes) {
+                        if (type.accepts(dtrJsonType)) {
+                            type.buildEnvironment(envs, cause.getPushNotification());
+                        }
+                    }
+                }
+            }
+
         }
     }
 }

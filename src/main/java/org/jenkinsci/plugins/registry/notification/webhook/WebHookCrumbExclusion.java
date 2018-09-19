@@ -28,6 +28,7 @@ import hudson.security.csrf.CrumbExclusion;
 import org.jenkinsci.plugins.registry.notification.webhook.acr.ACRWebHook;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubWebHook;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerregistry.DockerRegistryWebHook;
+import org.jenkinsci.plugins.registry.notification.webhook.dockertrustedregistry.DockerTrustedRegistryWebHook;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -36,12 +37,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Excludes {@link DockerHubWebHook} and {@link DockerRegistryWebHook} from having a CSRF protection filter.
+ * Excludes {@link DockerHubWebHook}, {@link DockerRegistryWebHook} and {@link DockerTrustedRegistryWebHook} from having a CSRF protection filter.
  *
  * @author Robert Sandell &lt;rsandell@cloudbees.com&gt;.
  */
 @Extension
 public class WebHookCrumbExclusion extends CrumbExclusion {
+    private static final String TRUSTED_REGISTRY_BASE = "/" + DockerTrustedRegistryWebHook.URL_NAME + "/";
     private static final String REGISTRY_BASE = "/" + DockerRegistryWebHook.URL_NAME + "/";
     private static final String HUB_BASE = "/" + DockerHubWebHook.URL_NAME + "/";
     private static final String ACR_BASE = "/" + ACRWebHook.URL_NAME + "/";
@@ -49,7 +51,7 @@ public class WebHookCrumbExclusion extends CrumbExclusion {
     @Override
     public boolean process(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String pathInfo = request.getPathInfo();
-        if (pathInfo != null && (pathInfo.startsWith(REGISTRY_BASE) || pathInfo.startsWith(HUB_BASE) || pathInfo.startsWith(ACR_BASE))) {
+        if (pathInfo != null && (pathInfo.startsWith(REGISTRY_BASE) || pathInfo.startsWith(HUB_BASE) || pathInfo.startsWith(ACR_BASE) || pathInfo.startsWith(TRUSTED_REGISTRY_BASE))) {
             chain.doFilter(request, response);
             return true;
         }

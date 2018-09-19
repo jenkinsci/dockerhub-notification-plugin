@@ -83,11 +83,14 @@ public class DockerHubPushNotification extends PushNotification {
 
     @CheckForNull
     public String getPusher() {
-        JSONObject data = getWebHookPayload().getData();
-        if (data != null) {
-            JSONObject push_data = data.optJSONObject("push_data");
-            if (push_data != null) {
-                return push_data.optString("pusher");
+        WebHookPayload payload = getWebHookPayload();
+        if (payload != null ) {
+            JSONObject data = payload.getData();
+            if (data != null) {
+                JSONObject push_data = data.optJSONObject("push_data");
+                if (push_data != null) {
+                    return push_data.optString("pusher");
+                }
             }
         }
         return null;
@@ -95,11 +98,14 @@ public class DockerHubPushNotification extends PushNotification {
 
     @CheckForNull
     public String getTag() {
-        JSONObject data = getWebHookPayload().getData();
-        if (data != null) {
-            JSONObject push_data = data.optJSONObject("push_data");
-            if (push_data != null) {
-                return push_data.optString("tag");
+        WebHookPayload payload = getWebHookPayload();
+        if (payload != null ) {
+            JSONObject data = payload.getData();
+            if (data != null) {
+                JSONObject push_data = data.optJSONObject("push_data");
+                if (push_data != null) {
+                    return push_data.optString("tag");
+                }
             }
         }
         return null;

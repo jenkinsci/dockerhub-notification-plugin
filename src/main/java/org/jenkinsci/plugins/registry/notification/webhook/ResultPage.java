@@ -28,6 +28,7 @@ import org.jenkinsci.plugins.registry.notification.Messages;
 import org.jenkinsci.plugins.registry.notification.TriggerStore;
 
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 
 /**
  * Landing page from Docker Hub when multiple builds where triggered for the same web hook.
@@ -36,7 +37,7 @@ import javax.annotation.CheckForNull;
  * See <em>main.groovy</em>
  */
 public class ResultPage implements ModelObject {
-    public static final ResultPage NO_RESULT = new NoResultPage();
+    public static final @Nonnull ResultPage NO_RESULT = new NoResultPage();
 
     private TriggerStore.TriggerEntry data;
 

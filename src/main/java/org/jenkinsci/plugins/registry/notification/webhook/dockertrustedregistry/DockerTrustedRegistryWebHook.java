@@ -1,7 +1,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2015, CloudBees, Inc.
+ * Copyright (c) 2015, HolidayCheck AG.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,44 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jenkinsci.plugins.registry.notification.DockerHubTrigger
+package org.jenkinsci.plugins.registry.notification.webhook.dockertrustedregistry;
 
-import jenkins.model.Jenkins
+import hudson.Extension;
+import net.sf.json.JSONObject;
+import org.jenkinsci.plugins.registry.notification.webhook.JSONWebHook;
+import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
 
-def webHookUrl(String rootAction) {
-    String rootUrl = Jenkins.instance?.getRootUrl() ?: "http://myJENKINS/";
-    return rootUrl + "${rootAction}/notify"
-}
+import java.util.logging.Logger;
 
-p(_("generalBlurb"))
-p(_("details"))
-ul {
-    li {
-        em {
-            strong(webHookUrl('dockerhub-webhook'))
-            raw('&nbsp;')
-            span(_('dockerHubUrlBlurb'))
-        }
+/**
+ * The terminal point for the DockerTrustedRegistry web hook.
+ * See <a href="https://docs.docker.com/datacenter/dtr/2.4/guides/user/create-and-manage-webhooks">Reference</a>
+ */
+@Extension
+public class DockerTrustedRegistryWebHook extends JSONWebHook {
+    private static final Logger logger = Logger.getLogger(DockerTrustedRegistryWebHook.class.getName());
+
+    /**
+     * The namespace under Jenkins context path that this Action is bound to.
+     */
+    public static final String URL_NAME = "dockertrustedregistry-webhook";
+
+    @Override
+    protected WebHookPayload createPushNotification(JSONObject payload) {
+        return new DockerTrustedRegistryWebHookPayload(payload);
     }
-    li {
-        em {
-            strong(webHookUrl('dockerregistry-webhook'))
-            raw('&nbsp;')
-            span(_('dockerRegistryUrlBlurb'))
-        }
-    }
-    li {
-        em {
-            strong(webHookUrl('acr-webhook'))
-            raw('&nbsp;')
-            span(_('acrUrlBlurb'))
-        }
-    }
-    li {
-        em {
-            strong(webHookUrl('dockertrustedregistry-webhook'))
-            raw('&nbsp;')
-            span(_('dockerTrustedRegistryUrlBlurb'))
-        }
+
+    public String getUrlName() {
+        return URL_NAME;
     }
 }
