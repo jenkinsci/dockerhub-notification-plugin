@@ -97,7 +97,7 @@ public final class TriggerStore extends Descriptor<TriggerStore>
     /**
      * When a build has been removed from jenkins it should also be removed from this store.
      *
-     * @param payload
+     * @param payload the payload
      * @param run the build.
      */
     public synchronized void removed(@Nonnull final PushNotification payload, Run<?, ?> run) {
