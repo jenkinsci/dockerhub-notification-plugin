@@ -85,6 +85,9 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
     /**
      * Stapler entry for the multi build result page
      * @param sha the id of the trigger data.
+     * @return the details
+     * @throws IOException if so
+     * @throws InterruptedException if so
      */
     @Nonnull
     public ResultPage getDetails(@Nonnull final String sha) throws IOException, InterruptedException {
@@ -135,6 +138,7 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
     /**
      * If someone wanders in to the index page, redirect to Jenkins root.
      *
+     * @param request the request object
      * @param response the response object
      * @throws IOException if so
      */

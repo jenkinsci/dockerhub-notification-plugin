@@ -99,6 +99,7 @@ public abstract class PushNotification {
 
     /**
      * String like "username/reponame"
+     * @return the name of the repo
      */
     public String getRepoName() {
         return repoName;

@@ -44,12 +44,23 @@ public class DockerRegistryPushNotification extends PushNotification {
     private static final long serialVersionUID = 207798312860576090L;
     private static final Logger logger = Logger.getLogger(DockerRegistryPushNotification.class.getName());
     public static final String KEY_REPO_NAME = WebHookPayload.PREFIX + "REPO_NAME";
+    public static final String KEY_TAG = WebHookPayload.PREFIX + "TAG";
     public static final String KEY_DOCKER_REGISTRY_HOST = WebHookPayload.PREFIX + "DOCKER_REGISTRY_HOST";
     private String registryHost;
+    private String tag;
 
     public DockerRegistryPushNotification(DockerRegistryWebHookPayload webHookPayload, String repoName) {
         super(webHookPayload);
         this.repoName = repoName;
+    }
+
+    @CheckForNull
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 
     @CheckForNull
@@ -70,6 +81,10 @@ public class DockerRegistryPushNotification extends PushNotification {
     public Set<ParameterValue> getRunParameters() {
         Set<ParameterValue> parameters = new HashSet<ParameterValue>();
         parameters.add(new StringParameterValue(KEY_REPO_NAME, getRepoName()));
+        String tag = getTag();
+        if (!StringUtils.isBlank(tag)) {
+            parameters.add(new StringParameterValue(KEY_TAG, tag));
+        }
         String host = getRegistryHost();
         if (!StringUtils.isBlank(host)) {
             parameters.add(new StringParameterValue(KEY_DOCKER_REGISTRY_HOST, host));
