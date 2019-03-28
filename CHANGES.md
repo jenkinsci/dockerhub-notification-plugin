@@ -2,13 +2,17 @@
 
 Only noting significant user-visible or major API changes, not internal code cleanups and minor bug fixes.
 
+## 2.4.0 (Mar 28, 2019)
+
+* dockerregistry: add TAG to parameters _([PR #22](https://github.com/jenkinsci/dockerhub-notification-plugin/pull/22))_
+
 ## 2.3.0 (Jul 12, 2018)
 
 * Added support for ACR webhooks.
 
 ## 2.2.1 (Jan 04, 2018)
 
-* [JENKINS-47736](https://issues.jenkins-ci.org/browse/JENKINS-47736) - 
+* [JENKINS-47736](https://issues.jenkins-ci.org/browse/JENKINS-47736) -
 Stop serializing `JSONObjects` over the Remoting to make the plugin compatible with Jenkins 2.102+
   * More info: [Plugins affected by fix for JEP-200](https://wiki.jenkins.io/display/JENKINS/Plugins+affected+by+fix+for+JEP-200)
 
