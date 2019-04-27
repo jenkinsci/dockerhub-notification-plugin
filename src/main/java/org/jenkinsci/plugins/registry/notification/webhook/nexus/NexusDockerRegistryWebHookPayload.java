@@ -65,7 +65,7 @@ public class NexusDockerRegistryWebHookPayload extends WebHookPayload {
                             sb.append(urlSegments[i]);
                         }
                         String repository = sb.toString();
-                        logger.log(Level.INFO, "Notify for " + repository);
+                        logger.log(Level.FINER, "Notify for " + repository);
                         final String timestamp = data.optString("timestamp");
                         pushNotifications.add(new NexusDockerRegistryPushNotification(this, repository, urlSegments[urlSegments.length - 1]) {{
                             DateTimeFormatter parser = ISODateTimeFormat.dateTimeParser();
