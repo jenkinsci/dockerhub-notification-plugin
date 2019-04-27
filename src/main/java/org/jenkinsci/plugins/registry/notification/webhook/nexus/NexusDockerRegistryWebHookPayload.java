@@ -24,6 +24,7 @@
 package org.jenkinsci.plugins.registry.notification.webhook.nexus;
 
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerregistry.DockerRegistryPushNotification;
 import org.joda.time.format.DateTimeFormatter;
@@ -48,35 +49,38 @@ public class NexusDockerRegistryWebHookPayload extends WebHookPayload {
         setData(data);
         setJson(data.toString());
 
-        String action = data.getString("action");
-        if ("CREATED".equals(action) || "UPDATED".equals(action)) {
-            JSONObject asset = data.getJSONObject("asset");
-            if ("docker".equals(asset.getString("format"))) {
-                String separator = "/";
-                final String[] urlSegments = asset.getString("name").split(separator);
-                if (urlSegments[urlSegments.length - 2].equals("manifests")) {
-                    StringBuilder sb = new StringBuilder(host);
-                    for (int i = 1; i < urlSegments.length - 2; i++) {
-                        sb.append(separator);
-                        sb.append(urlSegments[i]);
+        if (StringUtils.isEmpty(host)) {
+            logger.log(Level.WARNING, "Dropping nexus docker notify as host param is missing, please add ?host=<yourdockerregistryhost> to the webhook config");
+        } else {
+            String action = data.getString("action");
+            if ("CREATED".equals(action) || "UPDATED".equals(action)) {
+                JSONObject asset = data.getJSONObject("asset");
+                if ("docker".equals(asset.getString("format"))) {
+                    String separator = "/";
+                    final String[] urlSegments = asset.getString("name").split(separator);
+                    if (urlSegments[urlSegments.length - 2].equals("manifests")) {
+                        StringBuilder sb = new StringBuilder(host);
+                        for (int i = 1; i < urlSegments.length - 2; i++) {
+                            sb.append(separator);
+                            sb.append(urlSegments[i]);
+                        }
+                        String repository = sb.toString();
+                        logger.log(Level.INFO, "Notify for " + repository);
+                        final String timestamp = data.optString("timestamp");
+                        pushNotifications.add(new NexusDockerRegistryPushNotification(this, repository, urlSegments[urlSegments.length - 1]) {{
+                            DateTimeFormatter parser = ISODateTimeFormat.dateTimeParser();
+                            setPushedAt(parser.parseDateTime(timestamp).toDate());
+                            setRegistryHost(host);
+                        }});
+                    } else {
+                        logger.log(Level.FINER, "Skipping Layer Push notifications");
                     }
-                    String repository = sb.toString();
-                    logger.log(Level.FINER, "Notify for " + repository);
-                    final String timestamp = data.optString("timestamp");
-                    pushNotifications.add(new NexusDockerRegistryPushNotification(this, repository, urlSegments[urlSegments.length - 1]) {{
-                        DateTimeFormatter parser = ISODateTimeFormat.dateTimeParser();
-                        setPushedAt(parser.parseDateTime(timestamp).toDate());
-                        setRegistryHost(host);
-                    }});
                 } else {
-                    logger.log(Level.FINER, "Skipping Layer Push notifications");
+                    logger.log(Level.FINER, "Skipping non docker notify");
                 }
             } else {
-                logger.log(Level.FINER, "Skipping non docker notify");
+                logger.log(Level.FINER, "Skipping " + action + " action");
             }
-        } else {
-            logger.log(Level.FINER, "Skipping " + action + " action");
         }
-
     }
 }

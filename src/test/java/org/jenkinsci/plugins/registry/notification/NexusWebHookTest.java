@@ -37,7 +37,7 @@ public class NexusWebHookTest {
     public JenkinsRule j = new JenkinsRule();
 
     private String getWebHookURL() throws IOException {
-        return this.j.getURL() + NexusDockerRegistryWebHook.URL_NAME + "/notify";
+        return this.j.getURL() + NexusDockerRegistryWebHook.URL_NAME + "/notify?host=myregistry.azurecr.io";
     }
 
     @Test
