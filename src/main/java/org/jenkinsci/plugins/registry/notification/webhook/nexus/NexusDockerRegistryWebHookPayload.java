@@ -58,7 +58,7 @@ public class NexusDockerRegistryWebHookPayload extends WebHookPayload {
                 if ("docker".equals(asset.getString("format"))) {
                     String separator = "/";
                     final String[] urlSegments = asset.getString("name").split(separator);
-                    if (urlSegments[urlSegments.length - 2].equals("manifests")) {
+                    if (urlSegments[urlSegments.length - 2].equals("manifests") && !urlSegments[urlSegments.length - 1].startsWith("sha")) {
                         StringBuilder sb = new StringBuilder(host);
                         for (int i = 1; i < urlSegments.length - 2; i++) {
                             sb.append(separator);

@@ -9,9 +9,6 @@ import org.apache.commons.io.IOUtils;
 import org.jenkinsci.plugins.registry.notification.opt.TriggerOption;
 import org.jenkinsci.plugins.registry.notification.opt.impl.TriggerOnSpecifiedImageNames;
 import org.jenkinsci.plugins.registry.notification.webhook.Http;
-import org.jenkinsci.plugins.registry.notification.webhook.acr.ACRPushNotification;
-import org.jenkinsci.plugins.registry.notification.webhook.acr.ACRWebHook;
-import org.jenkinsci.plugins.registry.notification.webhook.acr.ACRWebHookCause;
 import org.jenkinsci.plugins.registry.notification.webhook.nexus.NexusDockerRegistryPushNotification;
 import org.jenkinsci.plugins.registry.notification.webhook.nexus.NexusDockerRegistryWebHook;
 import org.jenkinsci.plugins.registry.notification.webhook.nexus.NexusDockerRegistryWebHookCause;
@@ -28,6 +25,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  * Testing ACR webhook.
@@ -68,6 +66,18 @@ public class NexusWebHookTest {
         assertEquals("v1", notification.getTag());
         assertEquals("myregistry.azurecr.io/hello-world", notification.getRepoName());
         assertEquals("myregistry.azurecr.io", notification.getRegistryHost());
+    }
+
+    @Test
+    public void testValidRepoUpdateSha() throws Exception {
+        PushNotificationRunListener listener = j.jenkins.getExtensionList(PushNotificationRunListener.class).get(0);
+        listener.reset();
+        createProjectWithTrigger(new TriggerOnSpecifiedImageNames(Collections.singletonList("myregistry.azurecr.io/hello-world")));
+        JSONObject data = JSONObject.fromObject(IOUtils.toString(getClass().getResourceAsStream("/nexus-update-payload-sha.json")));
+        assertEquals(200, Http.post(getWebHookURL(), data));
+        j.waitUntilNoActivity();
+        NexusDockerRegistryPushNotification notification = listener.getPushNotification();
+        assertNull(notification);
     }
 
     private void createProjectWithTrigger(TriggerOption... options) throws Exception {
