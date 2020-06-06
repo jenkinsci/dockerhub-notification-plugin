@@ -29,14 +29,13 @@ import org.jenkinsci.plugins.registry.notification.opt.impl.TriggerForAllUsedInJ
 
 def st = namespace("jelly:stapler")
 def f = namespace(lib.FormTagLib)
-def l = namespace("/lib/local")
 
 def defaultOption = [:]
 defaultOption[TriggerForAllUsedInJob.DescriptorImpl.instance] = new TriggerForAllUsedInJob()
 
 DockerHubTrigger trigger = instance;
 
-l.descriptorList(title: null,
+f.descriptorList(title: null,
         field: "options",
         descriptors: TriggerOptionDescriptor.all(),
         instances: trigger != null ? trigger.optionsList : defaultOption)
