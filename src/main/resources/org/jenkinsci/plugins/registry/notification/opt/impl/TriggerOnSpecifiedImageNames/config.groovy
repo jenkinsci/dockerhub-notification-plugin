@@ -25,7 +25,14 @@ package org.jenkinsci.plugins.registry.notification.opt.impl.TriggerOnSpecifiedI
 
 def st = namespace("jelly:stapler")
 def f = namespace(lib.FormTagLib)
+def l = namespace("/lib/local")
 
-f.entry(title:_("Repositories"), field: "repoNames") {
-    f.expandableTextbox(value: instance?.repoNames?.join("\n"))
+if (context.getVariableWithDefaultValue("divBasedFormLayout", "false") == "true") {
+    f.entry(title:_("Repositories"), field: "repoNames") {
+        f.expandableTextbox(value: instance?.repoNames?.join("\n"))
+    }
+} else {
+    l.entry(title:_("Repositories"), field: "repoNames") {
+        l.expandableTextbox(value: instance?.repoNames?.join("\n"))
+    }
 }
