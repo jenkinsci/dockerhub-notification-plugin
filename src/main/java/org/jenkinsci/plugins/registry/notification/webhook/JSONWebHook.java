@@ -168,7 +168,7 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
     /**
      * Workaround until {@link ParameterizedJobMixIn#getDefaultParametersValues()} gets public.
      */
-    static class JobbMixIn<JobT extends Job<JobT, RunT> & ParameterizedJobMixIn.ParameterizedJob & Queue.Task, RunT extends Run<JobT, RunT> & Queue.Executable> extends ParameterizedJobMixIn<JobT, RunT> {
+    static class JobbMixIn<JobT extends Job<JobT, RunT> & ParameterizedJobMixIn.ParameterizedJob<JobT, RunT> & Queue.Task, RunT extends Run<JobT, RunT> & Queue.Executable> extends ParameterizedJobMixIn<JobT, RunT> {
 
         /**
          * Some breathing room to iterate through most/all of the jobs before the first triggered build starts.
