@@ -1,0 +1,22 @@
+jenkins:
+  views:
+  - list:
+      columns:
+      - "status"
+      - "weather"
+      - "jobName"
+      - trigger:
+          showMax: 3
+      - "lastSuccess"
+      - "lastFailure"
+      - "lastDuration"
+      - "buildButton"
+      jobFilters:
+      - triggerViewFilter:
+          patterns:
+          - ".*"
+          - "jenkins"
+      name: "Docker"
+  - all:
+      name: "all"
+  viewsTabBar: "standard"
