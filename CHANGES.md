@@ -1,5 +1,7 @@
 # Changelog
 
+_ Newer releases are noted under [GitHub Releases](https://github.com/jenkinsci/dockerhub-notification-plugin/releases).
+
 Only noting significant user-visible or major API changes, not internal code cleanups and minor bug fixes.
 
 ## 2.4.0 (Mar 28, 2019)
