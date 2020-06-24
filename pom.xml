@@ -34,7 +34,7 @@
 
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>dockerhub-notification</artifactId>
-    <version>2.5.0</version>
+    <version>2.5.1-SNAPSHOT</version>
     <packaging>hpi</packaging>
 
     <name>CloudBees Docker Hub/Registry Notification</name>
@@ -50,7 +50,7 @@
         <connection>scm:git:git://git@github.com:jenkinsci/dockerhub-notification-plugin.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/jenkinsci/dockerhub-notification-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/dockerhub-notification-plugin</url>
-        <tag>dockerhub-notification-2.5.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <licenses>
