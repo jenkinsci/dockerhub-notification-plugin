@@ -33,6 +33,7 @@ import jenkins.model.ParameterizedJobMixIn;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
+import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -125,7 +126,7 @@ public class TriggerViewFilter extends ViewJobFilter {
         return patterns;
     }
 
-    @Extension
+    @Extension @Symbol("dockerTriggers")
     public static class DescriptorImpl extends Descriptor<ViewJobFilter> {
         @Override
         public String getDisplayName() {

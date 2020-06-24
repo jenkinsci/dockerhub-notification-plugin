@@ -195,7 +195,7 @@ public final class TriggerStore extends Descriptor<TriggerStore>
     public Descriptor<TriggerStore> getDescriptor() {
         return this;
     }
-    
+
     public static class TriggerEntry extends FingerprintFacet {
         @Nonnull
         private PushNotification pushNotification;
