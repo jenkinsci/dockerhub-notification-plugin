@@ -196,11 +196,6 @@ public final class TriggerStore extends Descriptor<TriggerStore>
         return this;
     }
 
-    @Override
-    public String getDisplayName() {
-        return null;
-    }
-
     public static class TriggerEntry extends FingerprintFacet {
         @Nonnull
         private PushNotification pushNotification;
