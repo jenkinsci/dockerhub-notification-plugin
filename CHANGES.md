@@ -1,6 +1,6 @@
 # Changelog
 
-_ Newer releases are noted under [GitHub Releases](https://github.com/jenkinsci/dockerhub-notification-plugin/releases).
+**Newer releases are noted in** [GitHub Releases](https://github.com/jenkinsci/dockerhub-notification-plugin/releases).
 
 Only noting significant user-visible or major API changes, not internal code cleanups and minor bug fixes.
 
