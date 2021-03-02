@@ -73,10 +73,12 @@ public class CoordinatorTest {
         FreeStyleProject one = j.createFreeStyleProject();
         one.addTrigger(new DockerHubTrigger(new TriggerOnSpecifiedImageNames(Arrays.asList("csanchez/jenkins-swarm-slave"))));
         one.getBuildersList().add(new MockBuilder(Result.SUCCESS));
+        one.setQuietPeriod(0);
 
         FreeStyleProject two = j.createFreeStyleProject();
         two.addTrigger(new DockerHubTrigger(new TriggerOnSpecifiedImageNames(Arrays.asList("csanchez/jenkins-swarm-slave"))));
         two.getBuildersList().add(new MockBuilder(Result.SUCCESS));
+        two.setQuietPeriod(0);
 
         JSONObject json = JSONObject.fromObject(IOUtils.toString(getClass().getResourceAsStream("/own-repository-payload.json")));
         json.put("callback_url", j.getURL() + "fake-dockerhub/respond");
@@ -93,6 +95,10 @@ public class CoordinatorTest {
         String target_url = callback.getString("target_url");
         assertThat(target_url, containsString("/dockerhub-webhook/details/"));
         String sha = target_url.substring(target_url.lastIndexOf('/')+1);
+
+        // the TriggerStore store is updated when the job runs, at the moment all we have guaranteed is a trigger, so we need to wait.
+        j.waitUntilNoActivity();
+
         TriggerStore.TriggerEntry entry = TriggerStore.getInstance().getEntry(sha);
         assertNotNull(entry);
         assertThat(entry.getEntries(), allOf(
@@ -115,6 +121,7 @@ public class CoordinatorTest {
         FreeStyleProject one = j.createFreeStyleProject();
         one.addTrigger(new DockerHubTrigger(new TriggerOnSpecifiedImageNames(Arrays.asList("csanchez/jenkins-swarm-slave"))));
         one.getBuildersList().add(new MockBuilder(Result.SUCCESS));
+        one.setQuietPeriod(0);
 
         JSONObject json = JSONObject.fromObject(IOUtils.toString(getClass().getResourceAsStream("/own-repository-payload.json")));
         json.put("callback_url", j.getURL() + "fake-dockerhub/respond");
@@ -131,6 +138,10 @@ public class CoordinatorTest {
         assertNotNull(target_url);
         assertThat(target_url, containsString("/dockerhub-webhook/details/"));
         String sha = target_url.substring(target_url.lastIndexOf('/')+1);
+
+        // the TriggerStore store is provided when the job runs, at the moment all we have guaranteed is a trigger, so we need to wait.
+        j.waitUntilNoActivity();
+
         TriggerStore.TriggerEntry entry = TriggerStore.getInstance().getEntry(sha);
         assertNotNull(entry);
         assertThat(entry.getEntries(), allOf(
