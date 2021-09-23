@@ -44,6 +44,7 @@ public class WebHookPayloadTest {
         WebHookPayload obj = new DockerHubWebHookPayload(json);
 
         XStream xs = new XStream();
+        xs.allowTypes(new Class[] {DockerHubWebHookPayload.class});
         String xml = xs.toXML(obj);
         assertThat(xml, not(containsString("<data>")));
 
