@@ -23,8 +23,7 @@
  */
 package org.jenkinsci.plugins.registry.notification.webhook;
 
-
-import com.thoughtworks.xstream.XStream;
+import hudson.util.XStream2;
 import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubWebHookPayload;
 import org.junit.Test;
@@ -35,6 +34,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 public class WebHookPayloadTest {
+
     @Test
     public void testSerialization() throws Exception {
         JSONObject json = new JSONObject();
@@ -43,7 +43,7 @@ public class WebHookPayloadTest {
         json.put("repository", repository);
         WebHookPayload obj = new DockerHubWebHookPayload(json);
 
-        XStream xs = new XStream();
+        XStream2 xs = new XStream2();
         xs.allowTypes(new Class[] {DockerHubWebHookPayload.class});
         String xml = xs.toXML(obj);
         assertThat(xml, not(containsString("<data>")));
