@@ -23,28 +23,35 @@
  */
 package org.jenkinsci.plugins.registry.notification.webhook;
 
-import com.ning.http.client.AsyncHttpClient;
-import com.ning.http.client.ListenableFuture;
-import com.ning.http.client.Response;
-import jenkins.plugins.asynchttpclient.AHC;
-import net.sf.json.JSONObject;
-
-import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
+import javax.annotation.Nonnull;
+
+import io.jenkins.plugins.okhttp.api.JenkinsOkHttpClient;
+import net.sf.json.JSONObject;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * @author Robert Sandell &lt;rsandell@cloudbees.com&gt;.
  */
 public class Http {
 
-    public static int post(@Nonnull final String url, @Nonnull final JSONObject data) throws IOException, ExecutionException, InterruptedException {
-        AsyncHttpClient httpClient = AHC.instance();
-        ListenableFuture<Response> execute = httpClient.preparePost(url)
-                .setBodyEncoding("UTF-8")
-                .setHeader("Content-Type", "application/json; charset=UTF-8")
-                .setBody(data.toString())
-                .execute();
-        return  execute.get().getStatusCode();
+    private static final MediaType CONTENT_TYPE_JSON_UTF8_ENCODING = MediaType.get("application/json; charset=utf-8");
+
+    public static int post(@Nonnull final String url, @Nonnull final JSONObject data) throws IOException {
+        final OkHttpClient jenkinsHttpClient = JenkinsOkHttpClient.newClientBuilder(new OkHttpClient())
+                                                                  .followRedirects(false)
+                                                                  .followSslRedirects(false)
+                                                                  .build();
+
+        final Request request = new Request.Builder().post(
+                RequestBody.create(CONTENT_TYPE_JSON_UTF8_ENCODING, data.toString())).url(url).build();
+
+        Response response = jenkinsHttpClient.newCall(request).execute();
+
+        return response.code();
     }
 }
