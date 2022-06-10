@@ -8,9 +8,9 @@ This plugin provides integration between
 It does so by utilizing webhooks to trigger one (or more) Jenkins job(s).
 This allows you to implement continuous delivery pipelines based on Docker in Jenkins.
 
-Upon receiving a notification of an updated image as web-hook from
-Docker Hub, Jenkins will trigger all jobs that have the Docker Hub
-trigger enabled that also use the Docker image as part of the build. A
+When Jenkins receives a notification of an updated image that is a web-hook from
+Docker Hub, it triggers all jobs that have the Docker Hub
+trigger enabled and use the Docker image as part of the build. A
 Docker Hub Pull build step is provided to retrieve the latest image from
 Hub.
 
