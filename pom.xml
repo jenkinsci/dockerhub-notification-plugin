@@ -81,7 +81,6 @@
         <dependency>
             <groupId>io.jenkins.plugins</groupId>
             <artifactId>okhttp-api</artifactId>
-            <!--<version>3.14.9-20211029</version>-->
         </dependency>
         <dependency>
             <groupId>joda-time</groupId>
@@ -126,23 +125,4 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <!--<build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <systemProperties>
-                        <property>
-                            <name>hudson.udp</name>
-                            <value>33849</value>
-                        </property>
-                    </systemProperties>
-                    <argLine>-Xmx1024m -XX:MaxPermSize=380m</argLine>
-                    <reuseForks>false</reuseForks>
-                    <forkCount>${concurrency}</forkCount>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>-->
 </project>
