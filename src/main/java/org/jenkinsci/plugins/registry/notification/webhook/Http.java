@@ -24,8 +24,8 @@
 package org.jenkinsci.plugins.registry.notification.webhook;
 
 import java.io.IOException;
-import javax.annotation.Nonnull;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.jenkins.plugins.okhttp.api.JenkinsOkHttpClient;
 import net.sf.json.JSONObject;
 import okhttp3.MediaType;
@@ -41,7 +41,7 @@ public class Http {
 
     private static final MediaType CONTENT_TYPE_JSON_UTF8_ENCODING = MediaType.get("application/json; charset=utf-8");
 
-    public static int post(@Nonnull final String url, @Nonnull final JSONObject data) throws IOException {
+    public static int post(@NonNull final String url, @NonNull final JSONObject data) throws IOException {
         final OkHttpClient jenkinsHttpClient = JenkinsOkHttpClient.newClientBuilder(new OkHttpClient())
                                                                   .followRedirects(false)
                                                                   .followSslRedirects(false)

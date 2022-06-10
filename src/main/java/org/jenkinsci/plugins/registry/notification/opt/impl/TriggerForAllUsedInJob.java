@@ -23,6 +23,7 @@
  */
 package org.jenkinsci.plugins.registry.notification.opt.impl;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 import hudson.Extension;
 import hudson.model.Job;
 import jenkins.model.Jenkins;
@@ -32,7 +33,6 @@ import org.jenkinsci.plugins.registry.notification.opt.TriggerOption;
 import org.jenkinsci.plugins.registry.notification.opt.TriggerOptionDescriptor;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-import javax.annotation.CheckForNull;
 import java.util.Collection;
 
 /**

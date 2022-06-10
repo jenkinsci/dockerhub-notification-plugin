@@ -1,11 +1,11 @@
 package org.jenkinsci.plugins.registry.notification.webhook.acr;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-import javax.annotation.Nonnull;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,7 +28,7 @@ public class ACRWebHookPayload extends WebHookPayload {
         }
     }
 
-    public ACRWebHookPayload(@Nonnull final JSONObject data) {
+    public ACRWebHookPayload(@NonNull final JSONObject data) {
         setData(data);
         setJson(data.toString());
 

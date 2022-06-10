@@ -23,6 +23,8 @@
  */
 package org.jenkinsci.plugins.registry.notification;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.ExtensionList;
 import hudson.model.Job;
@@ -35,8 +37,6 @@ import org.jenkinsci.plugins.registry.notification.webhook.WebHookCause;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubCallbackPayload;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubWebHookCause;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
@@ -49,13 +49,13 @@ import java.util.logging.Logger;
 @Extension
 public class Coordinator extends RunListener<Run<?, ?>> {
 
-    public void onTriggered(@Nonnull Job job, @Nonnull PushNotification pushNotification) {
+    public void onTriggered(@NonNull Job job, @NonNull PushNotification pushNotification) {
         logger.log(Level.FINER, "Job {0} triggered for payload: {1}", new Object[]{job.getFullDisplayName(), pushNotification});
         TriggerStore.getInstance().triggered(pushNotification, job);
     }
 
     @Override
-    public void onStarted(@Nonnull Run<?, ?> run, @Nonnull TaskListener listener) {
+    public void onStarted(@NonNull Run<?, ?> run, @NonNull TaskListener listener) {
         DockerHubWebHookCause cause = run.getCause(DockerHubWebHookCause.class);
         if (cause != null) {
             logger.log(Level.FINER, "Build {0} started for cause: {1}", new Object[]{run.getFullDisplayName(), cause});
@@ -64,7 +64,7 @@ public class Coordinator extends RunListener<Run<?, ?>> {
     }
 
     @Override
-    public void onFinalized(@Nonnull Run<?, ?> run) {
+    public void onFinalized(@NonNull Run<?, ?> run) {
         WebHookCause cause = run.getCause(WebHookCause.class);
         if (cause != null) {
             logger.log(Level.FINER, "Build {0} done for cause: [{1}]", new Object[]{run.getFullDisplayName(), cause});
@@ -84,12 +84,12 @@ public class Coordinator extends RunListener<Run<?, ?>> {
         }
     }
 
-    private void sendResponse(@Nonnull final PushNotification pushNotification, Run<?, ?> run) throws IOException, ExecutionException, InterruptedException {
+    private void sendResponse(@NonNull final PushNotification pushNotification, Run<?, ?> run) throws IOException, ExecutionException, InterruptedException {
         pushNotification.getCallbackHandler().notify(pushNotification, run);
     }
 
     @Override
-    public void onDeleted(@Nonnull Run<?, ?> run) {
+    public void onDeleted(@NonNull Run<?, ?> run) {
         DockerHubWebHookCause cause = run.getCause(DockerHubWebHookCause.class);
         if (cause != null) {
             TriggerStore.getInstance().removed(cause.getPushNotification(), run);

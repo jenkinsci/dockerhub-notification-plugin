@@ -23,19 +23,18 @@
  */
 package org.jenkinsci.plugins.registry.notification.webhook;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.model.Cause;
 
-import javax.annotation.Nonnull;
-
 public abstract class WebHookCause extends Cause {
-    @Nonnull
+    @NonNull
     protected PushNotification pushNotification;
 
-    public WebHookCause(@Nonnull PushNotification pushNotification) {
+    public WebHookCause(@NonNull PushNotification pushNotification) {
         this.pushNotification = pushNotification;
     }
 
-    @Nonnull
+    @NonNull
     public PushNotification getPushNotification() {
         return pushNotification;
     }
