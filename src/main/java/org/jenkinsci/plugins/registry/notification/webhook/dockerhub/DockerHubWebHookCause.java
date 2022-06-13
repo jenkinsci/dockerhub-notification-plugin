@@ -24,16 +24,15 @@
 package org.jenkinsci.plugins.registry.notification.webhook.dockerhub;
 
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookCause;
-
-import javax.annotation.Nonnull;
 
 /**
  * The build cause of {@link DockerHubWebHook}.
  */
 public class DockerHubWebHookCause extends WebHookCause {
 
-    public DockerHubWebHookCause(@Nonnull DockerHubPushNotification dockerHubPushNotification) {
+    public DockerHubWebHookCause(@NonNull DockerHubPushNotification dockerHubPushNotification) {
         super(dockerHubPushNotification);
     }
 

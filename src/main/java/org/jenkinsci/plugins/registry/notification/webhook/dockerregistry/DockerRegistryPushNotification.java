@@ -23,6 +23,7 @@
  */
 package org.jenkinsci.plugins.registry.notification.webhook.dockerregistry;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 import hudson.Util;
 import hudson.model.Cause;
 import hudson.model.ParameterValue;
@@ -31,7 +32,6 @@ import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
 
-import javax.annotation.CheckForNull;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;

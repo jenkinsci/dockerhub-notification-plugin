@@ -23,6 +23,7 @@
  */
 package org.jenkinsci.plugins.registry.notification.webhook.dockerhub;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.model.Result;
 import hudson.model.Run;
 import jenkins.model.Jenkins;
@@ -30,7 +31,6 @@ import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.registry.notification.TriggerStore;
 import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
 
-import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Logger;
@@ -54,7 +54,7 @@ public class DockerHubCallbackPayload implements Serializable {
         this.targetUrl = targetUrl;
     }
 
-    public static DockerHubCallbackPayload from(@Nonnull TriggerStore.TriggerEntry from) {
+    public static DockerHubCallbackPayload from(@NonNull TriggerStore.TriggerEntry from) {
         Result finalRes = null;
         for (TriggerStore.TriggerEntry.RunEntry entry : from.getEntries()) {
             Run<?, ?> run = entry.getRun();
@@ -78,7 +78,7 @@ public class DockerHubCallbackPayload implements Serializable {
         }
     }
 
-    private static String constructUrl(@Nonnull List<TriggerStore.TriggerEntry.RunEntry> entries, @Nonnull PushNotification pushNotification) {
+    private static String constructUrl(@NonNull List<TriggerStore.TriggerEntry.RunEntry> entries, @NonNull PushNotification pushNotification) {
         Jenkins jenkins = Jenkins.getInstance();
         StringBuilder str = new StringBuilder();
         if (jenkins != null) {
@@ -130,7 +130,7 @@ public class DockerHubCallbackPayload implements Serializable {
     public static enum States {
         success, failure, error;
 
-        public static States from(@Nonnull Result result) {
+        public static States from(@NonNull Result result) {
             if (result == Result.SUCCESS) {
                 return success;
             }

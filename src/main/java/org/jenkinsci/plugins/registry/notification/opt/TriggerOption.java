@@ -23,10 +23,10 @@
  */
 package org.jenkinsci.plugins.registry.notification.opt;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Job;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 
 /**
@@ -35,6 +35,6 @@ import java.util.Collection;
  * @author Robert Sandell &lt;rsandell@cloudbees.com&gt;.
  */
 public abstract class TriggerOption extends AbstractDescribableImpl<TriggerOption> {
-    @Nonnull
+    @NonNull
     public abstract Collection<String> getRepoNames(Job<?,?> job);
 }

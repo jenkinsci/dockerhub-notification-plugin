@@ -119,6 +119,6 @@ public class BackCompat102Test {
     public void testFingerprintUi() throws IOException, InterruptedException, SAXException {
         JenkinsRule.WebClient web = j.createWebClient();
         HtmlPage page = web.goTo("dockerhub-webhook/details/e9d6eb6cd6a7bfcd2bd622765a87893f");
-        j.assertStringContains(page.asText(), "Build results for push of csanchez/jenkins-swarm-slave");
+        j.assertStringContains(page.asNormalizedText(), "Build results for push of csanchez/jenkins-swarm-slave");
     }
 }

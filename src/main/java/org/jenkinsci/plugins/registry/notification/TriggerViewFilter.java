@@ -23,6 +23,7 @@
  */
 package org.jenkinsci.plugins.registry.notification;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.model.Descriptor;
 import hudson.model.TopLevelItem;
@@ -38,7 +39,6 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
-import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,12 +52,12 @@ import java.util.regex.PatternSyntaxException;
  */
 public class TriggerViewFilter extends ViewJobFilter {
 
-    @Nonnull
+    @NonNull
     private List<String> patterns;
     private transient List<Pattern> compiled;
 
     @DataBoundConstructor
-    public TriggerViewFilter(@Nonnull List<String> patterns) throws Descriptor.FormException {
+    public TriggerViewFilter(@NonNull List<String> patterns) throws Descriptor.FormException {
         this.patterns = patterns;
         try {
             compilePatterns();
@@ -112,8 +112,8 @@ public class TriggerViewFilter extends ViewJobFilter {
         }
     }
 
-    @Nonnull
-    private static List<Pattern> compilePatterns(@Nonnull List<String> strings) {
+    @NonNull
+    private static List<Pattern> compilePatterns(@NonNull List<String> strings) {
         List<Pattern> comp = new LinkedList<Pattern>();
         for (String pattern : strings) {
             comp.add(Pattern.compile(pattern));
@@ -121,7 +121,7 @@ public class TriggerViewFilter extends ViewJobFilter {
         return comp;
     }
 
-    @Nonnull
+    @NonNull
     public synchronized List<String> getPatterns() {
         return patterns;
     }

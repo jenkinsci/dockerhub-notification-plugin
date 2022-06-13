@@ -1,5 +1,7 @@
 package org.jenkinsci.plugins.registry.notification.webhook.dockerhub;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.model.Run;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
@@ -9,8 +11,6 @@ import org.jenkinsci.plugins.registry.notification.webhook.Http;
 import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,7 +23,7 @@ public class DockerHubWebHookPayload extends WebHookPayload {
 
     private Date pushedAt = null;
 
-    public DockerHubWebHookPayload(@Nonnull String repoName, final @CheckForNull JSONObject data) {
+    public DockerHubWebHookPayload(@NonNull String repoName, final @CheckForNull JSONObject data) {
         super();
         setData(data);
         if (data != null) {
@@ -58,7 +58,7 @@ public class DockerHubWebHookPayload extends WebHookPayload {
      * @param data the json payload
      * @throws net.sf.json.JSONException if the key {@code repository.repo_name} doesn't exist.
      */
-    public DockerHubWebHookPayload(@Nonnull JSONObject data) {
+    public DockerHubWebHookPayload(@NonNull JSONObject data) {
         super();
         setData(data);
         if (data != null) {
@@ -68,7 +68,7 @@ public class DockerHubWebHookPayload extends WebHookPayload {
         this.pushNotifications.add(createPushNotification(repository.getString("repo_name"), data));
     }
 
-    private DockerHubPushNotification createPushNotification(@Nonnull final String repoName, @CheckForNull final JSONObject data) {
+    private DockerHubPushNotification createPushNotification(@NonNull final String repoName, @CheckForNull final JSONObject data) {
         final DockerHubPushNotification dockerHubPushNotification = new DockerHubPushNotification(this, repoName);
         if(data != null) {
             dockerHubPushNotification.setCallbackUrl(data.optString("callback_url"));
@@ -88,7 +88,7 @@ public class DockerHubWebHookPayload extends WebHookPayload {
         return dockerHubPushNotification;
     }
 
-    public DockerHubWebHookPayload(@Nonnull String repoName) {
+    public DockerHubWebHookPayload(@NonNull String repoName) {
         this(repoName, null);
     }
 

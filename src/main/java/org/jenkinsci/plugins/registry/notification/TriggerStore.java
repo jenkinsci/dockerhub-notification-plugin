@@ -23,6 +23,8 @@
  */
 package org.jenkinsci.plugins.registry.notification;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.init.InitMilestone;
 import hudson.model.*;
@@ -34,11 +36,8 @@ import org.acegisecurity.context.SecurityContextHolder;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubCallbackPayload;
-import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubPushNotification;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubWebHookPayload;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.io.Serializable;
@@ -61,7 +60,7 @@ public final class TriggerStore extends Descriptor<TriggerStore>
         super(TriggerStore.class);
     }
 
-    public synchronized void triggered(@Nonnull final PushNotification pushNotification, Job<?, ?> job) {
+    public synchronized void triggered(@NonNull final PushNotification pushNotification, Job<?, ?> job) {
         try {
             TriggerEntry entry = getOrCreateEntry(pushNotification);
             entry.addEntry(job);
@@ -71,7 +70,7 @@ public final class TriggerStore extends Descriptor<TriggerStore>
         }
     }
 
-    public synchronized void started(@Nonnull final PushNotification pushNotification, Run<?, ?> run) {
+    public synchronized void started(@NonNull final PushNotification pushNotification, Run<?, ?> run) {
         try {
             TriggerEntry entry = getOrCreateEntry(pushNotification);
             entry.updateEntry(run);
@@ -82,7 +81,7 @@ public final class TriggerStore extends Descriptor<TriggerStore>
     }
 
     @CheckForNull
-    public synchronized TriggerEntry finalized(@Nonnull final PushNotification pushNotification, Run<?, ?> run) {
+    public synchronized TriggerEntry finalized(@NonNull final PushNotification pushNotification, Run<?, ?> run) {
         try {
             TriggerEntry entry = getOrCreateEntry(pushNotification);
             entry.updateEntry(run);
@@ -100,7 +99,7 @@ public final class TriggerStore extends Descriptor<TriggerStore>
      * @param payload the payload
      * @param run the build.
      */
-    public synchronized void removed(@Nonnull final PushNotification payload, Run<?, ?> run) {
+    public synchronized void removed(@NonNull final PushNotification payload, Run<?, ?> run) {
         try {
             TriggerEntry entry = getEntry(payload.sha());
             if (entry != null) {
@@ -115,8 +114,8 @@ public final class TriggerStore extends Descriptor<TriggerStore>
         }
     }
 
-    @Nonnull
-    private synchronized TriggerEntry getOrCreateEntry(@Nonnull final PushNotification pushNotification) throws IOException, InterruptedException {
+    @NonNull
+    private synchronized TriggerEntry getOrCreateEntry(@NonNull final PushNotification pushNotification) throws IOException, InterruptedException {
         Fingerprint fingerprint = jenkins.getFingerprintMap().getOrCreate(null, pushNotification.getRepoName(), pushNotification.sha());
         TriggerEntry entry = fingerprint.getFacet(TriggerEntry.class);
         if (entry==null)    fingerprint.getFacets().add(entry=new TriggerEntry(fingerprint,pushNotification));
@@ -138,7 +137,7 @@ public final class TriggerStore extends Descriptor<TriggerStore>
         return fingerprint.getFacet(TriggerEntry.class);
     }
 
-    private synchronized void onLocationChanged(@Nonnull Job<?,?> item, @Nonnull String oldFullName, @Nonnull String newFullName) {
+    private synchronized void onLocationChanged(@NonNull Job<?,?> item, @NonNull String oldFullName, @NonNull String newFullName) {
         // no efficient way to do this in fingerprint. But hey, cool job names do not change http://www.w3.org/Provider/Style/URI.html
 //        try {
 //            //This could be quite many, but I have no better ideas
@@ -164,7 +163,7 @@ public final class TriggerStore extends Descriptor<TriggerStore>
 //        }
     }
 
-    public synchronized void save(@Nonnull final TriggerEntry entry) throws IOException, InterruptedException {
+    public synchronized void save(@NonNull final TriggerEntry entry) throws IOException, InterruptedException {
         entry.getFingerprint().save();
     }
 
@@ -174,7 +173,7 @@ public final class TriggerStore extends Descriptor<TriggerStore>
      * @return the effective singleton instance.
      * @throws AssertionError if the singleton is missing, i.e. not running on a Jenkins master.
      */
-    @Nonnull
+    @NonNull
     public static TriggerStore getInstance() {
         Jenkins instance = Jenkins.getInstance();
         TriggerStore d;
@@ -197,20 +196,20 @@ public final class TriggerStore extends Descriptor<TriggerStore>
     }
 
     public static class TriggerEntry extends FingerprintFacet {
-        @Nonnull
+        @NonNull
         private PushNotification pushNotification;
-        @Nonnull
+        @NonNull
         private final List<RunEntry> entries;
         @CheckForNull
         private DockerHubCallbackPayload callbackData;
 
-        public TriggerEntry(Fingerprint fingerprint, @Nonnull PushNotification pushNotification) {
+        public TriggerEntry(Fingerprint fingerprint, @NonNull PushNotification pushNotification) {
             super(fingerprint, pushNotification.getReceived());
             this.pushNotification = pushNotification;
             entries = new LinkedList<RunEntry>();
         }
 
-        @Nonnull
+        @NonNull
         public RunEntry addEntry(Job<?, ?> job) {
             RunEntry entry = getEntry(job.getFullName());
             if (entry == null) {
@@ -219,11 +218,11 @@ public final class TriggerStore extends Descriptor<TriggerStore>
             return entry;
         }
 
-        public RunEntry getEntry(@Nonnull Job<?, ?> job) {
+        public RunEntry getEntry(@NonNull Job<?, ?> job) {
             return getEntry(job.getFullName());
         }
 
-        public RunEntry getEntry(@Nonnull String jobName) {
+        public RunEntry getEntry(@NonNull String jobName) {
             for (RunEntry entry : entries) {
                 if (entry.getJobName().equals(jobName)) {
                     return entry;
@@ -244,12 +243,12 @@ public final class TriggerStore extends Descriptor<TriggerStore>
             return entry;
         }
 
-        @Nonnull
+        @NonNull
         public PushNotification getPushNotification() {
             return pushNotification;
         }
 
-        @Nonnull
+        @NonNull
         public List<RunEntry> getEntries() {
             return entries;
         }
@@ -263,7 +262,7 @@ public final class TriggerStore extends Descriptor<TriggerStore>
             this.callbackData = callbackData;
         }
 
-        public void removeEntry(@Nonnull Run<?, ?> run) {
+        public void removeEntry(@NonNull Run<?, ?> run) {
             RunEntry entry = getEntry(run.getParent());
             if (entry != null) {
                 entries.remove(entry);
@@ -294,21 +293,21 @@ public final class TriggerStore extends Descriptor<TriggerStore>
             private String buildId;
             private boolean done;
 
-            public RunEntry(@Nonnull String jobName) {
+            public RunEntry(@NonNull String jobName) {
                 this.jobName = jobName;
             }
 
-            public RunEntry(@Nonnull String jobName, String buildId) {
+            public RunEntry(@NonNull String jobName, String buildId) {
                 this.jobName = jobName;
                 this.buildId = buildId;
             }
 
-            @Nonnull
+            @NonNull
             public String getJobName() {
                 return jobName;
             }
 
-            public void setJobName(@Nonnull String jobName) {
+            public void setJobName(@NonNull String jobName) {
                 this.jobName = jobName;
             }
 

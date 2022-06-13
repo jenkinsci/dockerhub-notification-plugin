@@ -23,11 +23,10 @@
  */
 package org.jenkinsci.plugins.registry.notification.webhook;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 import hudson.model.ModelObject;
 import org.jenkinsci.plugins.registry.notification.Messages;
 import org.jenkinsci.plugins.registry.notification.TriggerStore;
-
-import javax.annotation.CheckForNull;
 
 /**
  * Landing page from Docker Hub when multiple builds where triggered for the same web hook.

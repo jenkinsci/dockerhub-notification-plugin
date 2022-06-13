@@ -23,6 +23,7 @@
  */
 package org.jenkinsci.plugins.registry.notification;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.model.Job;
 import jenkins.model.ParameterizedJobMixIn;
@@ -30,7 +31,6 @@ import org.jenkinsci.plugins.docker.commons.DockerImageExtractor;
 import org.jenkinsci.plugins.registry.notification.opt.TriggerOption;
 import org.jenkinsci.plugins.registry.notification.opt.impl.TriggerOnSpecifiedImageNames;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -43,9 +43,9 @@ import java.util.Collections;
  */
 @Extension
 public class TriggerImageExtractor extends DockerImageExtractor {
-    @Nonnull
+    @NonNull
     @Override
-    public Collection<String> getDockerImagesUsedByJob(@Nonnull Job<?,?> job) {
+    public Collection<String> getDockerImagesUsedByJob(@NonNull Job<?,?> job) {
         if (job instanceof ParameterizedJobMixIn.ParameterizedJob) {
             DockerHubTrigger trigger = DockerHubTrigger.getTrigger((ParameterizedJobMixIn.ParameterizedJob)job);
             if (trigger != null) {

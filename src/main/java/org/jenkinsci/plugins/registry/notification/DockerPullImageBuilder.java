@@ -23,6 +23,7 @@
  */
 package org.jenkinsci.plugins.registry.notification;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.EnvVars;
@@ -35,7 +36,6 @@ import hudson.model.Project;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
@@ -120,9 +120,9 @@ public class DockerPullImageBuilder extends Builder {
 
     @Extension
     public static final class ImageExtractor extends DockerImageExtractor {
-        @Nonnull
+        @NonNull
         @Override
-        public Collection<String> getDockerImagesUsedByJob(@Nonnull Job<?,?> job) {
+        public Collection<String> getDockerImagesUsedByJob(@NonNull Job<?,?> job) {
             if (job instanceof Project) {
                 Project<? extends Project, ? extends Build> project = (Project<?,? extends Build>)job;
                 Set<String> images = new HashSet<String>();

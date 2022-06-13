@@ -23,9 +23,9 @@
  */
 package org.jenkinsci.plugins.registry.notification.webhook;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 import net.sf.json.JSONObject;
 
-import javax.annotation.CheckForNull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;

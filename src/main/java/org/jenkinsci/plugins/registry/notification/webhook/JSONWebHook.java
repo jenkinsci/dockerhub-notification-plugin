@@ -23,6 +23,7 @@
  */
 package org.jenkinsci.plugins.registry.notification.webhook;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.model.*;
 import hudson.model.Queue;
 import hudson.security.ACL;
@@ -39,7 +40,6 @@ import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.interceptor.RequirePOST;
 import org.kohsuke.stapler.interceptor.RespondSuccess;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.*;
@@ -89,8 +89,8 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
      * @throws IOException if so
      * @throws InterruptedException if so
      */
-    @Nonnull
-    public ResultPage getDetails(@Nonnull final String sha) throws IOException, InterruptedException {
+    @NonNull
+    public ResultPage getDetails(@NonNull final String sha) throws IOException, InterruptedException {
         TriggerStore.TriggerEntry entry = TriggerStore.getInstance().getEntry(sha);
         if (entry != null) {
             return new ResultPage(entry);
@@ -125,7 +125,7 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
         });
     }
 
-    private void schedule(@Nonnull final Job job, @Nonnull final PushNotification pushNotification) {
+    private void schedule(@NonNull final Job job, @NonNull final PushNotification pushNotification) {
         if (new JobbMixIn(job).schedule(pushNotification.getCause())) {
             logger.info(pushNotification.getCauseMessage());
             Coordinator coordinator = Coordinator.getInstance();

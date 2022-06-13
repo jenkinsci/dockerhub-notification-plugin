@@ -23,6 +23,8 @@
  */
 package org.jenkinsci.plugins.registry.notification;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.init.InitMilestone;
 import hudson.init.Initializer;
@@ -50,8 +52,6 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.StaplerRequest;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
@@ -99,7 +99,7 @@ public class DockerHubTrigger extends Trigger<Job<?, ?>> {
         this.options = options;
     }
 
-    @Nonnull
+    @NonNull
     public Set<String> getAllRepoNames() {
         Set<String> all = new HashSet<String>();
         if (options != null) {
@@ -183,7 +183,7 @@ public class DockerHubTrigger extends Trigger<Job<?, ?>> {
      * If any issues arise when trying to access the field a new XStream object is returned to avoid null values.
      * @return {@link Fingerprint}'s XStream2 static field.
      */
-    @Nonnull
+    @NonNull
     private static XStream2 getFingerprintXStream() {
         try {
             Field field = Fingerprint.class.getDeclaredField("XSTREAM");

@@ -23,13 +23,13 @@
  */
 package org.jenkinsci.plugins.registry.notification.webhook.dockerregistry;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-import javax.annotation.Nonnull;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
@@ -43,7 +43,7 @@ public class DockerRegistryWebHookPayload extends WebHookPayload {
      * @param data the json payload
      * @throws net.sf.json.JSONException if the key {@code repository.repo_name} doesn't exist.
      */
-    public DockerRegistryWebHookPayload(@Nonnull JSONObject data) {
+    public DockerRegistryWebHookPayload(@NonNull JSONObject data) {
         super();
         setData(data);
         setJson(data.toString());
@@ -74,7 +74,7 @@ public class DockerRegistryWebHookPayload extends WebHookPayload {
 
     }
 
-    private DockerRegistryPushNotification createPushNotification(@Nonnull final String repoName, @Nonnull JSONObject data) {
+    private DockerRegistryPushNotification createPushNotification(@NonNull final String repoName, @NonNull JSONObject data) {
         final String timestamp = data.optString("timestamp");
         final String host = data.getJSONObject("request").optString("host");
         final String tag = data.getJSONObject("target").optString("tag");

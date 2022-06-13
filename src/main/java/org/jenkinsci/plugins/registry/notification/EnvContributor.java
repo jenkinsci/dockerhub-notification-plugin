@@ -24,6 +24,7 @@
 
 package org.jenkinsci.plugins.registry.notification;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.model.EnvironmentContributor;
@@ -34,7 +35,6 @@ import org.jenkinsci.plugins.registry.notification.webhook.WebHookCause;
 import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.NoExternalUse;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Set;
 
@@ -48,7 +48,7 @@ import java.util.Set;
 public class EnvContributor extends EnvironmentContributor {
 
     @Override
-    public void buildEnvironmentFor(@Nonnull Run r, @Nonnull EnvVars envs, @Nonnull TaskListener listener) throws IOException, InterruptedException {
+    public void buildEnvironmentFor(@NonNull Run r, @NonNull EnvVars envs, @NonNull TaskListener listener) throws IOException, InterruptedException {
         WebHookCause cause = (WebHookCause)r.getCause(WebHookCause.class);
         if (cause != null) {
             Set<ParameterValue> parameters = cause.getPushNotification().getRunParameters();

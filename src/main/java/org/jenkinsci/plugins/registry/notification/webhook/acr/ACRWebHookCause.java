@@ -1,11 +1,11 @@
 package org.jenkinsci.plugins.registry.notification.webhook.acr;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookCause;
 
-import javax.annotation.Nonnull;
 
 public class ACRWebHookCause extends WebHookCause {
-    public ACRWebHookCause(@Nonnull ACRPushNotification notification) {
+    public ACRWebHookCause(@NonNull ACRPushNotification notification) {
         super(notification);
     }
 
