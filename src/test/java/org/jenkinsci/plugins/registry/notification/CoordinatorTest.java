@@ -31,8 +31,10 @@ import hudson.security.csrf.CrumbExclusion;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
 import org.jenkinsci.plugins.registry.notification.opt.impl.TriggerOnSpecifiedImageNames;
+import org.jenkinsci.plugins.registry.notification.token.ApiTokens;
 import org.jenkinsci.plugins.registry.notification.webhook.Http;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubWebHook;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
@@ -68,6 +70,14 @@ public class CoordinatorTest {
     public JenkinsRule j = new JenkinsRule();
     private static final Response resp = new Response();
 
+    private String token;
+
+    @Before
+    public void setUp() {
+        final JSONObject test = ApiTokens.get().generateApiToken("test");
+        token = test.getString("value");
+    }
+
     @Test
     public void testTwoTriggered() throws Exception {
         FreeStyleProject one = j.createFreeStyleProject();
@@ -83,7 +93,7 @@ public class CoordinatorTest {
         JSONObject json = JSONObject.fromObject(IOUtils.toString(getClass().getResourceAsStream("/own-repository-payload.json")));
         json.put("callback_url", j.getURL() + "fake-dockerhub/respond");
 
-        String url = j.getURL() + DockerHubWebHook.URL_NAME + "/notify";
+        String url = j.getURL() + DockerHubWebHook.URL_NAME + "/" + token + "/notify";
         assertEquals(302, Http.post(url, json));
         synchronized (resp) {
             resp.wait();
@@ -126,7 +136,7 @@ public class CoordinatorTest {
         JSONObject json = JSONObject.fromObject(IOUtils.toString(getClass().getResourceAsStream("/own-repository-payload.json")));
         json.put("callback_url", j.getURL() + "fake-dockerhub/respond");
 
-        String url = j.getURL() + DockerHubWebHook.URL_NAME + "/notify";
+        String url = j.getURL() + DockerHubWebHook.URL_NAME + "/" + token + "/notify";
         assertEquals(302, Http.post(url, json));
         synchronized (resp) {
             resp.wait();

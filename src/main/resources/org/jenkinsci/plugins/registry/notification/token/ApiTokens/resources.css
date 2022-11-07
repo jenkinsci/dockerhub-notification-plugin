@@ -1,0 +1,21 @@
+.dockerhub-api-token-list .dockerhub-api-token-list-item-row {
+    display: flex;
+    align-items: center;
+    max-width: 700px;
+}
+.dockerhub-api-token-list .dockerhub-api-token-list-item-row.dockerhub-api-token-list-existing-api-token {
+    justify-content: space-between;
+}
+.dockerhub-api-token-list .dockerhub-api-token-list-item .hidden, .dockerhub-api-token-list .dockerhub-api-token-list-empty-item.hidden {
+    display: none;
+}
+
+.dockerhub-api-token-list .dockerhub-api-token-revoke-button, .dockerhub-api-token-list .dockerhub-new-api-token-value {
+    padding: 0 0.5rem;
+}
+.dockerhub-api-token-list .dockerhub-api-token-warning-message, .dockerhub-api-token-list .dockerhub-api-token-save-button {
+    margin: 0.5rem 0;
+}
+.dockerhub-api-token-created {
+    font-size: smaller;
+}

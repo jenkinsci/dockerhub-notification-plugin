@@ -27,7 +27,7 @@ import jenkins.model.Jenkins
 
 def webHookUrl(String rootAction) {
     String rootUrl = Jenkins.instance?.getRootUrl() ?: "http://myJENKINS/";
-    return rootUrl + "${rootAction}/notify"
+    return rootUrl + "${rootAction}/{api-token}/notify"
 }
 
 p(_("generalBlurb"))
