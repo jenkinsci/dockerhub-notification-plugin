@@ -9,10 +9,12 @@ import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
 import org.jenkinsci.plugins.registry.notification.opt.TriggerOption;
 import org.jenkinsci.plugins.registry.notification.opt.impl.TriggerOnSpecifiedImageNames;
+import org.jenkinsci.plugins.registry.notification.token.ApiTokens;
 import org.jenkinsci.plugins.registry.notification.webhook.Http;
 import org.jenkinsci.plugins.registry.notification.webhook.acr.ACRPushNotification;
 import org.jenkinsci.plugins.registry.notification.webhook.acr.ACRWebHook;
 import org.jenkinsci.plugins.registry.notification.webhook.acr.ACRWebHookCause;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
@@ -34,8 +36,16 @@ public class ACRWebHookTest {
     @Rule
     public JenkinsRule j = new JenkinsRule();
 
+    private String token;
+
     private String getWebHookURL() throws IOException {
-        return this.j.getURL() + ACRWebHook.URL_NAME + "/notify";
+        return this.j.getURL() + ACRWebHook.URL_NAME + "/" + token + "/notify";
+    }
+
+    @Before
+    public void setUp() {
+        final JSONObject test = ApiTokens.get().generateApiToken("test");
+        token = test.getString("value");
     }
 
     @Test

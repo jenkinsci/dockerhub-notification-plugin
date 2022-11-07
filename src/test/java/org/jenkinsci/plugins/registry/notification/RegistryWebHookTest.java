@@ -31,9 +31,11 @@ import hudson.model.listeners.RunListener;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
 import org.jenkinsci.plugins.registry.notification.opt.impl.TriggerOnSpecifiedImageNames;
+import org.jenkinsci.plugins.registry.notification.token.ApiTokens;
 import org.jenkinsci.plugins.registry.notification.webhook.Http;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookCause;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerregistry.DockerRegistryWebHook;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
@@ -56,6 +58,14 @@ import static org.junit.Assert.*;
 public class RegistryWebHookTest {
     @Rule
     public JenkinsRule j = new JenkinsRule();
+
+    private String token;
+
+    @Before
+    public void setUp() {
+        final JSONObject test = ApiTokens.get().generateApiToken("test");
+        token = test.getString("value");
+    }
 
     @Test
     public void testTwoTriggered() throws Exception {
@@ -122,7 +132,7 @@ public class RegistryWebHookTest {
         pushNotificationRunListener.setExpectedCauses(repositories);
         assertThat(pushNotificationRunListener.getExpectedCauses(), hasSize(repositories.size()));
         JSONObject json = JSONObject.fromObject(IOUtils.toString(getClass().getResourceAsStream(payloadResource)));
-        String url = j.getURL() + DockerRegistryWebHook.URL_NAME + "/notify";
+        String url = j.getURL() + DockerRegistryWebHook.URL_NAME + "/" + token + "/notify";
         assertEquals(200, Http.post(url, json));
         j.waitUntilNoActivity();
         assertThat(pushNotificationRunListener.getExpectedCauses(), hasSize(0));
