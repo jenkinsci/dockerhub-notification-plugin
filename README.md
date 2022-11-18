@@ -18,6 +18,8 @@ Hub.
 
 On the Jenkins Configure Global Security page add an api key.
 
+<img src="apitoken.png">
+
 Configure your Docker Hub repository with a webhook to your public jenkins instance `http://JENKINS/dockerhub-webhook/{api-key}/notify`
 
 In your <a href="https://hub.docker.com/">hub.docker.com</a> repository, you can find the "webhooks" section and point it to your jenkins instance: 
