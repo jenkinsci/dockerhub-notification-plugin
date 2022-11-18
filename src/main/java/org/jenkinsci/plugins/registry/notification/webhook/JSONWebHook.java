@@ -34,13 +34,17 @@ import org.apache.commons.io.IOUtils;
 import org.jenkinsci.plugins.registry.notification.Coordinator;
 import org.jenkinsci.plugins.registry.notification.DockerHubTrigger;
 import org.jenkinsci.plugins.registry.notification.TriggerStore;
+import org.jenkinsci.plugins.registry.notification.token.ApiTokens;
+import org.kohsuke.stapler.Ancestor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.interceptor.RequirePOST;
 import org.kohsuke.stapler.interceptor.RespondSuccess;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URLDecoder;
 import java.util.*;
 import java.util.logging.Level;
@@ -48,6 +52,7 @@ import java.util.logging.Logger;
 
 public abstract class JSONWebHook implements UnprotectedRootAction {
     private static final Logger logger = Logger.getLogger(JSONWebHook.class.getName());
+    private static /*almost final*/ boolean DO_NOT_REQUIRE_API_TOKEN = jenkins.util.SystemProperties.getBoolean(JSONWebHook.class.getName() + "DO_NOT_REQUIRE_API_TOKEN");
 
     public String getIconFileName() {
         return null;
@@ -60,7 +65,9 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
     @RequirePOST
     @RespondSuccess
     public void doNotify(@QueryParameter(required = false) String payload, StaplerRequest request, StaplerResponse response) throws IOException {
-
+        if (!DO_NOT_REQUIRE_API_TOKEN) {
+            checkValidApiToken(request, response);
+        }
         WebHookPayload hookPayload = null;
         if (payload != null) {
             try {
@@ -79,6 +86,23 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
                     logger.log(Level.SEVERE, "Could not trigger a job!", e);
                 }
             }
+        }
+    }
+
+    private void checkValidApiToken(final StaplerRequest request, final StaplerResponse response) throws IOException {
+        final Ancestor ancestor = request.findAncestor(ValidApiToken.class);
+        if (ancestor == null) {
+            response.sendError(403, "No valid API token provided.");
+            throw new AccessDeniedException("No valid API token provided.");
+        }
+    }
+
+    public ValidApiToken getDynamic(String token, StaplerResponse rsp) throws IOException {
+        if (ApiTokens.get().isValidApiToken(token)) {
+            return new ValidApiToken(token, this);
+        } else {
+            rsp.sendError(403, "No valid API token provided.");
+            return null;
         }
     }
 
@@ -245,5 +269,25 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
             return defValues;
         }
 
+    }
+
+    public static class ValidApiToken {
+        private final String token;
+        private final JSONWebHook delegate;
+
+        public ValidApiToken(final String token, final JSONWebHook delegate) {
+            this.token = token;
+            this.delegate = delegate;
+        }
+
+        public String getToken() {
+            return token;
+        }
+
+        @RequirePOST
+        @RespondSuccess
+        public void doNotify(@QueryParameter(required = false) String payload, StaplerRequest request, StaplerResponse response) throws IOException {
+            delegate.doNotify(payload, request, response);
+        }
     }
 }

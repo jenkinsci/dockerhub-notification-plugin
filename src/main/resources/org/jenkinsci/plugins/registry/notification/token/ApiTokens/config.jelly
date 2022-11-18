@@ -1,0 +1,60 @@
+<?jelly escape-by-default='true'?>
+
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:f="/lib/form" xmlns:l="/lib/layout" xmlns:fmt="jelly:fmt">
+    <f:section title="${%DockerHub/Registry web-hook tokens}">
+        <st:adjunct includes="org.jenkinsci.plugins.registry.notification.token.ApiTokens.resources" />
+        <f:entry title="${%Current access tokens}" help="${descriptor.getHelpFile('tokens')}">
+            <div class="dockerhub-api-token-list">
+                <j:set var="apiTokens" value="${instance.apiTokens}" />
+                <div class="dockerhub-api-token-list-empty-item ${apiTokens == null || apiTokens.isEmpty() ? '' : 'hidden'}">
+                    <div class="dockerhub-list-empty-message">${%There are no access tokens yet.}</div>
+                </div>
+                <f:repeatable var="apiToken" items="${apiTokens}" minimum="0" add="${%Add new access token}">
+                    <j:choose>
+                        <j:when test="${apiToken != null}">
+                            <input type="hidden" class="dockerhub-api-token-uuid-input" name="apiTokenUuid" value="${apiToken.uuid}" />
+                            <div class="dockerhub-api-token-list-item-row dockerhub-api-token-list-existing-token">
+                                <span class="dockerhub-api-token-created">
+                                    <fmt:formatDate value="${apiToken.created}" type="both" dateStyle="medium" timeStyle="medium"/>
+                                </span>
+                                <f:textbox readonly="true" value="${apiToken.name}" />
+                                <!-- onclick handler for that button is defined in resources.js -->
+                                <a href="#" class="yui-button dockerhub-api-token-revoke-button"
+                                   data-confirm="${%Are you sure you want to revoke this access token?}"
+                                   data-target-url="${descriptor.descriptorFullUrl}/revoke">
+                                    ${%Revoke}
+                                </a>
+                            </div>
+                        </j:when>
+                        <j:otherwise>
+                            <div class="dockerhub-api-token-list-item">
+                                <div class="dockerhub-api-token-list-item-row">
+                                    <input type="hidden" class="dockerhub-api-token-uuid-input" name="apiTokenUuid" value="${apiToken.uuid}" />
+                                    <f:textbox clazz="dockerhub-api-token-name-input" name="apiTokenName" placeholder="${%Access token name}"/>
+                                    <span class="dockerhub-new-api-token-value hidden"><!-- to be filled by JS --></span>
+                                    <span class="yui-button dockerhub-api-token-save-button">
+                                        <!-- onclick handler for that button is defined in resources.js -->
+                                        <button type="button" tabindex="0" data-target-url="${descriptor.descriptorFullUrl}/generate">
+                                            ${%Generate}
+                                        </button>
+                                    </span>
+                                    <span class="dockerhub-api-token-cancel-button">
+                                        <f:repeatableDeleteButton value="${%Cancel}" />
+                                    </span>
+                                    <l:copyButton message="${%Copied}" text="" clazz="hidden" tooltip="${%Copy to clipboard}" />
+                                    <!-- onclick handler for that button is defined in resources.js -->
+                                    <a href="#" class="yui-button dockerhub-api-token-revoke-button hidden"
+                                       data-confirm="${%Are you sure you want to revoke this access token?}"
+                                       data-target-url="${descriptor.descriptorFullUrl}/revoke">
+                                        ${%Revoke}
+                                    </a>
+                                </div>
+                                <span class="warning dockerhub-api-token-warning-message hidden">${%Access token will only be displayed once.}</span>
+                            </div>
+                        </j:otherwise>
+                    </j:choose>
+                </f:repeatable>
+            </div>
+        </f:entry>
+    </f:section>
+</j:jelly>

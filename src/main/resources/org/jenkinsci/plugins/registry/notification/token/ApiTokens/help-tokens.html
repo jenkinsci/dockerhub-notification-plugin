@@ -1,0 +1,13 @@
+<div xmlns="http://www.w3.org/1999/html">
+    <p>
+        These access tokens serve as a way of authenticating requests to the
+        <code>dockerhub-webhook</code>, <code>dockerregistry-webhook</code> and <code>acr-webhook</code> endpoints.
+    </p>
+    <p>
+        By default, all requests to those endpoints must include a valid token in the path component before <code>/notify</code>.
+        E.g. <code>https://jenkins/dockerhub-webhook/{token}/notify</code>
+        However, it is possible to disable that requirement with the
+        <a href="https://www.jenkins.io/doc/book/managing/system-properties/">system property</a>:
+        <pre><code>org.jenkinsci.plugins.registry.notification.webhook.JSONWebHook.DO_NOT_REQUIRE_API_TOKEN=true</code></pre>
+    </p>
+</div>
