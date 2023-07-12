@@ -28,33 +28,36 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>4.47</version>
+        <version>4.69</version>
         <relativePath />
     </parent>
 
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>dockerhub-notification</artifactId>
-    <version>2.6.4-SNAPSHOT</version>
+    <version>${revision}${changelist}</version>
     <packaging>hpi</packaging>
 
     <name>CloudBees Docker Hub/Registry Notification</name>
-    <url>https://github.com/jenkinsci/dockerhub-notification-plugin/</url>
+    <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
 
     <properties>
-        <jenkins.version>2.289.3</jenkins.version>
+        <revision>2.6.4</revision>
+        <changelist>-SNAPSHOT</changelist>
+        <jenkins.version>2.387.3</jenkins.version>
+        <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
     </properties>
 
     <scm>
-        <connection>scm:git:https://github.com/jenkinsci/dockerhub-notification-plugin.git</connection>
-        <developerConnection>scm:git:git@github.com:jenkinsci/dockerhub-notification-plugin.git</developerConnection>
-        <url>https://github.com/jenkinsci/dockerhub-notification-plugin</url>
-        <tag>HEAD</tag>
+        <connection>scm:git:https://github.com/${gitHubRepo}.git</connection>
+        <developerConnection>scm:git:git@github.com:${gitHubRepo}.git</developerConnection>
+        <url>https://github.com/${gitHubRepo}</url>
+        <tag>${scmTag}</tag>
     </scm>
 
     <licenses>
         <license>
             <name>MIT</name>
-            <url>http://opensource.org/licenses/MIT</url>
+            <url>https://opensource.org/licenses/MIT</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -76,7 +79,7 @@
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>docker-commons</artifactId>
-            <version>1.18</version>
+            <version>1.21</version>
         </dependency>
         <dependency>
             <groupId>io.jenkins.plugins</groupId>
@@ -94,7 +97,6 @@
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest</artifactId>
-            <version>2.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -113,15 +115,10 @@
         <dependencies>
             <dependency>
                 <groupId>io.jenkins.tools.bom</groupId>
-                <artifactId>bom-2.289.x</artifactId>
-                <version>1409.v7659b_c072f18</version>
+                <artifactId>bom-2.387.x</artifactId>
+                <version>2198.v39c76fc308ca</version>
                 <scope>import</scope>
                 <type>pom</type>
-            </dependency>
-            <dependency>
-                <groupId>org.jetbrains</groupId>
-                <artifactId>annotations</artifactId>
-                <version>15.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
