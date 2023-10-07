@@ -103,6 +103,12 @@
             <artifactId>test-harness</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- DockerHubTriggerTest test previously failed with NPE with this test dependency included -->
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>docker-workflow</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
