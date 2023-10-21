@@ -1,6 +1,6 @@
 package org.jenkinsci.plugins.registry.notification.webhook.acr;
 
-import hudson.Extension;;
+import hudson.Extension;
 import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.registry.notification.webhook.JSONWebHook;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;

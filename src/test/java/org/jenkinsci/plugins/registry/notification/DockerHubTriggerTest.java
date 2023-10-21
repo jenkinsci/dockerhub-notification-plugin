@@ -34,9 +34,9 @@ import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 
 import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 
 /**
  * Tests for {@link DockerHubTrigger}.
