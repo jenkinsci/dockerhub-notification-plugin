@@ -34,6 +34,7 @@ import org.jenkinsci.plugins.registry.notification.opt.TriggerOptionDescriptor;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * {@link TriggerOption} to trigger on all images reported by all {@link DockerImageExtractor}s for the job.
@@ -48,6 +49,11 @@ public class TriggerForAllUsedInJob extends TriggerOption {
 
     @Override
     public Collection<String> getRepoNames(Job<?, ?> job) {
+        if (job == null) {
+            // DockerImageExtractor.getDockerImagesUsedByJobFromAll expects a non-null job argument
+            // Return an empty list if the job argument is null
+            return Collections.emptyList();
+        }
         return DockerImageExtractor.getDockerImagesUsedByJobFromAll(job);
     }
 
