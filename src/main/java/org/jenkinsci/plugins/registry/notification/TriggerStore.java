@@ -38,7 +38,7 @@ import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubCallbackPayload;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubWebHookPayload;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.LinkedList;
