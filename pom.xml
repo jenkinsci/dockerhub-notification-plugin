@@ -43,7 +43,7 @@
     <properties>
         <revision>2.7.2</revision>
         <changelist>-SNAPSHOT</changelist>
-        <jenkins.version>2.401.3</jenkins.version>
+        <jenkins.version>2.414.3</jenkins.version>
         <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
     </properties>
 
@@ -114,8 +114,8 @@
         <dependencies>
             <dependency>
                 <groupId>io.jenkins.tools.bom</groupId>
-                <artifactId>bom-2.401.x</artifactId>
-                <version>2641.v88e707466454</version>
+                <artifactId>bom-2.414.x</artifactId>
+                <version>2705.vf5c48c31285b_</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
