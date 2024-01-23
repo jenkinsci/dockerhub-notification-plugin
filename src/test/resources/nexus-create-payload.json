@@ -1,0 +1,12 @@
+{
+  "timestamp": "2018-08-01T06:17:19.370+0000",
+  "nodeId": "345E5F51-A422A2C9-8C325369-4D660B19-C736AA74",
+  "initiator": "david/192.168.83.91",
+  "repositoryName": "docker",
+  "action": "CREATED",
+  "asset": {
+    "id": "71afea540e23dde57c4bc616537e6f84",
+    "format": "docker",
+    "name": "v2/hello-world/manifests/v1"
+  }
+}
