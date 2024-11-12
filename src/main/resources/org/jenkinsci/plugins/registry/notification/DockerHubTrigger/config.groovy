@@ -35,8 +35,6 @@ defaultOption[TriggerForAllUsedInJob.DescriptorImpl.instance] = new TriggerForAl
 
 DockerHubTrigger trigger = instance;
 
-System.out.println("divBasedFormLayout: " + context.getVariableWithDefaultValue("divBasedFormLayout", false))
-
 f.descriptorList(title: null,
         field: "options",
         descriptors: TriggerOptionDescriptor.all(),
