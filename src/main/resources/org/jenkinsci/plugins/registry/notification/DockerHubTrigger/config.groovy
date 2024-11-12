@@ -41,4 +41,3 @@ f.descriptorList(title: null,
         field: "options",
         descriptors: TriggerOptionDescriptor.all(),
         instances: trigger != null ? trigger.optionsList : defaultOption)
-

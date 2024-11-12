@@ -32,4 +32,3 @@ System.out.println("divBasedFormLayout 2!: " + context.getVariableWithDefaultVal
 f.entry(title:_("Repositories"), field: "repoNames") {
     f.expandableTextbox(value: instance?.repoNames?.join("\n"))
 }
-
