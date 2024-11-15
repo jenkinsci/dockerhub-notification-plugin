@@ -21,35 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jenkinsci.plugins.registry.notification.webhook.dockerregistry;
+package org.jenkinsci.plugins.registry.notification.webhook.nexus;
 
-import hudson.Extension;
-import net.sf.json.JSONObject;
-import org.jenkinsci.plugins.registry.notification.webhook.JSONWebHook;
-import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
-import org.kohsuke.stapler.StaplerRequest;
 
-import java.util.logging.Logger;
+import org.jenkinsci.plugins.registry.notification.webhook.WebHookCause;
+import org.jenkinsci.plugins.registry.notification.webhook.dockerregistry.DockerRegistryPushNotification;
+import org.jenkinsci.plugins.registry.notification.webhook.dockerregistry.DockerRegistryWebHook;
+
+import javax.annotation.Nonnull;
 
 /**
- * The terminal point for the DockerRegistry web hook.
- * See <a href="https://docs.docker.com/registry/notifications/">Reference</a>
+ * The build cause of {@link NexusDockerRegistryWebHook}.
  */
-@Extension
-public class DockerRegistryWebHook extends JSONWebHook {
-    private static final Logger logger = Logger.getLogger(DockerRegistryWebHook.class.getName());
+public class NexusDockerRegistryWebHookCause extends WebHookCause {
 
-    /**
-     * The namespace under Jenkins context path that this Action is bound to.
-     */
-    public static final String URL_NAME = "dockerregistry-webhook";
-
-    @Override
-    protected WebHookPayload createPushNotification(JSONObject payload, StaplerRequest request) {
-        return new DockerRegistryWebHookPayload(payload);
+    public NexusDockerRegistryWebHookCause(@Nonnull NexusDockerRegistryPushNotification dockerRegistryPushNotification) {
+        super(dockerRegistryPushNotification);
     }
 
-    public String getUrlName() {
-        return URL_NAME;
+    @Override
+    public String getShortDescription() {
+        return String.format("Triggered by %s", getPushNotification().getShortDescription());
+    }
+
+    @Override
+    public String toString() {
+        return "NexusDockerRegistryWebHookCause{" +
+                "payload=" + getPushNotification().getWebHookPayload() +
+                '}';
     }
 }
