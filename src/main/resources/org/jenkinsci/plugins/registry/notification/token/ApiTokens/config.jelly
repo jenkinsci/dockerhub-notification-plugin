@@ -19,7 +19,7 @@
                                 </span>
                                 <f:textbox readonly="true" value="${apiToken.name}" />
                                 <!-- onclick handler for that button is defined in resources.js -->
-                                <a href="#" class="yui-button dockerhub-api-token-revoke-button"
+                                <a href="#" class="jenkins-button jenkins-button jenkins-!-margin-left-1 dockerhub-api-token-revoke-button"
                                    data-confirm="${%Are you sure you want to revoke this access token?}"
                                    data-target-url="${descriptor.descriptorFullUrl}/revoke">
                                     ${%Revoke}
@@ -32,9 +32,9 @@
                                     <input type="hidden" class="dockerhub-api-token-uuid-input" name="apiTokenUuid" value="${apiToken.uuid}" />
                                     <f:textbox clazz="dockerhub-api-token-name-input" name="apiTokenName" placeholder="${%Access token name}"/>
                                     <span class="dockerhub-new-api-token-value hidden"><!-- to be filled by JS --></span>
-                                    <span class="yui-button dockerhub-api-token-save-button">
+                                    <span class="dockerhub-api-token-save-button">
                                         <!-- onclick handler for that button is defined in resources.js -->
-                                        <button type="button" tabindex="0" data-target-url="${descriptor.descriptorFullUrl}/generate">
+                                        <button type="button" class="jenkins-button jenkins-button jenkins-!-margin-left-1" tabindex="0" data-target-url="${descriptor.descriptorFullUrl}/generate">
                                             ${%Generate}
                                         </button>
                                     </span>
@@ -43,7 +43,7 @@
                                     </span>
                                     <l:copyButton message="${%Copied}" text="" clazz="hidden" tooltip="${%Copy to clipboard}" />
                                     <!-- onclick handler for that button is defined in resources.js -->
-                                    <a href="#" class="yui-button dockerhub-api-token-revoke-button hidden"
+                                    <a href="#" class="jenkins-button jenkins-button jenkins-!-margin-left-1 dockerhub-api-token-revoke-button hidden"
                                        data-confirm="${%Are you sure you want to revoke this access token?}"
                                        data-target-url="${descriptor.descriptorFullUrl}/revoke">
                                         ${%Revoke}
