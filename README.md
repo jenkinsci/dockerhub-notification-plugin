@@ -4,6 +4,7 @@ CloudBees Docker Hub/Registry Notification
 This plugin provides integration between 
 * Jenkins and Docker Hub
 * Jenkins and Docker Registry 2.0
+* Jenkins and Nexus 3
 
 It does so by utilizing webhooks to trigger one (or more) Jenkins job(s).
 This allows you to implement continuous delivery pipelines based on Docker in Jenkins.
@@ -47,6 +48,12 @@ You can find a detailed guide on how to configure webhooks on ACR on
 [docs.microsoft.com](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-webhook).
 Use `http://JENKINS/acr-webhook/{api-key}/notify` as a "Service URI".
 
+# Configuring Sonatype Nexus 3 Registry
+
+Follow the instructions at [help.sonatype.com](https://help.sonatype.com/repomanager3/webhooks/enabling-a-repository-webhook-capability).
+Use `http://JENKINS/nexusregistry-webhook/notify?host=REGISTRYHOSTNAME` as URL  
+
+<img src="nexus.png">
 
 # Examples
 

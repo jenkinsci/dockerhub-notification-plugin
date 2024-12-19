@@ -4,6 +4,7 @@ import hudson.Extension;
 import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.registry.notification.webhook.JSONWebHook;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
+import org.kohsuke.stapler.StaplerRequest;
 
 /**
  * The ACRWebHook handles incoming updates from the Azure Container Registry. The provided payload differs minimally
@@ -17,7 +18,7 @@ public class ACRWebHook extends JSONWebHook {
     public static final String URL_NAME = "acr-webhook";
 
     @Override
-    protected WebHookPayload createPushNotification(JSONObject payload) {
+    protected WebHookPayload createPushNotification(JSONObject payload, StaplerRequest request) {
         return new ACRWebHookPayload(payload);
     }
 
