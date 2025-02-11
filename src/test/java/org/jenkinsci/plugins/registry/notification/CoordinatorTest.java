@@ -40,13 +40,13 @@ import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.MockBuilder;
 import org.jvnet.hudson.test.TestExtension;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.StaplerRequest2;
+import org.kohsuke.stapler.StaplerResponse2;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -183,7 +183,7 @@ public class CoordinatorTest {
             return "fake-dockerhub";
         }
 
-        public void doRespond(StaplerRequest req, StaplerResponse response) throws IOException {
+        public void doRespond(StaplerRequest2 req, StaplerResponse2 response) throws IOException {
             String body = IOUtils.toString(req.getInputStream(), req.getCharacterEncoding());
             JSONObject json = JSONObject.fromObject(body);
             synchronized (resp) {
