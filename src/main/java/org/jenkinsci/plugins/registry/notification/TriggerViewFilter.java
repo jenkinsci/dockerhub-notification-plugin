@@ -37,7 +37,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerRequest2;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -134,7 +134,7 @@ public class TriggerViewFilter extends ViewJobFilter {
         }
 
         @Override
-        public ViewJobFilter newInstance(StaplerRequest req, JSONObject formData) throws FormException {
+        public ViewJobFilter newInstance(StaplerRequest2 req, JSONObject formData) throws FormException {
             // TODO JENKINS-27901: need a standard control for this
             if (formData.has("patterns") && !StringUtils.isBlank(formData.optString("patterns"))) {
                 JSONArray array = new JSONArray();

@@ -37,8 +37,8 @@ import org.jenkinsci.plugins.registry.notification.TriggerStore;
 import org.jenkinsci.plugins.registry.notification.token.ApiTokens;
 import org.kohsuke.stapler.Ancestor;
 import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.StaplerRequest2;
+import org.kohsuke.stapler.StaplerResponse2;
 import org.kohsuke.stapler.interceptor.RequirePOST;
 import org.kohsuke.stapler.interceptor.RespondSuccess;
 import org.springframework.security.access.AccessDeniedException;
@@ -64,7 +64,7 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
 
     @RequirePOST
     @RespondSuccess
-    public void doNotify(@QueryParameter(required = false) String payload, StaplerRequest request, StaplerResponse response) throws IOException {
+    public void doNotify(@QueryParameter(required = false) String payload, StaplerRequest2 request, StaplerResponse2 response) throws IOException {
         if (!DO_NOT_REQUIRE_API_TOKEN) {
             checkValidApiToken(request, response);
         }
@@ -89,7 +89,7 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
         }
     }
 
-    private void checkValidApiToken(final StaplerRequest request, final StaplerResponse response) throws IOException {
+    private void checkValidApiToken(final StaplerRequest2 request, final StaplerResponse2 response) throws IOException {
         final Ancestor ancestor = request.findAncestor(ValidApiToken.class);
         if (ancestor == null) {
             response.sendError(403, "No valid API token provided.");
@@ -97,7 +97,7 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
         }
     }
 
-    public ValidApiToken getDynamic(String token, StaplerResponse rsp) throws IOException {
+    public ValidApiToken getDynamic(String token, StaplerResponse2 rsp) throws IOException {
         if (ApiTokens.get().isValidApiToken(token)) {
             return new ValidApiToken(token, this);
         } else {
@@ -123,12 +123,12 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
         }
     }
 
-    protected void trigger(StaplerResponse response, final PushNotification pushNotification) throws IOException {
+    protected void trigger(StaplerResponse2 response, final PushNotification pushNotification) throws IOException {
         final Jenkins jenkins = Jenkins.getInstance();
         if (jenkins == null) {
             return;
         }
-        ACL.impersonate(ACL.SYSTEM, new Runnable() {
+        ACL.impersonate2(ACL.SYSTEM2, new Runnable() {
             @Override
             public void run() {
                 // search all jobs for DockerHubTrigger
@@ -166,13 +166,13 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
      * @param response the response object
      * @throws IOException if so
      */
-    public void doIndex(StaplerRequest request, StaplerResponse response) throws IOException {
+    public void doIndex(StaplerRequest2 request, StaplerResponse2 response) throws IOException {
         response.sendRedirect(request.getContextPath() + "/");
     }
 
     protected abstract WebHookPayload createPushNotification(JSONObject data);
 
-    private WebHookPayload parse(StaplerRequest req) throws IOException {
+    private WebHookPayload parse(StaplerRequest2 req) throws IOException {
         //TODO Actually test what duckerhub is really sending
         String body = IOUtils.toString(req.getInputStream(), req.getCharacterEncoding());
         String contentType = req.getContentType();
@@ -286,7 +286,7 @@ public abstract class JSONWebHook implements UnprotectedRootAction {
 
         @RequirePOST
         @RespondSuccess
-        public void doNotify(@QueryParameter(required = false) String payload, StaplerRequest request, StaplerResponse response) throws IOException {
+        public void doNotify(@QueryParameter(required = false) String payload, StaplerRequest2 request, StaplerResponse2 response) throws IOException {
             delegate.doNotify(payload, request, response);
         }
     }

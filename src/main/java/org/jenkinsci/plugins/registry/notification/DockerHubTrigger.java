@@ -50,7 +50,7 @@ import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.NoExternalUse;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
-import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerRequest2;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -137,7 +137,7 @@ public class DockerHubTrigger extends Trigger<Job<?, ?>> {
         }
 
         @Override
-        public Trigger<?> newInstance(StaplerRequest req, JSONObject formData) throws FormException {
+        public Trigger<?> newInstance(StaplerRequest2 req, JSONObject formData) throws FormException {
             JSONObject data = formData.getJSONObject("options");
             List<TriggerOption> r = new Vector<TriggerOption>();
             for (TriggerOptionDescriptor d : TriggerOptionDescriptor.all()) {

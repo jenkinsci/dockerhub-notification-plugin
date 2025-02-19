@@ -29,10 +29,9 @@ import hudson.Extension;
 import hudson.init.InitMilestone;
 import hudson.model.*;
 import hudson.security.ACL;
+import hudson.security.ACLContext;
 import jenkins.model.FingerprintFacet;
 import jenkins.model.Jenkins;
-import org.acegisecurity.context.SecurityContext;
-import org.acegisecurity.context.SecurityContextHolder;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubCallbackPayload;
@@ -328,13 +327,10 @@ public final class TriggerStore extends Descriptor<TriggerStore>
             public Job<?, ?> getJob() {
                 final Jenkins jenkins = Jenkins.getInstance();
                 if (jenkins != null) {
-                    SecurityContext old = ACL.impersonate(ACL.SYSTEM);
-                    try {
+                    try (ACLContext ctx = ACL.as2(ACL.SYSTEM2)) {
                         return jenkins.getItemByFullName(jobName, Job.class);
                     } catch (Exception e) {
                         logger.log(Level.WARNING, "Unable to retrieve job " + jobName, e);
-                    } finally {
-                        SecurityContextHolder.setContext(old);
                     }
                 }
                 return null;
@@ -355,13 +351,10 @@ public final class TriggerStore extends Descriptor<TriggerStore>
                 }
                 final Job<?, ?> job = getJob();
                 if (job != null) {
-                    SecurityContext old = ACL.impersonate(ACL.SYSTEM);
-                    try {
+                    try (ACLContext ctx = ACL.as2(ACL.SYSTEM2)) {
                         return job.getBuild(buildId);
                     } catch (Exception e) {
                         logger.log(Level.WARNING, "Unable to retrieve run " + jobName + ":" + buildId, e);
-                    } finally {
-                        SecurityContextHolder.setContext(old);
                     }
                 }
                 return null;

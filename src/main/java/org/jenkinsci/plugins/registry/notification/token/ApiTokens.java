@@ -38,7 +38,7 @@ import org.jenkinsci.Symbol;
 import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.NoExternalUse;
 import org.kohsuke.stapler.HttpResponse;
-import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerRequest2;
 import org.kohsuke.stapler.verb.POST;
 
 import java.io.Serializable;
@@ -82,7 +82,7 @@ public class ApiTokens extends GlobalConfiguration implements PersistentDescript
     }
 
     @POST
-    public HttpResponse doGenerate(StaplerRequest req) {
+    public HttpResponse doGenerate(StaplerRequest2 req) {
         // Require admin privileges to change the API tokens
         Jenkins.get().checkPermission(Jenkins.ADMINISTER);
 
@@ -127,7 +127,7 @@ public class ApiTokens extends GlobalConfiguration implements PersistentDescript
     }
 
     @POST
-    public HttpResponse doRevoke(StaplerRequest req) {
+    public HttpResponse doRevoke(StaplerRequest2 req) {
         // Require admin privileges to change the API tokens
         Jenkins.get().checkPermission(Jenkins.ADMINISTER);
 
