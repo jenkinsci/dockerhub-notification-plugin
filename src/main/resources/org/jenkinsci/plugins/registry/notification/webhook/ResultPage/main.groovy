@@ -50,7 +50,7 @@ data.entries.each { entry ->
             }
             if (run.hasPermission(Item.READ)) {
                 ul(class: "build-details") {
-                    li(DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, request.getLocale()).format(run.time))
+                    li(DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, request2.getLocale()).format(run.time))
                     li(run.durationString)
                     li(run.result.toString())
                 }

@@ -30,7 +30,7 @@ import org.jenkinsci.plugins.registry.notification.webhook.JSONWebHook;
 import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
 import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.StaplerResponse2;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -65,7 +65,7 @@ public class DockerHubWebHook extends JSONWebHook {
      * @param response to send a redirect to
      * @throws IOException if so
      */
-    public void doDebug(@QueryParameter(required = true) String image, StaplerResponse response) throws IOException {
+    public void doDebug(@QueryParameter(required = true) String image, StaplerResponse2 response) throws IOException {
         if (!isDebugMode()) {
             throw new IllegalStateException("This endpoint can only be used during development!");
         }
@@ -76,7 +76,7 @@ public class DockerHubWebHook extends JSONWebHook {
     }
 
     @Override
-    protected void trigger(StaplerResponse response, PushNotification pushNotification) throws IOException {
+    protected void trigger(StaplerResponse2 response, PushNotification pushNotification) throws IOException {
         super.trigger(response, pushNotification);
         response.sendRedirect("../");
     }

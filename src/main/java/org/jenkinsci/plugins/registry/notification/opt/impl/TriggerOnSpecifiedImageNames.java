@@ -33,7 +33,7 @@ import org.jenkinsci.plugins.registry.notification.opt.TriggerOption;
 import org.jenkinsci.plugins.registry.notification.opt.TriggerOptionDescriptor;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
-import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerRequest2;
 
 import java.util.*;
 
@@ -83,7 +83,7 @@ public class TriggerOnSpecifiedImageNames extends TriggerOption {
         }
 
         @Override
-        public TriggerOption newInstance(StaplerRequest req, JSONObject formData) throws FormException {
+        public TriggerOption newInstance(StaplerRequest2 req, JSONObject formData) throws FormException {
             // TODO JENKINS-27901: need a standard control for this
             if (formData.has("repoNames") && !StringUtils.isBlank(formData.optString("repoNames"))) {
                 JSONArray array = new JSONArray();
