@@ -1,0 +1,9 @@
+Triggered by push of csanchez/jenkins-swarm-slave to DockerHub@registry.hub.example.com
+Building in workspace /var/jenkins_home/workspace/JenkinsSlaveTrigger
+[JenkinsSlaveTrigger] $ /bin/sh -xe /tmp/hudson7891375838265745811.sh
++ env
++ grep DOCKER
++ sort
+DOCKER_TRIGGER_DOCKER_HUB_HOST=registry.hub.example.com
+DOCKER_TRIGGER_REPO_NAME=csanchez/jenkins-swarm-slave
+Finished: SUCCESS
