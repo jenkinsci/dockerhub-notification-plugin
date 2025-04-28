@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<fingerprint>
+  <timestamp>2016-03-14 14:53:40.641 UTC</timestamp>
+  <md5sum>5873052b0750060b97b428e5dbdd1c03</md5sum>
+  <fileName>csanchez/jenkins-swarm-slave</fileName>
+  <usages/>
+  <facets>
+    <org.jenkinsci.plugins.dockerhub.notification.TriggerStore_-TriggerEntry plugin="dockerhub-notification@1.0.2">
+      <timestamp>1457967220599</timestamp>
+      <payload>
+        <repoName>csanchez/jenkins-swarm-slave</repoName>
+        <json>{&quot;push_data&quot;:{&quot;pushed_at&quot;:1429028158,&quot;images&quot;:[&quot;imagehash1&quot;,&quot;imagehash2&quot;,&quot;imagehash3&quot;],&quot;pusher&quot;:&quot;csanchez&quot;},&quot;callback_url&quot;:&quot;https://registry.hub.example.com/u/csanchez/jenkins-swarm-slave/hook/2g1gggacfij1c4a3jd00bf4fe3c3ec0da/&quot;,&quot;repository&quot;:{&quot;status&quot;:&quot;Active&quot;,&quot;description&quot;:&quot;&quot;,&quot;is_trusted&quot;:true,&quot;full_description&quot;:&quot;# Jenkins swarm slave\n\n[`csanchez/jenkins-swarm-slave`](https://registry.hub.docker.com/u/csanchez/jenkins-swarm-slave/)\n\nA [Jenkins swarm](https://wiki.jenkins-ci.org/display/JENKINS/Swarm+Plugin) slave.\n\nFor a container with ssh enabled see\n[`csanchez/jenkins-slave`](https://registry.hub.docker.com/u/csanchez/jenkins-slave/)\n\nFor a container with many build tools installed see\n[`maestrodev/build-agent`](https://registry.hub.docker.com/u/maestrodev/build-agent/)\n\n## Running\n\nTo run a Docker container passing [any parameters](https://wiki.jenkins-ci.org/display/JENKINS/Swarm+Plugin#SwarmPlugin-AvailableOptions) to the slave\n\n    docker run csanchez/jenkins-swarm-slave -master http://jenkins:8080 -username jenkins -password jenkins -executors 1\n\nLinking to the Jenkins master container there is no need to use `--master`\n\n    docker run -d --name jenkins -p 8080:8080 csanchez/jenkins-swarm\n    docker run -d --link jenkins:jenkins csanchez/jenkins-swarm-slave -username jenkins -password jenkins -executors 1\n\n\n# Building\n\n    docker build -t csanchez/jenkins-swarm-slave .\n&quot;,&quot;repo_url&quot;:&quot;https://registry.hub.example.com/u/csanchez/jenkins-swarm-slave/&quot;,&quot;owner&quot;:&quot;csanchez&quot;,&quot;is_official&quot;:false,&quot;is_private&quot;:false,&quot;name&quot;:&quot;jenkins-swarm-slave&quot;,&quot;namespace&quot;:&quot;csanchez&quot;,&quot;star_count&quot;:2,&quot;comment_count&quot;:0,&quot;date_created&quot;:1410991410,&quot;dockerfile&quot;:&quot;FROM java:8u40-b22-jdk\n\nMAINTAINER Carlos Sanchez &lt;carlos@apache.org&gt;\n\nENV JENKINS_SWARM_VERSION 1.22\nENV HOME /home/jenkins-slave\n\nRUN useradd -c \&quot;Jenkins Slave user\&quot; -d $HOME -m jenkins-slave\nRUN curl --create-dirs -sSLo /usr/share/jenkins/swarm-client-$JENKINS_SWARM_VERSION-jar-with-dependencies.jar http://maven.jenkins-ci.org/content/repositories/releases/org/jenkins-ci/plugins/swarm-client/$JENKINS_SWARM_VERSION/swarm-client-$JENKINS_SWARM_VERSION-jar-with-dependencies.jar \\\n  &amp;&amp; chmod 755 /usr/share/jenkins\n\nCOPY jenkins-slave.sh /usr/local/bin/jenkins-slave.sh\n\nUSER jenkins-slave\n\nVOLUME /home/jenkins-slave\n\nENTRYPOINT [\&quot;/usr/local/bin/jenkins-slave.sh\&quot;]\n&quot;,&quot;repo_name&quot;:&quot;csanchez/jenkins-swarm-slave&quot;}}</json>
+        <received>1457967220599</received>
+      </payload>
+      <entries class="linked-list">
+        <org.jenkinsci.plugins.dockerhub.notification.TriggerStore_-TriggerEntry_-RunEntry>
+          <jobName>JenkinsSlaveTrigger</jobName>
+          <buildId>1</buildId>
+          <done>true</done>
+        </org.jenkinsci.plugins.dockerhub.notification.TriggerStore_-TriggerEntry_-RunEntry>
+      </entries>
+      <callbackData>
+        <state>error</state>
+        <description>Build result FAILURE</description>
+        <context>Jenkins</context>
+        <targetUrl>dockerhub-webhook/details/5873052b0750060b97b428e5dbdd1c03</targetUrl>
+      </callbackData>
+    </org.jenkinsci.plugins.dockerhub.notification.TriggerStore_-TriggerEntry>
+  </facets>
+</fingerprint>

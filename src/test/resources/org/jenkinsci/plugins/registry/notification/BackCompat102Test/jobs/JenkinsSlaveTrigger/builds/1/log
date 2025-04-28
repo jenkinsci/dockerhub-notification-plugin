@@ -1,0 +1,7 @@
+Triggered by push of csanchez/jenkins-swarm-slave to DockerHub@registry.hub.example.com
+Building in workspace /var/jenkins_home/workspace/JenkinsSlaveTrigger
+[JenkinsSlaveTrigger] $ /bin/sh -xe /tmp/hudson5038252045818174291.sh
++ env sort
++ grep DOCKER
+Build step 'Execute shell' marked build as failure
+Finished: FAILURE
