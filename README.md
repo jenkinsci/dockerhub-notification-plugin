@@ -64,3 +64,14 @@ The plugin can be tested with
 ```bash
     curl -X POST -H "Content-Type: application/json" http://localhost:8080/jenkins/dockerhub-webhook/{api-key}/notify -d @src/test/resources/public-repository-payload.json
 ```
+
+## Job DSL (TOOD)
+
+The current supported dsl could be as follows:
+```
+freeStyleJob('test-job'){
+  triggers{
+    registryPush()
+  }
+}
+```
