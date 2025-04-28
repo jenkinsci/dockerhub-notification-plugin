@@ -1,18 +1,18 @@
 /**
  * The MIT License
- *
+ * <p>
  * Copyright (c) 2015, CloudBees, Inc.
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -34,12 +34,12 @@ import org.jenkinsci.plugins.registry.notification.opt.impl.TriggerOnSpecifiedIm
 import org.jenkinsci.plugins.registry.notification.token.ApiTokens;
 import org.jenkinsci.plugins.registry.notification.webhook.Http;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubWebHook;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.MockBuilder;
 import org.jvnet.hudson.test.TestExtension;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 import org.kohsuke.stapler.StaplerRequest2;
 import org.kohsuke.stapler.StaplerResponse2;
 
@@ -48,7 +48,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
@@ -58,39 +59,42 @@ import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.hamcrest.core.AllOf.allOf;
 import static org.hamcrest.core.IsSame.sameInstance;
 import static org.hamcrest.core.StringContains.containsString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Tests scenarios involving {@link Coordinator}.
  * @author Robert Sandell &lt;rsandell@cloudbees.com&gt;.
  */
-public class CoordinatorTest {
-    @Rule
-    public JenkinsRule j = new JenkinsRule();
+@WithJenkins
+class CoordinatorTest {
+
     private static final Response resp = new Response();
+
+    private JenkinsRule j;
 
     private String token;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp(JenkinsRule j) {
+        this.j = j;
         final JSONObject test = ApiTokens.get().generateApiToken("test");
         token = test.getString("value");
     }
 
     @Test
-    public void testTwoTriggered() throws Exception {
+    void testTwoTriggered() throws Exception {
         FreeStyleProject one = j.createFreeStyleProject();
-        one.addTrigger(new DockerHubTrigger(new TriggerOnSpecifiedImageNames(Arrays.asList("csanchez/jenkins-swarm-slave"))));
+        one.addTrigger(new DockerHubTrigger(new TriggerOnSpecifiedImageNames(List.of("csanchez/jenkins-swarm-slave"))));
         one.getBuildersList().add(new MockBuilder(Result.SUCCESS));
         one.setQuietPeriod(0);
 
         FreeStyleProject two = j.createFreeStyleProject();
-        two.addTrigger(new DockerHubTrigger(new TriggerOnSpecifiedImageNames(Arrays.asList("csanchez/jenkins-swarm-slave"))));
+        two.addTrigger(new DockerHubTrigger(new TriggerOnSpecifiedImageNames(List.of("csanchez/jenkins-swarm-slave"))));
         two.getBuildersList().add(new MockBuilder(Result.SUCCESS));
         two.setQuietPeriod(0);
 
-        JSONObject json = JSONObject.fromObject(IOUtils.toString(getClass().getResourceAsStream("/own-repository-payload.json")));
+        JSONObject json = JSONObject.fromObject(IOUtils.toString(getClass().getResourceAsStream("/own-repository-payload.json"), StandardCharsets.UTF_8));
         json.put("callback_url", j.getURL() + "fake-dockerhub/respond");
 
         String url = j.getURL() + DockerHubWebHook.URL_NAME + "/" + token + "/notify";
@@ -127,13 +131,13 @@ public class CoordinatorTest {
     }
 
     @Test
-    public void testOneTriggered() throws Exception {
+    void testOneTriggered() throws Exception {
         FreeStyleProject one = j.createFreeStyleProject();
-        one.addTrigger(new DockerHubTrigger(new TriggerOnSpecifiedImageNames(Arrays.asList("csanchez/jenkins-swarm-slave"))));
+        one.addTrigger(new DockerHubTrigger(new TriggerOnSpecifiedImageNames(List.of("csanchez/jenkins-swarm-slave"))));
         one.getBuildersList().add(new MockBuilder(Result.SUCCESS));
         one.setQuietPeriod(0);
 
-        JSONObject json = JSONObject.fromObject(IOUtils.toString(getClass().getResourceAsStream("/own-repository-payload.json")));
+        JSONObject json = JSONObject.fromObject(IOUtils.toString(getClass().getResourceAsStream("/own-repository-payload.json"), StandardCharsets.UTF_8));
         json.put("callback_url", j.getURL() + "fake-dockerhub/respond");
 
         String url = j.getURL() + DockerHubWebHook.URL_NAME + "/" + token + "/notify";
