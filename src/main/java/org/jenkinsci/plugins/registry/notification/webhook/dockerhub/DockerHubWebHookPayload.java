@@ -4,7 +4,6 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.model.Run;
 import net.sf.json.JSONObject;
-import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.registry.notification.TriggerStore;
 import org.jenkinsci.plugins.registry.notification.webhook.CallbackHandler;
 import org.jenkinsci.plugins.registry.notification.webhook.Http;
@@ -106,7 +105,7 @@ public class DockerHubWebHookPayload extends WebHookPayload {
             if(entry != null) {
                 DockerHubCallbackPayload callback = DockerHubCallbackPayload.from(entry);
                 if (callback != null) {
-                    if (!StringUtils.isBlank(callbackUrl)) {
+                    if (callbackUrl != null && !callbackUrl.isBlank()) {
                         logger.log(Level.FINE, "Sending callback to Docker Hub");
                         logger.log(Level.FINER, "Callback: {0}", callback);
                         int response = Http.post(callbackUrl, callback.toJSON());

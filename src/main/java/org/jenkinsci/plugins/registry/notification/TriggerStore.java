@@ -32,7 +32,6 @@ import hudson.security.ACL;
 import hudson.security.ACLContext;
 import jenkins.model.FingerprintFacet;
 import jenkins.model.Jenkins;
-import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubCallbackPayload;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubWebHookPayload;
@@ -346,7 +345,7 @@ public final class TriggerStore extends Descriptor<TriggerStore>
 
             @CheckForNull
             public Run<?, ?> getRun() {
-                if (StringUtils.isBlank(buildId)) {
+                if (buildId == null || buildId.isBlank()) {
                     return null;
                 }
                 final Job<?, ?> job = getJob();

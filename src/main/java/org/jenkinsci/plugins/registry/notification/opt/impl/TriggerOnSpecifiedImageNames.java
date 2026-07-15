@@ -27,7 +27,6 @@ import hudson.Extension;
 import hudson.model.Job;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.registry.notification.Messages;
 import org.jenkinsci.plugins.registry.notification.opt.TriggerOption;
 import org.jenkinsci.plugins.registry.notification.opt.TriggerOptionDescriptor;
@@ -85,9 +84,12 @@ public class TriggerOnSpecifiedImageNames extends TriggerOption {
         @Override
         public TriggerOption newInstance(StaplerRequest2 req, JSONObject formData) throws FormException {
             // TODO JENKINS-27901: need a standard control for this
-            if (formData.has("repoNames") && !StringUtils.isBlank(formData.optString("repoNames"))) {
+            String repoNamesStr = formData.optString("repoNames");
+            if (formData.has("repoNames") && repoNamesStr != null && !repoNamesStr.isBlank()) {
                 JSONArray array = new JSONArray();
-                array.addAll(Arrays.asList(StringUtils.split(formData.getString("repoNames"))));
+                List<String> names = Arrays.stream(formData.getString("repoNames").trim().split("\\s+"))
+                        .filter(s -> !s.isBlank()).toList();
+                array.addAll(names);
                 formData.put("repoNames", array);
             } else {
                 formData.put("repoNames", new JSONArray());

@@ -6,7 +6,6 @@ import hudson.model.Cause;
 import hudson.model.ParameterValue;
 import hudson.model.StringParameterValue;
 import net.sf.json.JSONObject;
-import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
 
@@ -59,7 +58,7 @@ public class ACRPushNotification extends PushNotification {
         parameters.add(new StringParameterValue(KEY_REPO_NAME, getRepoName()));
         parameters.add(new StringParameterValue(KEY_TAG, getTag()));
         String host = getRegistryHost();
-        if (!StringUtils.isBlank(host)) {
+        if (host != null && !host.isBlank()) {
             parameters.add(new StringParameterValue(KEY_DOCKER_REGISTRY_HOST, host));
         }
         return parameters;
