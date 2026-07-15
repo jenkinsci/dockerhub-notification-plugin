@@ -136,10 +136,9 @@ public class TriggerViewFilter extends ViewJobFilter {
         public ViewJobFilter newInstance(StaplerRequest2 req, JSONObject formData) throws FormException {
             // TODO JENKINS-27901: need a standard control for this
             String patternsStr = formData.optString("patterns");
-            if (formData.has("patterns") && patternsStr != null && !patternsStr.isBlank()) {
+            if (patternsStr != null && !patternsStr.isBlank()) {
                 JSONArray array = new JSONArray();
-                String[] split = formData.getString("patterns").split("\n");
-                List<String> nonEmpty = Arrays.stream(split).filter(s -> !s.isBlank()).toList();
+                List<String> nonEmpty = Arrays.stream(patternsStr.split("\n")).filter(s -> !s.isBlank()).toList();
                 if (!nonEmpty.isEmpty()) {
                     array.addAll(nonEmpty);
                 }

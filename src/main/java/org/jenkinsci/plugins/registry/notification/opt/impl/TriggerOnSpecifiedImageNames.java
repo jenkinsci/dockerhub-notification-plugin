@@ -85,9 +85,9 @@ public class TriggerOnSpecifiedImageNames extends TriggerOption {
         public TriggerOption newInstance(StaplerRequest2 req, JSONObject formData) throws FormException {
             // TODO JENKINS-27901: need a standard control for this
             String repoNamesStr = formData.optString("repoNames");
-            if (formData.has("repoNames") && repoNamesStr != null && !repoNamesStr.isBlank()) {
+            if (repoNamesStr != null && !repoNamesStr.isBlank()) {
                 JSONArray array = new JSONArray();
-                List<String> names = Arrays.stream(formData.getString("repoNames").trim().split("\\s+"))
+                List<String> names = Arrays.stream(repoNamesStr.trim().split("\\s+"))
                         .filter(s -> !s.isBlank()).toList();
                 array.addAll(names);
                 formData.put("repoNames", array);
