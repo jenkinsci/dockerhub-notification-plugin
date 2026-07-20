@@ -29,7 +29,6 @@ import hudson.model.Cause;
 import hudson.model.ParameterValue;
 import hudson.model.StringParameterValue;
 import net.sf.json.JSONObject;
-import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookPayload;
 
@@ -115,15 +114,15 @@ public class DockerHubPushNotification extends PushNotification {
         Set<ParameterValue> parameters = new HashSet<ParameterValue>();
         parameters.add(new StringParameterValue(KEY_REPO_NAME, getRepoName()));
         String host = getRegistryHost();
-        if (!StringUtils.isBlank(host)) {
+        if (host != null && !host.isBlank()) {
             parameters.add(new StringParameterValue(KEY_DOCKER_HUB_HOST, host));
         }
         String tag = getTag();
-        if (!StringUtils.isBlank(tag)) {
+        if (tag != null && !tag.isBlank()) {
             parameters.add(new StringParameterValue(KEY_TAG, tag));
         }
         String pusher = getPusher();
-        if (!StringUtils.isBlank(pusher)) {
+        if (pusher != null && !pusher.isBlank()) {
             parameters.add(new StringParameterValue(KEY_PUSHER, pusher));
         }
         return parameters;

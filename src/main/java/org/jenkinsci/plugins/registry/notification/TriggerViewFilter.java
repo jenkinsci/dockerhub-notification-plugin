@@ -33,7 +33,6 @@ import hudson.views.ViewJobFilter;
 import jenkins.model.ParameterizedJobMixIn;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
@@ -136,11 +135,12 @@ public class TriggerViewFilter extends ViewJobFilter {
         @Override
         public ViewJobFilter newInstance(StaplerRequest2 req, JSONObject formData) throws FormException {
             // TODO JENKINS-27901: need a standard control for this
-            if (formData.has("patterns") && !StringUtils.isBlank(formData.optString("patterns"))) {
+            String patternsStr = formData.optString("patterns");
+            if (patternsStr != null && !patternsStr.isBlank()) {
                 JSONArray array = new JSONArray();
-                String[] split = StringUtils.split(formData.getString("patterns"), '\n');
-                if (split != null && split.length > 0) {
-                    array.addAll(Arrays.asList(split));
+                List<String> nonEmpty = Arrays.stream(patternsStr.split("\n")).filter(s -> !s.isBlank()).toList();
+                if (!nonEmpty.isEmpty()) {
+                    array.addAll(nonEmpty);
                 }
                 formData.put("patterns", array);
             } else {
@@ -150,12 +150,12 @@ public class TriggerViewFilter extends ViewJobFilter {
         }
 
         public FormValidation doCheckPatterns(@QueryParameter String value) {
-            if (StringUtils.isBlank(value)) {
+            if (value == null || value.isBlank()) {
                 return FormValidation.ok();
             } else {
-                String[] split = StringUtils.split(value, '\n');
+                List<String> split = Arrays.stream(value.split("\n")).filter(s -> !s.isBlank()).toList();
                 try {
-                    compilePatterns(Arrays.asList(split));
+                    compilePatterns(split);
                     return FormValidation.ok();
                 } catch (PatternSyntaxException e) {
                     return FormValidation.error(e, Messages.TriggerViewFilter_CompileError());
