@@ -11,9 +11,9 @@ import org.jenkinsci.plugins.registry.notification.opt.impl.TriggerOnSpecifiedIm
 import org.jenkinsci.plugins.registry.notification.webhook.PushNotification;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubCallbackPayload;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerhub.DockerHubWebHookCause;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 import org.jvnet.hudson.test.recipes.LocalData;
 import org.xml.sax.SAXException;
 
@@ -22,30 +22,29 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.hamcrest.core.AllOf.allOf;
-import static org.hamcrest.core.IsCollectionContaining.hasItem;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.core.IsIterableContaining.hasItem;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Testing that stored data from version 1.0.2 of the plugin can be loaded from disk in newer versions.
  */
-public class BackCompat102Test {
-    @Rule
-    public JenkinsRule j = new JenkinsRule();
+@WithJenkins
+class BackCompat102Test {
 
     @Test
     @LocalData
-    public void testTriggerConfig() {
+    void testTriggerConfig(JenkinsRule j) {
         FreeStyleProject job = j.jenkins.getItemByFullName("OneConfigured", FreeStyleProject.class);
-        assertNotNull("The job should be loaded", job);
+        assertNotNull(job, "The job should be loaded");
         DockerHubTrigger trigger = DockerHubTrigger.getTrigger(job);
-        assertNotNull("The trigger config of the job was not loaded", trigger);
+        assertNotNull(trigger, "The trigger config of the job was not loaded");
         assertThat(trigger.getAllRepoNames(), hasItem(equalTo("rsandell/test")));
         assertThat(trigger.getOptions(), containsInAnyOrder(
                 allOf(
@@ -57,22 +56,22 @@ public class BackCompat102Test {
 
     @Test
     @LocalData
-    public void testPullImageBuilder() {
+    void testPullImageBuilder(JenkinsRule j) {
         FreeStyleProject job = j.jenkins.getItemByFullName("OneConfigured", FreeStyleProject.class);
-        assertNotNull("The job should be loaded", job);
+        assertNotNull(job, "The job should be loaded");
         DockerPullImageBuilder builder = job.getBuildersList().get(DockerPullImageBuilder.class);
-        assertNotNull("Builder should be loaded", builder);
+        assertNotNull(builder, "Builder should be loaded");
         assertEquals("rsandell/test", builder.getImage());
         DockerRegistryEndpoint registry = builder.getRegistry();
-        assertNotNull("Registru should be loaded", registry);
+        assertNotNull(registry, "Registru should be loaded");
         assertEquals("http://hub.rsandell.com", registry.getUrl());
     }
 
     @Test
     @LocalData
-    public void testBuilds() {
+    void testBuilds(JenkinsRule j) {
         FreeStyleProject job = j.jenkins.getItemByFullName("JenkinsSlaveTrigger", FreeStyleProject.class);
-        assertNotNull("The job should be loaded", job);
+        assertNotNull(job, "The job should be loaded");
 
         RunList<FreeStyleBuild> builds = job.getBuilds();
         FreeStyleBuild two = builds.getLastBuild();
@@ -80,43 +79,43 @@ public class BackCompat102Test {
         FreeStyleBuild one = two.getPreviousBuild();
         assertNotNull(one);
 
-        assertSame("First build should be failure", Result.FAILURE, one.getResult());
-        assertSame("Second build should be success", Result.SUCCESS, two.getResult());
+        assertSame(Result.FAILURE, one.getResult(), "First build should be failure");
+        assertSame(Result.SUCCESS, two.getResult(), "Second build should be success");
 
         DockerHubWebHookCause cause = two.getCause(DockerHubWebHookCause.class);
-        assertNotNull("The cause should be loaded", cause);
+        assertNotNull(cause, "The cause should be loaded");
         PushNotification notification = cause.getPushNotification();
-        assertNotNull("The cause should have a notification", notification);
+        assertNotNull(notification, "The cause should have a notification");
         assertEquals("csanchez/jenkins-swarm-slave", notification.getRepoName());
         assertEquals("registry.hub.example.com", notification.getRegistryHost());
     }
 
     @Test
     @LocalData
-    public void testFingerprintDb() throws IOException, InterruptedException {
+    void testFingerprintDb(JenkinsRule j) throws IOException, InterruptedException {
         TriggerStore.TriggerEntry entry = TriggerStore.getInstance().getEntry("e9d6eb6cd6a7bfcd2bd622765a87893f");
-        assertNotNull("TriggerEntry should be loaded in the fingerprint db", entry);
+        assertNotNull(entry, "TriggerEntry should be loaded in the fingerprint db");
         assertTrue(entry.areAllDone());
         List<TriggerStore.TriggerEntry.RunEntry> runEntries = entry.getEntries();
         assertNotNull(runEntries);
         assertEquals(1, runEntries.size());
         TriggerStore.TriggerEntry.RunEntry run = runEntries.get(0);
         assertEquals("JenkinsSlaveTrigger", run.getJobName());
-        assertNotNull("The run should be retrievable", run.getRun());
+        assertNotNull(run.getRun(), "The run should be retrievable");
         PushNotification notification = entry.getPushNotification();
-        assertNotNull("The entry should have a notification", notification);
+        assertNotNull(notification, "The entry should have a notification");
         assertEquals("csanchez/jenkins-swarm-slave", notification.getRepoName());
         assertEquals("registry.hub.example.com", notification.getRegistryHost());
 
         DockerHubCallbackPayload data = entry.getCallbackData();
-        assertNotNull("There should be stored callback data", data);
+        assertNotNull(data, "There should be stored callback data");
         assertSame(DockerHubCallbackPayload.States.success, data.getState());
         assertEquals("dockerhub-webhook/details/e9d6eb6cd6a7bfcd2bd622765a87893f", data.getTargetUrl());
     }
 
     @Test
     @LocalData
-    public void testFingerprintUi() throws IOException, InterruptedException, SAXException {
+    void testFingerprintUi(JenkinsRule j) throws IOException, SAXException {
         JenkinsRule.WebClient web = j.createWebClient();
         HtmlPage page = web.goTo("dockerhub-webhook/details/e9d6eb6cd6a7bfcd2bd622765a87893f");
         j.assertStringContains(page.asNormalizedText(), "Build results for push of csanchez/jenkins-swarm-slave");

@@ -1,6 +1,5 @@
 package org.jenkinsci.plugins.registry.notification;
 
-import hudson.model.Cause;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
 import hudson.model.Run;
@@ -14,27 +13,29 @@ import org.jenkinsci.plugins.registry.notification.webhook.Http;
 import org.jenkinsci.plugins.registry.notification.webhook.acr.ACRPushNotification;
 import org.jenkinsci.plugins.registry.notification.webhook.acr.ACRWebHook;
 import org.jenkinsci.plugins.registry.notification.webhook.acr.ACRWebHookCause;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.MockBuilder;
 import org.jvnet.hudson.test.TestExtension;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Testing ACR webhook.
  */
-public class ACRWebHookTest {
-    @Rule
-    public JenkinsRule j = new JenkinsRule();
+@WithJenkins
+class ACRWebHookTest {
+
+    private JenkinsRule j;
 
     private String token;
 
@@ -42,18 +43,19 @@ public class ACRWebHookTest {
         return this.j.getURL() + ACRWebHook.URL_NAME + "/" + token + "/notify";
     }
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp(JenkinsRule j) {
+        this.j = j;
         final JSONObject test = ApiTokens.get().generateApiToken("test");
         token = test.getString("value");
     }
 
     @Test
-    public void testValidRepoUpdate() throws Exception {
+    void testValidRepoUpdate() throws Exception {
         PushNotificationRunListener listener = j.jenkins.getExtensionList(PushNotificationRunListener.class).get(0);
         listener.reset();
         createProjectWithTrigger(new TriggerOnSpecifiedImageNames(Collections.singletonList("myregistry.azurecr.io/hello-world")));
-        JSONObject data = JSONObject.fromObject(IOUtils.toString(getClass().getResourceAsStream("/acr-payload-valid.json")));
+        JSONObject data = JSONObject.fromObject(IOUtils.toString(getClass().getResourceAsStream("/acr-payload-valid.json"), StandardCharsets.UTF_8));
         assertEquals(200, Http.post(getWebHookURL(), data));
         j.waitUntilNoActivity();
         ACRPushNotification notification = listener.getPushNotification();
@@ -71,10 +73,10 @@ public class ACRWebHookTest {
 
     @TestExtension
     public static class PushNotificationRunListener extends RunListener<Run<?,?>> {
-        private List<Run> hits;
+        private final List<Run> hits;
 
         public PushNotificationRunListener() {
-            this.hits = new ArrayList<Run>();
+            this.hits = new ArrayList<>();
         }
 
         @Override

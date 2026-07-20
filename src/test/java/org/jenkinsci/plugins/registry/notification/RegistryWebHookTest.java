@@ -1,18 +1,18 @@
 /**
  * The MIT License
- *
+ * <p>
  * Copyright (c) 2015, HolidayCheck AG.
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,7 +24,6 @@
 package org.jenkinsci.plugins.registry.notification;
 
 
-import hudson.Extension;
 import hudson.ExtensionList;
 import hudson.model.*;
 import hudson.model.listeners.RunListener;
@@ -35,42 +34,42 @@ import org.jenkinsci.plugins.registry.notification.token.ApiTokens;
 import org.jenkinsci.plugins.registry.notification.webhook.Http;
 import org.jenkinsci.plugins.registry.notification.webhook.WebHookCause;
 import org.jenkinsci.plugins.registry.notification.webhook.dockerregistry.DockerRegistryWebHook;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.MockBuilder;
 import org.jvnet.hudson.test.TestExtension;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
-import static org.hamcrest.core.AllOf.allOf;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
 
 /**
  * Testing Registry v2 webhook.
  */
-public class RegistryWebHookTest {
-    @Rule
-    public JenkinsRule j = new JenkinsRule();
+@WithJenkins
+class RegistryWebHookTest {
+
+    private JenkinsRule j;
 
     private String token;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp(JenkinsRule j) {
+        this.j = j;
         final JSONObject test = ApiTokens.get().generateApiToken("test");
         token = test.getString("value");
     }
 
     @Test
-    public void testTwoTriggered() throws Exception {
-        HashSet<String> repositories = new HashSet<String>() {{
+    void testTwoTriggered() throws Exception {
+        HashSet<String> repositories = new HashSet<>() {{
             add("registry:5000/jplock/zookeeper");
             add("registry:5000/ubuntu");
         }};
@@ -79,8 +78,8 @@ public class RegistryWebHookTest {
     }
 
     @Test
-    public void testOneTriggered() throws Exception {
-        HashSet<String> repositories = new HashSet<String>() {{
+    void testOneTriggered() throws Exception {
+        HashSet<String> repositories = new HashSet<>() {{
             add("registry:5000/jplock/zookeeper");
         }};
         createProjectsTriggeredByRepository(repositories);
@@ -88,8 +87,8 @@ public class RegistryWebHookTest {
     }
 
     @Test
-    public void testOneTriggeredMultipleTimes() throws Exception {
-        HashSet<String> repositories = new HashSet<String>() {{
+    void testOneTriggeredMultipleTimes() throws Exception {
+        HashSet<String> repositories = new HashSet<>() {{
             add("registry:5000/jplock/zookeeper");
         }};
         createProjectsTriggeredByRepository(repositories);
@@ -98,19 +97,19 @@ public class RegistryWebHookTest {
     }
 
     @Test
-    public void testPullIgnore() throws Exception {
-        HashSet<String> repositories = new HashSet<String>() {{
+    void testPullIgnore() throws Exception {
+        HashSet<String> repositories = new HashSet<>() {{
             add("registry:5000/jplock/zookeeper");
         }};
         createProjectsTriggeredByRepository(repositories);
         simulatePushNotification(1, "/private-registry-payload-pull-1-repository.json", repositories);
     }
-  
+
     @Test
-    public void testBlobIgnore() throws Exception {
-        HashSet<String> repositories = new HashSet<String>() {{
-                add("registry:5000/jplock/zookeeper");
-            }};
+    void testBlobIgnore() throws Exception {
+        HashSet<String> repositories = new HashSet<>() {{
+            add("registry:5000/jplock/zookeeper");
+        }};
         createProjectsTriggeredByRepository(repositories);
         simulatePushNotification(1, "/private-registry-payload-blob-1-repository.json", repositories);
     }
@@ -119,7 +118,7 @@ public class RegistryWebHookTest {
     private void createProjectsTriggeredByRepository(Set<String> repositories) throws Exception {
         for (final String repository : repositories) {
             FreeStyleProject project = j.createFreeStyleProject();
-            project.addTrigger(new DockerHubTrigger(new TriggerOnSpecifiedImageNames(new ArrayList<String>() {{
+            project.addTrigger(new DockerHubTrigger(new TriggerOnSpecifiedImageNames(new ArrayList<>() {{
                 add(repository);
             }})));
             project.getBuildersList().add(new MockBuilder(Result.SUCCESS));
@@ -132,7 +131,7 @@ public class RegistryWebHookTest {
         pushNotificationRunListener.setHitCounter(0);
         pushNotificationRunListener.setExpectedCauses(repositories);
         assertThat(pushNotificationRunListener.getExpectedCauses(), hasSize(repositories.size()));
-        JSONObject json = JSONObject.fromObject(IOUtils.toString(getClass().getResourceAsStream(payloadResource)));
+        JSONObject json = JSONObject.fromObject(IOUtils.toString(getClass().getResourceAsStream(payloadResource), StandardCharsets.UTF_8));
         String url = j.getURL() + DockerRegistryWebHook.URL_NAME + "/" + token + "/notify";
         assertEquals(200, Http.post(url, json));
         j.waitUntilNoActivity();
